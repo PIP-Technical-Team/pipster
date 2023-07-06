@@ -6,14 +6,14 @@
 \alias{as_pip.list}
 \title{Assign PIP class to object}
 \usage{
-as_pip(x)
+as_pip(df)
 
-\method{as_pip}{data.frame}(x)
+\method{as_pip}{data.frame}(df)
 
-\method{as_pip}{list}(x)
+\method{as_pip}{list}(df)
 }
 \arguments{
-\item{x}{dataframe or list. If dataframe, the number of unique elements in the variable \code{module} should be 1}
+\item{df}{dataframe or list. If dataframe, the number of unique elements in the variable \code{module} should be 1}
 }
 \value{
 data.frame or list
