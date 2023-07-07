@@ -10,6 +10,8 @@
 #'   Default is NULL
 #' @param groupdata_threshold numeric: threshold to discriminate between micro
 #'   data an group data. Default is 200 observations
+#' @param verbose logical: Whether to display important messages about your data
+#'   or query
 #'
 #' @return character of length 1.
 #' @export
@@ -18,7 +20,8 @@
 identify_pip_type <- function(welfare,
                               weight              = rep(1, length(welfare)),
                               imputation_id       = NULL,
-                              groupdata_threshold = 200
+                              groupdata_threshold = 200,
+                              verbose             = getOption("pipster.verbose")
                               ){
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,6 +50,9 @@ identify_pip_type <- function(welfare,
   # Sort data   ---------
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (is.unsorted(welfare)) {
+    if (verbose) {
+      cli::cli_alert_warning("vectors not sorted")
+    }
     o <- order(welfare)
     welfare <- welfare[o]
     weight  <- weight[o]

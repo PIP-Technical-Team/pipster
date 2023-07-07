@@ -52,7 +52,7 @@ test_that("Identifies group data", {
   gd5_1 <- identify_pip_type(welfare = X,
                              weight = W/100)
 
-  expect_equal(gd2_1, "gd_5")
+  expect_equal(gd5_1, "gd_5")
 
   ## up to 100 ---------
   gd5_100 <- identify_pip_type(welfare = X,

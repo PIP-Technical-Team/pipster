@@ -8,7 +8,8 @@ identify_pip_type(
   welfare,
   weight = rep(1, length(welfare)),
   imputation_id = NULL,
-  groupdata_threshold = 200
+  groupdata_threshold = 200,
+  verbose = getOption("pipster.verbose")
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ Default is NULL}
 
 \item{groupdata_threshold}{numeric: threshold to discriminate between micro
 data an group data. Default is 200 observations}
+
+\item{verbose}{logical: Whether to display important messages about your data
+or query}
 }
 \value{
 character of length 1.
