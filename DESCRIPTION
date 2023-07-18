@@ -18,4 +18,9 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     cli,
+    collapse,
+    tibble,
     wbpip
+Depends: 
+    R (>= 2.10)
+LazyData: true

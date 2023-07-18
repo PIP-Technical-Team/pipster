@@ -11,11 +11,11 @@
 #'
 #' @docType package
 #' @name pipster
-# @import data.table
+#' @import collapse
 
 
 # Make sure data.table knows we know we're using it
-.datatable.aware = TRUE
+# .datatable.aware = TRUE
 
 # Prevent R CMD check from complaining about the use of pipe expressions
 # standard data.table variables

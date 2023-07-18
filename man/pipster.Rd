@@ -3,14 +3,7 @@
 \docType{package}
 \name{pipster}
 \alias{pipster}
-\alias{.datatable.aware}
 \title{pipster: Poverty and Inequality methodology of WB methodology}
-\format{
-An object of class \code{logical} of length 1.
-}
-\usage{
-.datatable.aware
-}
 \description{
 A higher-level package to estimate Socioeconomic indicators on poverty and
 inequality using the methodology by the WorlD Bank. This packages is mainly a
@@ -23,4 +16,3 @@ indicators using as input the welfare and weights vector of microdata or
 group data.
 }
 
-\keyword{datasets}

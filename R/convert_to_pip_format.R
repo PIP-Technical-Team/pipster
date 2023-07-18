@@ -1,27 +1,93 @@
-#' Convert vectors
+#' Convert to PIP format
 #'
-#' @param welfare numeric: welfare vector
-#' @param weight numeric: weights of population vector
+#' Convert welfare, weight and (optionally) imputed id vectors to PIP format
+#' from a data.frame
+#'
+#'
+#' @param dt data.frame with welfare data
+#' @param welfare_var character: variable name of welfare vector in dt
+#' @param weight_var character: variable name of weight vector in dt
+#' @param imputation_id_var character: variable name of imputation ID vector in
+#'   dt
 #' @param pip_type character: One of "md", "id", "gd_*". Generally this comes
 #'   from the output of [identify_pip_type()]
+#' @param verbose logical: whether to print important information about your
+#'   data. Default is TRUE
 #'
 #' @return data.frame
 #' @export
 #'
 #' @examples
-convert_to_pip_format <- function(welfare,
-                                  weight,
-                                  pip_type) {
+convert_to_pip_format <- function(
+    dt,
+    welfare_var,
+    weight_var,
+    imputation_id_var = NULL,
+    pip_type          = c("md", "id", "gd_1", "gd_2", "gd_3", "gd_4", "gd_5"),
+    verbose           = getOption("pipster.verbose")
+    ) {
 
+  pip_type <- match.arg(pip_type)
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # defenses   ---------
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  welfare        <- dt[[welfare_var]]
+  weight         <- dt[[weight_var]]
+
+  if (is.null(imputation_id_var)) {
+    imputation_id <-  NULL
+  } else {
+    imputation_id  <- dt[[imputation_id_var]]
+  }
+
+  identify_pip_type_check()
   convert_to_pip_format_check()
 
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # set up   ---------
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+  # imputation_id
+  if (!is.null(imputation_id)) {
+    # convert to factor if it is character
+  }
+
+
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # computations   ---------
+  # transformations   ---------
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ## microdata --------
+  if (pip_type == "md") {
+    tb <- convert_to_pip_md(dt,
+                            welfare_var,
+                            imputation_id_var,
+                            verbose)
+    # add pip class
+
+    # early return
+    return(tb)
+  }
+
+  if (grepl("^gd_", pip_type)) {
+    tp <- gsub("(gd_)([1-5])", "\\2", pip_type) |>
+      as.numeric()
+
+    tb <- wbpip:::gd_clean_data(dt = dt,
+                                welfare = welfare_var,
+                                population = weight_var,
+                                gd_type = tp)
+    ## add class
+
+    # return
+    return(tb)
+
+  }
+
+
 
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,6 +102,24 @@ convert_to_pip_format_check <- function() {
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Defensive setup   ---------
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  if (l$pip_type == "gd_1") {
+
+  } else if (l$pip_type == "gd_2") {
+
+  } else if (l$pip_type == "gd_3") {
+
+  } else if (l$pip_type == "gd_4") {
+
+  } else if (l$pip_type == "gd_5") {
+
+  } else if (l$pip_type == "md") {
+
+  } else if (l$pip_type == "id") {
+
+  } else {
+    cli::cli_abort("{.var pip_type} {.field {pip_type}} is not a valid value")
+  }
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ## Defenses --------
@@ -53,5 +137,35 @@ convert_to_pip_format_check <- function() {
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   return(invisible(TRUE))
 
+
+}
+
+
+
+#' Convert vectors to microdata data PIP format
+#'
+#' @inheritParams convert_to_pip_format
+
+#' @return tibble
+#' @keywords internal
+convert_to_pip_md <- function(
+    dt,
+    welfare_var,
+    imputation_id_var,
+    verbose       = getOption("pipster.verbose")
+    ) {
+
+  if (!is.null(imputation_id_var)) {
+    tb <-
+      dt |>
+      roworderv(cols = c(imputation_id_var, welfare_var))
+
+  } else {
+    tb <-
+      dt |>
+      roworderv(cols = welfare_var)
+  }
+
+  return(tb)
 
 }

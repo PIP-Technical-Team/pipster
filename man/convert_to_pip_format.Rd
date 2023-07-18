@@ -2,21 +2,37 @@
 % Please edit documentation in R/convert_to_pip_format.R
 \name{convert_to_pip_format}
 \alias{convert_to_pip_format}
-\title{Convert vectors}
+\title{Convert to PIP format}
 \usage{
-convert_to_pip_format(welfare, weight, pip_type)
+convert_to_pip_format(
+  dt,
+  welfare_var,
+  weight_var,
+  imputation_id_var = NULL,
+  pip_type = c("md", "id", "gd_1", "gd_2", "gd_3", "gd_4", "gd_5"),
+  verbose = getOption("pipster.verbose")
+)
 }
 \arguments{
-\item{welfare}{numeric: welfare vector}
+\item{dt}{data.frame with welfare data}
 
-\item{weight}{numeric: weights of population vector}
+\item{welfare_var}{character: variable name of welfare vector in dt}
+
+\item{weight_var}{character: variable name of weight vector in dt}
+
+\item{imputation_id_var}{character: variable name of imputation ID vector in
+dt}
 
 \item{pip_type}{character: One of "md", "id", "gd_*". Generally this comes
 from the output of \code{\link[=identify_pip_type]{identify_pip_type()}}}
+
+\item{verbose}{logical: whether to print important information about your
+data. Default is TRUE}
 }
 \value{
 data.frame
 }
 \description{
-Convert vectors
+Convert welfare, weight and (optionally) imputed id vectors to PIP format
+from a data.frame
 }
