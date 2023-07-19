@@ -98,7 +98,7 @@ test_that("Microdata is converted properly", {
 })
 
 
-test_that("Mputed data", {
+test_that("Imputed data", {
   convert_to_pip_format(dt = pip_id,
                         welfare_var = "welfare",
                         weight_var = "weight",
