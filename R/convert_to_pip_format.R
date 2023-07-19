@@ -11,8 +11,7 @@
 #'   dt
 #' @param pip_type character: One of "md", "id", "gd_*". Generally this comes
 #'   from the output of [identify_pip_type()]
-#' @param verbose logical: whether to print important information about your
-#'   data. Default is TRUE
+#' @inheritParams identify_pip_type
 #'
 #' @return data.frame
 #' @export
@@ -22,17 +21,18 @@ convert_to_pip_format <- function(
     dt,
     welfare_var,
     weight_var,
-    imputation_id_var = NULL,
-    pip_type          = c("md", "id", "gd_1", "gd_2", "gd_3", "gd_4", "gd_5"),
-    verbose           = getOption("pipster.verbose")
+    imputation_id_var   = NULL,
+    pip_type            = NULL,
+    groupdata_threshold = getOption("pipster.gd_threshold"),
+    verbose             = getOption("pipster.verbose")
     ) {
 
-  pip_type <- match.arg(pip_type)
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # defenses   ---------
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   welfare        <- dt[[welfare_var]]
   weight         <- dt[[weight_var]]
+
 
   if (is.null(imputation_id_var)) {
     imputation_id <-  NULL
@@ -40,7 +40,20 @@ convert_to_pip_format <- function(
     imputation_id  <- dt[[imputation_id_var]]
   }
 
-  identify_pip_type_check()
+
+  if (is.null(pip_type)) {
+    pip_type <- identify_pip_type(welfare       = welfare,
+                                  weight        = weight,
+                                  imputation_id = imputation_id,
+                                  verbose       = verbose)
+    if (verbose) {
+      cli::cli_alert("PIP type identified: {.val {pip_type}}")
+    }
+  } else {
+    identify_pip_type_check()
+  }
+  pip_type <- match.arg(pip_type, c("md", "id", "gd_1", "gd_2", "gd_3", "gd_4", "gd_5"))
+
   convert_to_pip_format_check()
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,7 +74,7 @@ convert_to_pip_format <- function(
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ## microdata --------
-  if (pip_type == "md") {
+  if (any(c("md", "id") == pip_type)) {
     tb <- convert_to_pip_md(dt,
                             welfare_var,
                             imputation_id_var,

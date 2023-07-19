@@ -1,6 +1,6 @@
 #' pip_gd
 #'
-#' PIP Group Data example .
+#' PIP Group Data example.
 #'
 #' @format A grouped data frame with five variables:
 #' \describe{
@@ -15,5 +15,37 @@
 #' For further details, see \url{https://datanalytics.worldbank.org/PIP-Methodology/welfareaggregate.html#tgd}
 #'
 "pip_gd"
+
+
+
+#' pip_md
+#'
+#' PIP microdata example.
+#'
+#' @format A microdata frame with two variables:
+#' \describe{
+#' \item{\code{welfare}}{welfare (income or consumption)}
+#' \item{\code{weight}}{population weights}
+#' }
+#'
+"pip_md"
+
+
+
+
+#' pip_id
+#'
+#' PIP imputed data example.
+#'
+#' @format An imputed data frame with three variables:
+#' \describe{
+#' \item{\code{welfare}}{welfare (income or consumption)}
+#' \item{\code{weight}}{population weights}
+#' \item{\code{imputation_id}}{Imputation ID}
+#' }
+#'
+"pip_id"
+
+
 
 

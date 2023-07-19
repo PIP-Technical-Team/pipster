@@ -9,7 +9,8 @@ convert_to_pip_format(
   welfare_var,
   weight_var,
   imputation_id_var = NULL,
-  pip_type = c("md", "id", "gd_1", "gd_2", "gd_3", "gd_4", "gd_5"),
+  pip_type = NULL,
+  groupdata_threshold = getOption("pipster.gd_threshold"),
   verbose = getOption("pipster.verbose")
 )
 }
@@ -26,8 +27,11 @@ dt}
 \item{pip_type}{character: One of "md", "id", "gd_*". Generally this comes
 from the output of \code{\link[=identify_pip_type]{identify_pip_type()}}}
 
-\item{verbose}{logical: whether to print important information about your
-data. Default is TRUE}
+\item{groupdata_threshold}{numeric: threshold to discriminate between micro
+data an group data. Default is 200 observations}
+
+\item{verbose}{logical: Whether to display important messages about your data
+or query}
 }
 \value{
 data.frame

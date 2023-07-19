@@ -23,6 +23,6 @@ For further details, see \url{https://datanalytics.worldbank.org/PIP-Methodology
 pip_gd
 }
 \description{
-PIP Group Data example .
+PIP Group Data example.
 }
 \keyword{datasets}

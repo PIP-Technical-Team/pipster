@@ -19,8 +19,8 @@ convert_to_pip_md(
 \item{imputation_id_var}{character: variable name of imputation ID vector in
 dt}
 
-\item{verbose}{logical: whether to print important information about your
-data. Default is TRUE}
+\item{verbose}{logical: Whether to display important messages about your data
+or query}
 }
 \value{
 tibble

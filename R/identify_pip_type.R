@@ -63,7 +63,7 @@
 identify_pip_type <- function(welfare,
                               weight              = rep(1, length(welfare)),
                               imputation_id       = NULL,
-                              groupdata_threshold = 200,
+                              groupdata_threshold = getOption("pipster.gd_threshold"),
                               verbose             = getOption("pipster.verbose")
                               ){
 

@@ -4,7 +4,7 @@
 
 # W: Weights, share of population, sum up to 100
 # X: welfare vector with mean welfare by decile
-# P:Cumulative share of population
+# P: Cumulative share of population
 # L: Cumulative share of welfare
 # R: share of welfare, sum up to 1.
 
@@ -23,5 +23,11 @@ pip_gd <- tibble::tibble(W = W,
                  P = P,
                  L = L,
                  R = R)
+
+attr(pip_gd$W,     "label") <- "Weights, share of population, sum up to 100"
+attr(pip_gd$X,     "label") <- "welfare vector with mean welfare by decile"
+attr(pip_gd$P,     "label") <- "Cumulative share of population"
+attr(pip_gd$L,     "label") <- "Cumulative share of welfare"
+attr(pip_gd$R,     "label") <- "share of welfare, sum up to 1"
 
 usethis::use_data(pip_gd, overwrite = TRUE)
