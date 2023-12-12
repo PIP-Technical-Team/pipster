@@ -2,22 +2,47 @@
 % Please edit documentation in R/as_pip.R
 \name{as_pip}
 \alias{as_pip}
-\alias{as_pip.data.frame}
-\alias{as_pip.list}
-\title{Assign PIP class to object}
+\title{Convert to PIP format and add class}
 \usage{
-as_pip(df)
-
-\method{as_pip}{data.frame}(df)
-
-\method{as_pip}{list}(df)
+as_pip(
+  dt,
+  welfare_var,
+  weight_var,
+  imputation_id_var = NULL,
+  pip_type = NULL,
+  groupdata_threshold = getOption("pipster.gd_threshold"),
+  verbose = getOption("pipster.verbose")
+)
 }
 \arguments{
-\item{df}{dataframe or list. If dataframe, the number of unique elements in the variable \code{module} should be 1}
+\item{dt}{data.frame with welfare data}
+
+\item{welfare_var}{character: variable name of welfare vector in dt}
+
+\item{weight_var}{character: variable name of weight vector in dt}
+
+\item{imputation_id_var}{character: variable name of imputation ID vector in
+dt}
+
+\item{pip_type}{character: One of "md", "id", "gd_*". Generally this comes
+from the output of \code{\link[=identify_pip_type]{identify_pip_type()}}}
+
+\item{groupdata_threshold}{numeric: threshold to discriminate between micro
+data an group data. Default is 200 observations}
+
+\item{verbose}{logical: Whether to display important messages about your data
+or query}
 }
 \value{
-data.frame or list
+data.frame
 }
 \description{
-Assign PIP class to object
+Convert welfare, weight and (optionally) imputed id vectors to PIP format
+from a data.frame
+}
+\examples{
+as_pip(dt = pip_md,
+welfare_var = "welfare",
+weight_var = "weight") |>
+class()
 }

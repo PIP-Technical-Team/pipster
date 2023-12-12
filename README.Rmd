@@ -125,23 +125,27 @@ Notice that the whole dataframe is parsed to the function because we need the wh
 pip_gd |> 
   fselect(R,W)
 
-gd <- convert_to_pip_format(dt = pip_gd,
-                        welfare_var = "R",
-                        weight_var = "W",
-                        pip_type = "gd_2")
+gd <- as_pip(dt = pip_gd,
+             welfare_var = "R",
+             weight_var = "W",
+             pip_type = "gd_2")
 gd |> 
   fselect(R,W)
+
+class(gd)
 
 ```
 
 ### Micro Data
 
 ```{r}
- convert_to_pip_format(dt = pip_md,
-                        welfare_var = "welfare",
-                        weight_var = "weight",
-                        pip_type = "md") |>
-    identical(roworderv(pip_md, "welfare"))
+md <-  as_pip(dt = pip_md,
+              welfare_var = "welfare",
+              weight_var = "weight") 
+identical(md, roworderv(pip_md, "welfare"))
+
+class(md)
+    
 ```
 
 

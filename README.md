@@ -146,10 +146,10 @@ pip_gd |>
 #> 12 0.043099829  1.81
 #> 13 0.087234016  2.49
 
-gd <- convert_to_pip_format(dt = pip_gd,
-                        welfare_var = "R",
-                        weight_var = "W",
-                        pip_type = "gd_2")
+gd <- as_pip(dt = pip_gd,
+             welfare_var = "R",
+             weight_var = "W",
+             pip_type = "gd_2")
 #> i columns "welfare" and "W" have been rescaled to range (0,1]
 gd |> 
   fselect(R,W)
@@ -167,17 +167,24 @@ gd |>
 #> 11: 0.869666156 0.9570
 #> 12: 0.912765984 0.9751
 #> 13: 1.000000000 1.0000
+
+class(gd)
+#> [1] "pipgd"      "data.table" "data.frame"
 ```
 
 ### Micro Data
 
 ``` r
- convert_to_pip_format(dt = pip_md,
-                        welfare_var = "welfare",
-                        weight_var = "weight",
-                        pip_type = "md") |>
-    identical(roworderv(pip_md, "welfare"))
-#> [1] TRUE
+md <-  as_pip(dt = pip_md,
+              welfare_var = "welfare",
+              weight_var = "weight") 
+#> ! vectors not sorted
+#> > PIP type identified: "md"
+identical(md, roworderv(pip_md, "welfare"))
+#> [1] FALSE
+
+class(md)
+#> [1] "pipmd"      "data.table" "data.frame"
 ```
 
 ## PIP class
