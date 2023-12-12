@@ -1,4 +1,4 @@
-#' Convert to PIP format
+#' Convert to PIP format and add class
 #'
 #' Convert welfare, weight and (optionally) imputed id vectors to PIP format
 #' from a data.frame
@@ -17,7 +17,7 @@
 #' @export
 #'
 #' @examples
-convert_to_pip_format <- function(
+as_pip <- function(
     dt,
     welfare_var,
     weight_var,
@@ -74,41 +74,56 @@ convert_to_pip_format <- function(
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ## microdata --------
-  if (any(c("md", "id") == pip_type)) {
-    tb <- convert_to_pip_md(dt,
+  tb <- if (any(c("md", "id") == pip_type)) {
+    convert_to_pip_md(dt,
                             welfare_var,
                             imputation_id_var,
                             verbose)
     # add pip class
 
-    # early return
-    return(tb)
-  }
 
-  if (grepl("^gd_", pip_type)) {
+  } else {
     tp <- gsub("(gd_)([1-5])", "\\2", pip_type) |>
       as.numeric()
 
-    tb <- wbpip:::gd_clean_data(dt = dt,
+    wbpip:::gd_clean_data(dt = dt,
                                 welfare = welfare_var,
                                 population = weight_var,
                                 gd_type = tp)
-    ## add class
-
-    # return
-    return(tb)
 
   }
 
-
-
-
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Return   ---------
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    return(TRUE)
+  tb <- add_pip_class(x = tb, pip_type)
 
 }
+
+
+#' add PIP class
+#'
+#' @param x data frame
+#' @inheritParams as_pip
+#'
+#' @return
+#' @export
+#'
+#' @examples
+add_pip_class <- function(x, pip_type) {
+  stopifnot(is.data.frame(x))
+
+  if (!(inherits(x, "data.table"))) {
+    x <- as.data.table(x)
+  }
+
+  tp <- substr(pip_type, 1, 2)
+  if (tp == "id") {
+    tb <- c("id", "md")
+  }
+  new_class <- paste0("pip", tb)
+
+  data.table::setattr(x, "class", c(new_class, class(x)))
+  return(invisible(data.table::copy(x)))
+}
+
 
 convert_to_pip_format_check <- function() {
   l <- as.list(parent.frame())
