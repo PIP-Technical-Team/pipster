@@ -22,7 +22,7 @@ test_that("Identifies group data", {
   # type 1 ------
   ## up to 1 ---------
   gd1_1 <- identify_pip_type(welfare = L,
-                          weight = P)
+                             weight = P)
 
   expect_equal(gd1_1, "gd_1")
 

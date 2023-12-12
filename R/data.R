@@ -33,6 +33,22 @@
 
 
 
+
+#' pip_md_s
+#'
+#' Small PIP microdata example.
+#'
+#' @format A 100 obs microdata frame with two variables:
+#' \describe{
+#' \item{\code{welfare}}{welfare (income or consumption)}
+#' \item{\code{weight}}{population weights}
+#' }
+#'
+"pip_md_s"
+
+
+
+
 #' pip_id
 #'
 #' PIP imputed data example.
