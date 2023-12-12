@@ -180,11 +180,7 @@ md <-  as_pip(dt = pip_md,
               weight_var = "weight") 
 #> ! vectors not sorted
 #> > PIP type identified: "md"
-identical(md, roworderv(pip_md, "welfare"))
-#> [1] FALSE
-
-class(md)
-#> [1] "pipmd"      "data.table" "data.frame"
+waldo::compare(md, roworderv(pip_md, "welfare"))
+#> `class(old)`: "pipmd"  "data.table" "data.frame"
+#> `class(new)`: "tbl_df" "tbl"        "data.frame"
 ```
-
-## PIP class

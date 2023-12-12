@@ -142,13 +142,11 @@ class(gd)
 md <-  as_pip(dt = pip_md,
               welfare_var = "welfare",
               weight_var = "weight") 
-identical(md, roworderv(pip_md, "welfare"))
+waldo::compare(md, roworderv(pip_md, "welfare"))
 
-class(md)
     
 ```
 
 
-## PIP class
 
 
