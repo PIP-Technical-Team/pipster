@@ -18,16 +18,14 @@ You can install the development version of pipster from
 devtools::install_github("PIP-Technical-Team/pipster")
 ```
 
-## Examples
-
 ``` r
 library(pipster)
 ## basic example code
 ```
 
-### Identify type of data
+## Identify type of data
 
-#### Group Data
+### Group Data
 
 ``` r
 # W: Weights, share of population, sum up to 100
@@ -80,7 +78,7 @@ identify_pip_type(welfare = X,
 #> [1] "gd_3"
 ```
 
-#### Microdata
+### Microdata
 
 ``` r
 
