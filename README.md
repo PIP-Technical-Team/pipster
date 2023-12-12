@@ -20,6 +20,14 @@ devtools::install_github("PIP-Technical-Team/pipster")
 
 ``` r
 library(pipster)
+library(collapse)
+#> Warning: package 'collapse' was built under R version 4.3.2
+#> collapse 2.0.7, see ?`collapse-package` or ?`collapse-documentation`
+#> 
+#> Attaching package: 'collapse'
+#> The following object is masked from 'package:stats':
+#> 
+#>     D
 ## basic example code
 ```
 
@@ -111,3 +119,65 @@ identify_pip_type(welfare = Y,
 #> ! vectors not sorted
 #> [1] "md"
 ```
+
+## Convert to PIP format
+
+### Group Data
+
+Convert Type 2 Group Data to Type 1 Group Data. Notice that the whole
+dataframe is parsed to the function because we need the whole dataframe
+back. It is not enough with parsing just the welfare and weight vetors.
+
+``` r
+pip_gd |> 
+  fselect(R,W)
+#>              R     W
+#> 1  0.002079692  0.92
+#> 2  0.008047104  2.47
+#> 3  0.021093739  5.11
+#> 4  0.039613054  7.90
+#> 5  0.057248211  9.69
+#> 6  0.106902117 15.24
+#> 7  0.113888553 13.64
+#> 8  0.171066582 16.99
+#> 9  0.122764156 10.00
+#> 10 0.149309315  9.78
+#> 11 0.077653634  3.96
+#> 12 0.043099829  1.81
+#> 13 0.087234016  2.49
+
+gd <- convert_to_pip_format(dt = pip_gd,
+                        welfare_var = "R",
+                        weight_var = "W",
+                        pip_type = "gd_2")
+#> i columns "welfare" and "W" have been rescaled to range (0,1]
+gd |> 
+  fselect(R,W)
+#>               R      W
+#>  1: 0.002079692 0.0092
+#>  2: 0.010126796 0.0339
+#>  3: 0.031220536 0.0850
+#>  4: 0.070833589 0.1640
+#>  5: 0.128081800 0.2609
+#>  6: 0.234983917 0.4133
+#>  7: 0.348872469 0.5497
+#>  8: 0.519939051 0.7196
+#>  9: 0.642703207 0.8196
+#> 10: 0.792012522 0.9174
+#> 11: 0.869666156 0.9570
+#> 12: 0.912765984 0.9751
+#> 13: 1.000000000 1.0000
+```
+
+### Micro Data
+
+``` r
+ convert_to_pip_format(dt = pip_md,
+                        welfare_var = "welfare",
+                        weight_var = "weight",
+                        pip_type = "md") |>
+    identical(roworderv(pip_md, "welfare"))
+#> [1] TRUE
+```
+
+## PIP class

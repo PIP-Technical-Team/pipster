@@ -31,6 +31,7 @@ devtools::install_github("PIP-Technical-Team/pipster")
 
 ```{r example}
 library(pipster)
+library(collapse)
 ## basic example code
 ```
 
@@ -111,4 +112,39 @@ identify_pip_type(welfare = Y,
                   weight  = Q,
                   imputation_id = I2)
 ```
+
+
+
+## Convert to PIP format
+
+### Group Data
+
+Convert Type 2 Group Data to Type 1 Group Data. 
+Notice that the whole dataframe is parsed to the function because we need the whole dataframe back. It is not enough with parsing just the welfare and weight vetors. 
+```{r convert-gd}
+pip_gd |> 
+  fselect(R,W)
+
+gd <- convert_to_pip_format(dt = pip_gd,
+                        welfare_var = "R",
+                        weight_var = "W",
+                        pip_type = "gd_2")
+gd |> 
+  fselect(R,W)
+
+```
+
+### Micro Data
+
+```{r}
+ convert_to_pip_format(dt = pip_md,
+                        welfare_var = "welfare",
+                        weight_var = "weight",
+                        pip_type = "md") |>
+    identical(roworderv(pip_md, "welfare"))
+```
+
+
+## PIP class
+
 
