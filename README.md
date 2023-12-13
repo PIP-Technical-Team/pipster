@@ -124,7 +124,7 @@ identify_pip_type(welfare = Y,
 
 ### Group Data
 
-Convert Type 2 Group Data to Type 1 Group Data. Notice that the whole
+Convert Group Data Type-2 to Group Data Type-1 . Notice that the whole
 dataframe is parsed to the function because we need the whole dataframe
 back. It is not enough with parsing just the welfare and weight vetors.
 
