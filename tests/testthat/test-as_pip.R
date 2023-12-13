@@ -6,7 +6,7 @@ test_that("Groupd data is converted properly", {
          welfare_var = "L",
          weight_var = "P",
          pip_type = "gd_1") |>
-    expect_equal(pip_gd)
+    expect_equal(pip_gd, ignore_attr =  TRUE)
 
 
   ## transform to range from 0 to 1 -----
@@ -18,13 +18,13 @@ test_that("Groupd data is converted properly", {
          welfare_var = "L",
          weight_var = "P",
          pip_type = "gd_1") |>
-    expect_equal(pip_gd)
+    expect_equal(pip_gd, ignore_attr =  TRUE)
 
   ## identify type ----
   as_pip(dt = pip_gd2,
          welfare_var = "L",
          weight_var = "P") |>
-    expect_equal(pip_gd)
+    expect_equal(pip_gd, ignore_attr =  TRUE)
 
   # Group Data 2 ------
 
@@ -93,7 +93,8 @@ test_that("Microdata is converted properly", {
          welfare_var = "welfare",
          weight_var = "weight",
          pip_type = "md") |>
-    expect_equal(roworderv(pip_md, "welfare"))
+    expect_equal(roworderv(pip_md, "welfare"),
+                 ignore_attr =  TRUE)
 
 })
 
@@ -104,5 +105,6 @@ test_that("Imputed data", {
          weight_var = "weight",
          imputation_id_var = "imputation_id",
          pip_type = "id") |>
-    expect_equal(roworderv(pip_id, c("imputation_id", "welfare")))
+    expect_equal(roworderv(pip_id, c("imputation_id", "welfare")),
+                 ignore_attr =  TRUE)
 })

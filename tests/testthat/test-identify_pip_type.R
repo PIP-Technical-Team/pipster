@@ -1,6 +1,6 @@
 skip_if_not_installed("withr")
-library(withr)
-local_options(list(pipster.verbose  = FALSE))
+# library(withr)
+withr::local_options(list(pipster.verbose  = FALSE))
 
 # W: Weights, share of population, sum up to 100
 # X: welfare vector with mean welfare by decile

@@ -176,7 +176,7 @@ convert_to_pip_format_check <- function() {
 #'
 #' @inheritParams as_pip
 
-#' @return tibble
+#' @return dataframe
 #' @keywords internal
 convert_to_pip_md <- function(
     dt,

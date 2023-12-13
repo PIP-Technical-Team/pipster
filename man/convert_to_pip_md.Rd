@@ -23,7 +23,7 @@ dt}
 or query}
 }
 \value{
-tibble
+dataframe
 }
 \description{
 Convert vectors to microdata data PIP format

@@ -14,12 +14,13 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
     testthat (>= 3.0.0),
+    tibble,
     withr
 Config/testthat/edition: 3
 Imports: 
     cli,
     collapse,
-    tibble,
+    data.table,
     wbpip
 Depends: 
     R (>= 2.10)
