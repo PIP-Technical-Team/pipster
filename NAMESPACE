@@ -3,4 +3,5 @@
 export(as_pip)
 export(identify_pip_type)
 export(pipgd_params)
+export(pipgd_validate_lorenz)
 import(collapse)

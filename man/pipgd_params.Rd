@@ -2,14 +2,18 @@
 % Please edit documentation in R/pipgd_params.R
 \name{pipgd_params}
 \alias{pipgd_params}
-\title{Get Lorenz Parameters}
+\title{Get Group Data Parameters}
 \usage{
-pipgd_params(welfare, population)
+pipgd_params(welfare, weight, mean = NULL, population = NULL)
 }
 \arguments{
-\item{welfare}{numeric: cumulative sahre of welfare (income/consumption)}
+\item{welfare}{numeric vector of cumulative share of welfare (income/consumption)}
 
-\item{population}{numeric: cumulative share of the population}
+\item{weight}{numeric vector of cumulative share of the population}
+
+\item{mean}{numeric scalar of distribution mean. Default is NULL}
+
+\item{population}{numeric scalar with actual size of population. Default is NULL}
 }
 \value{
 list with Group data parameters parameters
@@ -23,6 +27,6 @@ dataset
 # Get Lorenz parameters
 res <- pipgd_params(
   welfare = pip_gd$L,
-  population = pip_gd$P)
+  weight = pip_gd$P)
 str(res)
 }

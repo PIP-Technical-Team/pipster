@@ -1,11 +1,13 @@
-#' Get Lorenz Parameters
+#' Get Group Data Parameters
 #'
 #' Get Parameters and key values derived from the quadratic and Beta Lorenz
 #' parametrization. `welfare` and `population` must be vectors of a group data
 #' dataset
 #'
-#' @param welfare numeric: cumulative sahre of welfare (income/consumption)
-#' @param population numeric: cumulative share of the population
+#' @param welfare numeric vector of cumulative share of welfare (income/consumption)
+#' @param weight numeric vector of cumulative share of the population
+#' @param mean numeric scalar of distribution mean. Default is NULL
+#' @param population numeric scalar with actual size of population. Default is NULL
 #'
 #' @return list with Group data parameters parameters
 #' @export
@@ -14,10 +16,12 @@
 #' # Get Lorenz parameters
 #' res <- pipgd_params(
 #'   welfare = pip_gd$L,
-#'   population = pip_gd$P)
+#'   weight = pip_gd$P)
 #' str(res)
 pipgd_params <- function(welfare,
-                         population) {
+                         weight,
+                         mean = NULL,
+                         population = NULL) {
 
   #   ____________________________________________________________________________
   #   Defenses                                                                ####
@@ -37,7 +41,7 @@ pipgd_params <- function(welfare,
   ## STEP 1: Prep data to fit functional form-------------
   functional_form_lq <-
     wbpip:::create_functional_form_lq(welfare    = welfare,
-                                     population = population)
+                                     population = weight)
 
   ## STEP 2: Estimate regression coefficients using LQ parametrization------
   reg_results_lq <- wbpip:::regres(functional_form_lq, is_lq = TRUE)
@@ -49,7 +53,7 @@ pipgd_params <- function(welfare,
 
   ## STEP 3: get key values
   # Compute key numbers from Lorenz quadratic form
-  kv <- wbpip::gd_lq_key_values(reg_results_lq$coef[["A"]],
+  kv <- wbpip:::gd_lq_key_values(reg_results_lq$coef[["A"]],
                          reg_results_lq$coef[["B"]],
                          reg_results_lq$coef[["C"]])
 
@@ -61,7 +65,7 @@ pipgd_params <- function(welfare,
   ## STEP 1: Prep data to fit functional form --------------
   functional_form_lb <-
     wbpip:::create_functional_form_lb(welfare    = welfare,
-                              population = population)
+                                      population = weight)
 
   ## STEP 2: Estimate regression coefficients using LB parameterization
   reg_results_lb <- wbpip:::regres(functional_form_lb, is_lq = FALSE)
@@ -75,10 +79,11 @@ pipgd_params <- function(welfare,
   #   ____________________________________________________________________________
   #   Return                                                                  ####
   l_res$data$welfare    <- welfare
+  l_res$data$weight     <- weight
+  l_res$data$mean       <- mean
   l_res$data$population <- population
-
-  return(l_res)
-
+  class(l_res) <- "pipgd_params"
+  l_res
 }
 
 
@@ -97,6 +102,15 @@ check_pipgd_params <- function(lp) {
   #   Computations                                                            ####
 
   nlp <- names(lp)
+
+  ## params --------------------
+  if ("params" %in% nlp) {
+    if (!inherits(lp$params, "pipgd_params")) {
+      cli::cli_abort(c("argument {.field params} must be of
+                       class {.code pipgd_params}.",
+                       "It should be created using {.fun pipgd_params}"))
+    }
+  }
 
   ## welfare -----------
 
