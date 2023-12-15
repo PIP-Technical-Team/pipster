@@ -6,8 +6,8 @@
 \usage{
 pipgd_welfare_share_at(
   params = NULL,
-  weight = NULL,
   welfare = NULL,
+  weight = NULL,
   complete = getOption("pipster.return_complete"),
   lorenz = NULL,
   n = 10,
@@ -17,9 +17,9 @@ pipgd_welfare_share_at(
 \arguments{
 \item{params}{list of parameters from \code{get_gd_lorenz_validity()}}
 
-\item{weight}{numeric vector of cumulative share of the population}
-
 \item{welfare}{numeric vector of cumulative share of welfare (income/consumption)}
+
+\item{weight}{numeric vector of cumulative share of the population}
 
 \item{complete}{logical: If TRUE, returns a list a cumulative returns from
 previously used \code{get_gd} functions. Default is \code{FALSE}}

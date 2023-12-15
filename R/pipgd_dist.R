@@ -22,8 +22,8 @@
 #'                         weight = pip_gd$P,
 #'                         complete = FALSE)
 pipgd_welfare_share_at <- function(params   = NULL,
-                         weight     = NULL,
                          welfare    = NULL,
+                         weight     = NULL,
                          complete   = getOption("pipster.return_complete"),
                          lorenz     = NULL,
                          n          = 10,
@@ -92,8 +92,8 @@ pipgd_welfare_share_at <- function(params   = NULL,
 #'                         complete = FALSE)
 pipgd_quantile_welfare_share <-
   function(params   = NULL,
-           weight     = NULL,
            welfare    = NULL,
+           weight     = NULL,
            complete   = getOption("pipster.return_complete"),
            lorenz     = NULL,
            n          = 10,
@@ -135,3 +135,80 @@ pipgd_quantile_welfare_share <-
     return(params)
 
 }
+
+
+#' Get quantile at specified shared of population
+#'
+#' `pipgd_quantile` returns the quantile (i.e., monetary value) that corresponds
+#' to shared of the population that lives below that threshold.
+#'
+#' This is basically the inverse of estimated the poverty rate (headcount or
+#' population share) below the poverty line. In this case, you provide the
+#' headcount and `pipgs_quantile` returns the "poverty line".
+#'
+#' The quantiles are calculated as function of the mean of the distribution
+#' times an `x` factor. Basically, the quantile is `x` times the mean. By
+#' default, the mean is equal to 1, which implies that, if no mean value if
+#' provided, the return value is equal to `x`.
+#'
+#'
+#' @inheritParams pipgd_welfare_share_at
+#' @inheritParams pipgd_validate_lorenz
+#' @return vector of quantiles
+#' @export
+#'
+#' @examples
+#' pipgd_quantile(welfare = pip_gd$L,
+#'                weight  = pip_gd$P)
+pipgd_quantile <-
+  function(params   = NULL,
+           welfare    = NULL,
+           weight     = NULL,
+           n          = 10,
+           popshare   = seq(from = 1/n, to = 1, by = 1/n),
+           mean       = 1,
+           complete   = getOption("pipster.return_complete"),
+           lorenz     = NULL) {
+
+    #   _________________________________________________________________
+    #   Defenses                                                ####
+    pl <- as.list(environment())
+    check_pipgd_params(pl)
+
+
+    #   ____________________________________________________
+    #   Computations                              ####
+    if (!is.null(welfare)) {
+      params <- pipgd_select_lorenz(welfare = welfare,
+                                    weight =  weight,
+                                    complete   = TRUE)
+    }
+
+    if (is.null(lorenz)) {
+      lorenz <- params$selected_lorenz$for_dist
+    } else {
+      lorenz <- match.arg(lorenz, c("lq", "lb"))
+    }
+
+
+    qfun <- paste0("wbpip:::derive_", lorenz) |>
+      parse(text = _)
+    # value_at_vc <- Vectorize(eval(qfun),
+    #                          vectorize.args = "x",
+    #                          SIMPLIFY = TRUE)
+
+    qt <-  eval(qfun)(x = popshare,
+                      params$gd_params[[lorenz]]$reg_results$coef[["A"]],
+                      params$gd_params[[lorenz]]$reg_results$coef[["B"]],
+                      params$gd_params[[lorenz]]$reg_results$coef[["C"]])
+    qt <- qt*mean
+    #   ____________________________________________________________
+    #   Return                                                ####
+    if (isFALSE(complete))
+      params <- vector("list")
+
+    params$dist_stats$popshare <- popshare
+    params$dist_stats$quantile <- qt
+    return(params)
+}
+
