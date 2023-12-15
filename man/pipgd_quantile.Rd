@@ -42,7 +42,7 @@ vector of quantiles
 to shared of the population that lives below that threshold.
 }
 \details{
-This is basically the inverse of estimated the poverty rate (headcount or
+This is basically the inverse of estimating the poverty rate (headcount or
 population share) below the poverty line. In this case, you provide the
 headcount and \code{pipgs_quantile} returns the "poverty line".
 
@@ -50,6 +50,8 @@ The quantiles are calculated as function of the mean of the distribution
 times an \code{x} factor. Basically, the quantile is \code{x} times the mean. By
 default, the mean is equal to 1, which implies that, if no mean value if
 provided, the return value is equal to \code{x}.
+
+\strong{NOTE:} the outcome from \code{pipgd_quantile} is not necessarily the inverse of \link{pipgd_pov_headcount}. The reason for this ia that, \link{pipgd_pov_headcount} selects the Lorenz parametrization that fits better that the specified point of the distribution (e.i., the poverty lines). \link{pipgd_quantile}, in contrast, use the same Lorenz parametrization for any point. The lorenz used is the one that fits best for all distributional measures.
 }
 \examples{
 pipgd_quantile(welfare = pip_gd$L,

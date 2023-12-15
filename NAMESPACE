@@ -3,6 +3,7 @@
 export(as_pip)
 export(identify_pip_type)
 export(pipgd_params)
+export(pipgd_pov_headcount)
 export(pipgd_quantile)
 export(pipgd_quantile_welfare_share)
 export(pipgd_select_lorenz)

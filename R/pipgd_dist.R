@@ -46,7 +46,7 @@ pipgd_welfare_share_at <- function(params   = NULL,
   if (is.null(lorenz)) {
     lorenz <- params$selected_lorenz$for_dist
   } else {
-    lorenz <- match.arg(lorenz, c("lq", "lb"))
+    match.arg(lorenz, c("lq", "lb"))
   }
 
   qfun <- paste0("wbpip:::value_at_", lorenz) |>
@@ -116,7 +116,7 @@ pipgd_quantile_welfare_share <-
     if (is.null(lorenz)) {
       lorenz <- params$selected_lorenz$for_dist
     } else {
-      lorenz <- match.arg(lorenz, c("lq", "lb"))
+      match.arg(lorenz, c("lq", "lb"))
     }
 
     # get shares ------------------------
@@ -142,7 +142,7 @@ pipgd_quantile_welfare_share <-
 #' `pipgd_quantile` returns the quantile (i.e., monetary value) that corresponds
 #' to shared of the population that lives below that threshold.
 #'
-#' This is basically the inverse of estimated the poverty rate (headcount or
+#' This is basically the inverse of estimating the poverty rate (headcount or
 #' population share) below the poverty line. In this case, you provide the
 #' headcount and `pipgs_quantile` returns the "poverty line".
 #'
@@ -151,6 +151,7 @@ pipgd_quantile_welfare_share <-
 #' default, the mean is equal to 1, which implies that, if no mean value if
 #' provided, the return value is equal to `x`.
 #'
+#' **NOTE:** the outcome from `pipgd_quantile` is not necessarily the inverse of [pipgd_pov_headcount]. The reason for this ia that, [pipgd_pov_headcount] selects the Lorenz parametrization that fits better that the specified point of the distribution (e.i., the poverty lines). [pipgd_quantile], in contrast, use the same Lorenz parametrization for any point. The lorenz used is the one that fits best for all distributional measures.
 #'
 #' @inheritParams pipgd_welfare_share_at
 #' @inheritParams pipgd_validate_lorenz
@@ -187,7 +188,7 @@ pipgd_quantile <-
     if (is.null(lorenz)) {
       lorenz <- params$selected_lorenz$for_dist
     } else {
-      lorenz <- match.arg(lorenz, c("lq", "lb"))
+      match.arg(lorenz, c("lq", "lb"))
     }
 
 

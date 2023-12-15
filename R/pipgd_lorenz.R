@@ -240,3 +240,7 @@ pipgd_select_lorenz <-
 
 }
 
+# to develop
+pipgd_lorenz_curve <- function(){
+  return(TRUE)
+}
