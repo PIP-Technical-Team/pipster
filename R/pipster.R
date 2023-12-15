@@ -12,6 +12,7 @@
 #' @docType package
 #' @name pipster
 #' @import collapse
+#' @import wbpip
 
 
 # Make sure data.table knows we know we're using it

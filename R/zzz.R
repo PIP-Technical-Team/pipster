@@ -1,7 +1,7 @@
 pipster_default_options <- list(
   pipster.verbose          = TRUE,
   pipster.gd_threshold     = 200,
-  pipster.return_complete  = FALSE
+  pipster.return_complete  = TRUE
 )
 
 .onLoad <- function(libname, pkgname) {

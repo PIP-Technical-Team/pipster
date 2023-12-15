@@ -15,3 +15,17 @@ test_that("pipgd_validate_lorenz works", {
                label = "right class with complete TRUE")
 
 })
+
+
+test_that("pipgd_select_lorenz work", {
+  res <-
+    pipgd_params(welfare = pip_gd$L,
+                 weight = pip_gd$P) |>
+    pipgd_validate_lorenz() |>
+    pipgd_select_lorenz()
+
+  res2 <- pipgd_select_lorenz(welfare = pip_gd$L,
+                              weight = pip_gd$P)
+  expect_equal(res, res2)
+
+})

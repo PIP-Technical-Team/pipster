@@ -15,27 +15,28 @@
 #'
 #' @examples
 #' # Using Lorenz parameters from pipgd_validate_lorenz
-#' params <- pipgd_validate_lorenz(
-#'   welfare = pip_gd$L,
-#'   population = pip_gd$P)
-#'
-#' get_gd_lorenz_validity(params = params)
+#'  res <-
+#' pipgd_params(welfare = pip_gd$L,
+#'              weight = pip_gd$P) |>
+#'   pipgd_validate_lorenz() |>
+#'   pipgd_select_lorenz()
 #'
 #' # Using welfare and population vecotrs
-#' get_gd_lorenz_validity(
-#'   welfare = pip_gd$L,
-#'   population = pip_gd$P)
-pipgd_validate_lorenz <- function(params     = NULL,
-                                  welfare    = NULL,
-                                  weight     = NULL,
-                                  mean       = 1,
-                                  times_mean = 1,
-                                  popshare   = NULL,
-                                  povline    = ifelse(is.null(popshare),
-                                                      mean*times_mean,
-                                                      NA_real_),
-                                  complete   = getOption("pipster.return_complete")
-                                  ) {
+#' res2 <- pipgd_select_lorenz(welfare = pip_gd$L,
+#'                             weight = pip_gd$P)
+#' identical(res, res2)
+pipgd_validate_lorenz <-
+  function(params     = NULL,
+           welfare    = NULL,
+           weight     = NULL,
+           mean       = 1,
+           times_mean = 1,
+           popshare   = NULL,
+           povline    = ifelse(is.null(popshare),
+                               mean*times_mean,
+                               NA_real_),
+           complete   = getOption("pipster.return_complete")
+  ) {
 
   #   ____________________________________________________________________________
   #   Defenses                                                                ####
@@ -46,19 +47,20 @@ pipgd_validate_lorenz <- function(params     = NULL,
   #   ____________________________________________________________________________
   #   Computations                                                            ####
   if (!is.null(welfare)) {
-    params <- pipgd_validate_lorenz(welfare, weight)
+    params <- pipgd_params(welfare = welfare,
+                           weight  = weight)
   }
 
   if (!is.null(popshare)) {
     povline_lq <- mean * wbpip::derive_lq(popshare,
-                                   params$lq$reg_results$coef[["A"]],
-                                   params$lq$reg_results$coef[["B"]],
-                                   params$lq$reg_results$coef[["C"]])
+                                   params$gd_params$lq$reg_results$coef[["A"]],
+                                   params$gd_params$lq$reg_results$coef[["B"]],
+                                   params$gd_params$lq$reg_results$coef[["C"]])
 
     povline_lb <- mean * wbpip::derive_lb(popshare,
-                                   params$lb$reg_results$coef[["A"]],
-                                   params$lb$reg_results$coef[["B"]],
-                                   params$lb$reg_results$coef[["C"]])
+                                   params$gd_params$lb$reg_results$coef[["A"]],
+                                   params$gd_params$lb$reg_results$coef[["B"]],
+                                   params$gd_params$lb$reg_results$coef[["C"]])
 
   } else {
     povline_lb <- povline_lq <- povline
@@ -159,73 +161,60 @@ pipgd_validate_lorenz <- function(params     = NULL,
 #' pipgd_select_lorenz(
 #'   welfare = pip_gd$L,
 #'   weight = pip_gd$P)
-pipgd_select_lorenz <- function(
-    params     = NULL,
-    welfare    = NULL,
-    weight     = NULL,
-    mean       = 1,
-    times_mean = 1,
-    popshare   = NULL,
-    povline    = ifelse(is.null(popshare),
-                        mean*times_mean,
-                        NA_real_),
-    complete   = FALSE) {
+pipgd_select_lorenz <-
+  function(params     = NULL,
+           welfare    = NULL,
+           weight     = NULL,
+           mean       = 1,
+           times_mean = 1,
+           popshare   = NULL,
+           povline    = ifelse(is.null(popshare),
+                               mean*times_mean,
+                               NA_real_),
+           complete   = getOption("pipster.return_complete")) {
 
   #   ____________________________________________________________________________
   #   Defenses                                                                ####
   pl <- as.list(environment())
   check_pipgd_params(pl)
-  stopifnot( exprs = {
-    "Either `params` or `welfare` and `weight` should be spefied" =
-      (is.null(params) && !is.null(welfare) && !is.null(weight)) ||
-      (!is.null(params) && is.null(welfare) && is.null(weight))
-
-    "`params` should be a list from `get_gd_lorenz_params()`" =
-      is.list(params) || is.null(params)
-
-    "`complete` must be logical" =
-      is.logical(complete)
-  }
-  )
-
 
   #   ____________________________________________________________________________
   #   Computations                                                            ####
   if (!is.null(welfare)) {
-    params <- get_gd_lorenz_validity(welfare,
-                                     weight,
-                                     complete   = TRUE,
-                                     mean       = mean,
-                                     times_mean = times_mean,
-                                     povline    = povline,
-                                     popshare   = popshare)
+    params <- pipgd_validate_lorenz(welfare = welfare,
+                                    weight = weight,
+                                    complete   = TRUE,
+                                    mean       = mean,
+                                    times_mean = times_mean,
+                                    povline    = povline,
+                                    popshare   = popshare)
   }
 
   ## Selected Lorenz for  Distribution-------
-  lq <- append(params$lq$validity,
-               params$lq$reg_results["sse"])
+  lq <- append(params$gd_params$lq$validity,
+               params$gd_params$lq$reg_results["sse"])
 
-  lb <- append(params$lb$validity,
-               params$lb$reg_results["sse"])
+  lb <- append(params$gd_params$lb$validity,
+               params$gd_params$lb$reg_results["sse"])
 
   use_lq_for_dist <-
-    use_lq_for_distributional(lq,lb)
+    wbpip:::use_lq_for_distributional(lq,lb)
 
   ## Selected Lorenz for Poverty -----------
 
-  fit_lb <- gd_compute_fit_lb(params$data$welfare,
+  fit_lb <- wbpip:::gd_compute_fit_lb(params$data$welfare,
                               params$data$weight,
-                              params$lb$validity$headcount,
-                              params$lb$reg_results$coef[["A"]],
-                              params$lb$reg_results$coef[["B"]],
-                              params$lb$reg_results$coef[["C"]])
+                              params$gd_params$lb$validity$headcount,
+                              params$gd_params$lb$reg_results$coef[["A"]],
+                              params$gd_params$lb$reg_results$coef[["B"]],
+                              params$gd_params$lb$reg_results$coef[["C"]])
 
-  fit_lq <- gd_compute_fit_lq(params$data$welfare,
+  fit_lq <- wbpip:::gd_compute_fit_lq(params$data$welfare,
                               params$data$weight,
-                              params$lq$validity$headcount,
-                              params$lb$reg_results$coef[["A"]],
-                              params$lb$reg_results$coef[["B"]],
-                              params$lb$reg_results$coef[["C"]])
+                              params$gd_params$lq$validity$headcount,
+                              params$gd_params$lb$reg_results$coef[["A"]],
+                              params$gd_params$lb$reg_results$coef[["B"]],
+                              params$gd_params$lb$reg_results$coef[["C"]])
 
   lq <- append(lq,
                fit_lq["ssez"])
@@ -233,7 +222,7 @@ pipgd_select_lorenz <- function(
                fit_lb["ssez"])
 
 
-  use_lq_for_pov <- use_lq_for_poverty(lq, lb)
+  use_lq_for_pov <- wbpip:::use_lq_for_poverty(lq, lb)
 
   l_res <- list(for_dist = ifelse(use_lq_for_dist, "lq", "lb"),
                 for_pov  = ifelse(use_lq_for_pov, "lq", "lb"),

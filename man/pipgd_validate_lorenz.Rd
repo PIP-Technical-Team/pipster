@@ -12,7 +12,7 @@ pipgd_validate_lorenz(
   times_mean = 1,
   popshare = NULL,
   povline = ifelse(is.null(popshare), mean * times_mean, NA_real_),
-  complete = FALSE
+  complete = getOption("pipster.return_complete")
 )
 }
 \arguments{
@@ -36,14 +36,14 @@ Check validity of Lorenz Curve
 }
 \examples{
 # Using Lorenz parameters from pipgd_validate_lorenz
-params <- pipgd_validate_lorenz(
-  welfare = pip_gd$L,
-  population = pip_gd$P)
-
-get_gd_lorenz_validity(params = params)
+ res <-
+pipgd_params(welfare = pip_gd$L,
+             weight = pip_gd$P) |>
+  pipgd_validate_lorenz() |>
+  pipgd_select_lorenz()
 
 # Using welfare and population vecotrs
-get_gd_lorenz_validity(
-  welfare = pip_gd$L,
-  population = pip_gd$P)
+res2 <- pipgd_select_lorenz(welfare = pip_gd$L,
+                            weight = pip_gd$P)
+identical(res, res2)
 }

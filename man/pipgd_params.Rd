@@ -30,3 +30,13 @@ res <- pipgd_params(
   weight = pip_gd$P)
 str(res)
 }
+\references{
+Datt, G. 1998. "\href{https://ageconsearch.umn.edu/record/94862/}{Computational Tools For Poverty Measurement And Analysis}". FCND
+Discussion Paper 50. World Bank, Washington, DC.
+
+Krause, M. 2013. "\href{https://doi.org/10.1016/j.jeconom.2013.01.001}{Corrigendum to Elliptical Lorenz curves}". \emph{Journal of
+Econometrics 174} (1): 44.
+
+Villasenor, J., B. C. Arnold. 1989. "\href{https://EconPapers.repec.org/RePEc:eee:econom:v:40:y:1989:i:2:p:327-338}{Elliptical Lorenz curves}".
+\emph{Journal of Econometrics 40} (2): 327-338.
+}

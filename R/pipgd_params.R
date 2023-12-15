@@ -11,6 +11,18 @@
 #'
 #' @return list with Group data parameters parameters
 #' @export
+#' @references
+#' Datt, G. 1998. "[Computational Tools For Poverty Measurement And
+#' Analysis](https://ageconsearch.umn.edu/record/94862/)". FCND
+#' Discussion Paper 50. World Bank, Washington, DC.
+#'
+#' Krause, M. 2013. "[Corrigendum to Elliptical Lorenz
+#' curves](https://doi.org/10.1016/j.jeconom.2013.01.001)". *Journal of
+#' Econometrics 174* (1): 44.
+#'
+#' Villasenor, J., B. C. Arnold. 1989. "[Elliptical Lorenz
+#' curves](https://EconPapers.repec.org/RePEc:eee:econom:v:40:y:1989:i:2:p:327-338)".
+#' *Journal of Econometrics 40* (2): 327-338.
 #'
 #' @examples
 #' # Get Lorenz parameters
@@ -105,7 +117,7 @@ check_pipgd_params <- function(lp) {
 
   ## params --------------------
   if ("params" %in% nlp) {
-    if (!inherits(lp$params, "pipgd_params")) {
+    if (!is.null(lp$params) && !inherits(lp$params, "pipgd_params")) {
       cli::cli_abort(c("argument {.field params} must be of
                        class {.code pipgd_params}.",
                        "It should be created using {.fun pipgd_params}"))
