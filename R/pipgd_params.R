@@ -131,7 +131,7 @@ check_pipgd_params <- function(lp) {
   if ( all(c("params", "welfare") %in% nlp)) {
     if (!is.null(lp$params) &&
         (!is.null(lp$welfare)  || !is.null(lp$population))) {
-      cli_abort("You must specify either {.field params} or
+      cli::cli_abort("You must specify either {.field params} or
                 {.field welfare} and {.field population}")
     }
   }
@@ -140,7 +140,7 @@ check_pipgd_params <- function(lp) {
   ## povline and popshare ----------
   if ( all(c("povline", "popshare") %in% nlp)) {
     if (!is.na(lp$povline) && !is.null(lp$popshare)) {
-      cli_abort("You must specify either {.field povline} or
+      cli::cli_abort("You must specify either {.field povline} or
                 {.field popshare}")
     }
   }
@@ -150,7 +150,7 @@ check_pipgd_params <- function(lp) {
   #   (is.null(params) && !is.null(welfare) && !is.null(population)) ||
   #   (!is.null(params) && is.null(welfare) && is.null(population))
   #
-  # "`params` should be a list from `get_gd_lorenz_params()`" =
+  # "`params` should be a list from `pipgd_validate_lorenz()`" =
   #   is.list(params) || is.null(params)
   #
   # "`complete` must be logical" =
@@ -161,7 +161,7 @@ check_pipgd_params <- function(lp) {
 
     if (!is.null(lp$lorenz) && !lp$lorenz %in% c("lq", "lb")) {
 
-      cli_abort("{.field lorenz} must be either 'lq' or 'lb', or
+      cli::cli_abort("{.field lorenz} must be either 'lq' or 'lb', or
                 {.code NULL} to let the algorithm select")
     }
   }

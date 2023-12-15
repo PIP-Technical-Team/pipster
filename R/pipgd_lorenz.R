@@ -1,6 +1,6 @@
 #' Check validity of Lorenz Curve
 #'
-#' @inheritParams pipgd_validate_lorenz
+#' @inheritParams pipgd_params
 #' @param params list of parameters from `pipgd_validate_lorenz()`
 #' @param complete logical: If TRUE, returns a list a cumulative returns from
 #'   previously used `get_gd` functions. Default is `FALSE`
@@ -8,6 +8,8 @@
 #' @param povline numeric: value of poverty line. Default is the `mean` value
 #' @param popshare numeric: range (0,1). Share of population. Provide share of
 #'   population instead of poverty line
+#' @param times_mean numeric factor that multiplies the mean to create a
+#'   relative povertyline. Default is 1
 #'
 #'
 #' @return list of distributional validity of each Lorenz model
@@ -132,7 +134,7 @@ pipgd_validate_lorenz <-
 #'
 #' @inheritParams pipgd_params
 #' @inheritParams pipgd_validate_lorenz
-#' @param params list of parameters from `get_gd_lorenz_validity()`
+#' @param params list of parameters from `pipgd_validate_lorenz()`
 #'
 #' @return list of values with best lorenz fit for distributional Stats
 #' @export
@@ -140,17 +142,17 @@ pipgd_validate_lorenz <-
 #' @examples
 #' # Using Lorenz parameters from get_gd_lorenz_params
 #' withr::local_options(pipster.return_complete  = TRUE)
-#' params <- get_gd_lorenz_params(
+#' params <- pipgd_validate_lorenz(
 #'   welfare = pip_gd$L,
 #'   weight = pip_gd$P)
 #'
-#' params <- get_gd_lorenz_validity(
+#' params <- pipgd_validate_lorenz(
 #'   params = params,
 #'   complete = TRUE)
 #' pipgd_select_lorenz(params = params)
 #'
-#' # Using Lorenz parameters from get_gd_lorenz_validity
-#' params <- get_gd_lorenz_validity(
+#' # Using Lorenz parameters from pipgd_validate_lorenz
+#' params <- pipgd_validate_lorenz(
 #'   welfare = pip_gd$L,
 #'   weight = pip_gd$P,
 #'   complete = TRUE)

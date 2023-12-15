@@ -18,7 +18,14 @@ pipgd_validate_lorenz(
 \arguments{
 \item{params}{list of parameters from \code{pipgd_validate_lorenz()}}
 
+\item{welfare}{numeric vector of cumulative share of welfare (income/consumption)}
+
+\item{weight}{numeric vector of cumulative share of the population}
+
 \item{mean}{numeric: welfare mean of distribution.}
+
+\item{times_mean}{numeric factor that multiplies the mean to create a
+relative povertyline. Default is 1}
 
 \item{popshare}{numeric: range (0,1). Share of population. Provide share of
 population instead of poverty line}

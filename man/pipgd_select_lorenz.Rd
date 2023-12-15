@@ -16,13 +16,16 @@ pipgd_select_lorenz(
 )
 }
 \arguments{
-\item{params}{list of parameters from \code{get_gd_lorenz_validity()}}
+\item{params}{list of parameters from \code{pipgd_validate_lorenz()}}
 
 \item{welfare}{numeric vector of cumulative share of welfare (income/consumption)}
 
 \item{weight}{numeric vector of cumulative share of the population}
 
 \item{mean}{numeric scalar of distribution mean. Default is NULL}
+
+\item{times_mean}{numeric factor that multiplies the mean to create a
+relative povertyline. Default is 1}
 
 \item{popshare}{numeric: range (0,1). Share of population. Provide share of
 population instead of poverty line}
@@ -41,17 +44,17 @@ Get selected Lorenz curve for distributional stats
 \examples{
 # Using Lorenz parameters from get_gd_lorenz_params
 withr::local_options(pipster.return_complete  = TRUE)
-params <- get_gd_lorenz_params(
+params <- pipgd_validate_lorenz(
   welfare = pip_gd$L,
   weight = pip_gd$P)
 
-params <- get_gd_lorenz_validity(
+params <- pipgd_validate_lorenz(
   params = params,
   complete = TRUE)
 pipgd_select_lorenz(params = params)
 
-# Using Lorenz parameters from get_gd_lorenz_validity
-params <- get_gd_lorenz_validity(
+# Using Lorenz parameters from pipgd_validate_lorenz
+params <- pipgd_validate_lorenz(
   welfare = pip_gd$L,
   weight = pip_gd$P,
   complete = TRUE)

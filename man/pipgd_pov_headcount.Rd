@@ -18,13 +18,16 @@ pipgd_pov_headcount(
 )
 }
 \arguments{
-\item{params}{list of parameters from \code{get_gd_lorenz_validity()}}
+\item{params}{list of parameters from \code{pipgd_validate_lorenz()}}
 
 \item{welfare}{numeric vector of cumulative share of welfare (income/consumption)}
 
 \item{weight}{numeric vector of cumulative share of the population}
 
 \item{mean}{numeric scalar of distribution mean. Default is NULL}
+
+\item{times_mean}{numeric factor that multiplies the mean to create a
+relative povertyline. Default is 1}
 
 \item{popshare}{numeric: range (0,1). Share of population. Provide share of
 population instead of poverty line}
@@ -58,7 +61,8 @@ complete = FALSE)
 pipgd_pov_headcount(
 welfare = pip_gd$L,
 weight = pip_gd$P,
-povline = c(.5, 1, 2, 3))
+povline = c(.5, 1, 2, 3),
+complete = FALSE)
 
 # Return list
 pipgd_pov_headcount(
@@ -80,5 +84,6 @@ pipgd_pov_headcount(
 welfare = pip_gd$L,
 weight = pip_gd$P,
 povline = c(.5, 1, 2, 3),
-format = "atomic")
+format = "atomic",
+complete = FALSE)
 }

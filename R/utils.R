@@ -39,7 +39,7 @@ return_format <-
     }
 
     if (complete == TRUE) {
-      cli_abort("{.field complete} is only available with {.field format} = 'list'")
+      cli::cli_abort("{.field complete} is only available with {.field format} = 'list'")
     }
 
     dt <- ld |>
