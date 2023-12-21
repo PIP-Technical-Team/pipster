@@ -48,9 +48,13 @@ pipgd_validate_lorenz <-
 
   #   ____________________________________________________________________________
   #   Computations                                                            ####
-  if (!is.null(welfare)) {
+  if (!is.null(welfare) & !is.null(weight)) {
     params <- pipgd_params(welfare = welfare,
                            weight  = weight)
+  } else if (is.null(params$gd_params$lq$reg_results$coef)) {
+    stop(
+      "Either `welfare` and `weights` should be specified or `params`  should be output from `pipster::pipgd_params()`"
+    )
   }
 
   if (!is.null(popshare)) {
@@ -70,7 +74,7 @@ pipgd_validate_lorenz <-
   }
 
   # Validity or LQ
-  validity_lq <- wbpip:::check_curve_validity_lq(
+  validity_lq <- wbpip::check_curve_validity_lq(
     params$gd_params$lq$reg_results$coef[["A"]],
     params$gd_params$lq$reg_results$coef[["B"]],
     params$gd_params$lq$reg_results$coef[["C"]],
@@ -79,7 +83,7 @@ pipgd_validate_lorenz <-
     params$gd_params$lq$key_values$n,
     params$gd_params$lq$key_values$r^2)
 
-  headcount_lq <- wbpip:::gd_compute_headcount_lq(mean,
+  headcount_lq <- wbpip::gd_compute_headcount_lq(mean,
                                           povline_lq,
                                           params$gd_params$lq$reg_results$coef[["B"]],
                                           params$gd_params$lq$key_values$m,
@@ -90,7 +94,7 @@ pipgd_validate_lorenz <-
 
   # Validity of LB
   # Compute poverty stats
-  headcount_lb <- wbpip:::gd_compute_headcount_lb(mean,
+  headcount_lb <- wbpip::gd_compute_headcount_lb(mean,
                                           povline_lb,
                                           params$gd_params$lb$reg_results$coef[["A"]],
                                           params$gd_params$lb$reg_results$coef[["B"]],
@@ -98,7 +102,7 @@ pipgd_validate_lorenz <-
 
   # Check validity
   validity_lb <-
-    wbpip:::check_curve_validity_lb(headcount = headcount_lb,
+    wbpip::check_curve_validity_lb(headcount = headcount_lb,
                             params$gd_params$lb$reg_results$coef[["A"]],
                             params$gd_params$lb$reg_results$coef[["B"]],
                             params$gd_params$lb$reg_results$coef[["C"]])
@@ -200,18 +204,18 @@ pipgd_select_lorenz <-
                params$gd_params$lb$reg_results["sse"])
 
   use_lq_for_dist <-
-    wbpip:::use_lq_for_distributional(lq,lb)
+    wbpip::use_lq_for_distributional(lq,lb)
 
   ## Selected Lorenz for Poverty -----------
 
-  fit_lb <- wbpip:::gd_compute_fit_lb(params$data$welfare,
+  fit_lb <- wbpip::gd_compute_fit_lb(params$data$welfare,
                               params$data$weight,
                               params$gd_params$lb$validity$headcount,
                               params$gd_params$lb$reg_results$coef[["A"]],
                               params$gd_params$lb$reg_results$coef[["B"]],
                               params$gd_params$lb$reg_results$coef[["C"]])
 
-  fit_lq <- wbpip:::gd_compute_fit_lq(params$data$welfare,
+  fit_lq <- wbpip::gd_compute_fit_lq(params$data$welfare,
                               params$data$weight,
                               params$gd_params$lq$validity$headcount,
                               params$gd_params$lb$reg_results$coef[["A"]],
@@ -224,7 +228,7 @@ pipgd_select_lorenz <-
                fit_lb["ssez"])
 
 
-  use_lq_for_pov <- wbpip:::use_lq_for_poverty(lq, lb)
+  use_lq_for_pov <- wbpip::use_lq_for_poverty(lq, lb)
 
   l_res <- list(for_dist = ifelse(use_lq_for_dist, "lq", "lb"),
                 for_pov  = ifelse(use_lq_for_pov, "lq", "lb"),
