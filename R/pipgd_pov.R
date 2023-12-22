@@ -3,7 +3,7 @@
 
 #' Estimate poverty headcount (FGT0)
 #'
-#' This function is not vectorized and thus is not exported.Use
+#' This function is not vectorized and thus is not exported. Use
 #' [pipgd_pov_headcount] instead.
 #'
 #' @inheritParams pipgd_select_lorenz
@@ -47,7 +47,7 @@ pipgd_pov_headcount_nv <-
 
   # force selection of lorenz
   if (is.null(lorenz)) {
-    lorenz <- params$selected_lorenz$for_dist
+    lorenz <- params$selected_lorenz$for_pov
   } else {
     match.arg(lorenz, c("lq", "lb"))
   }
@@ -181,6 +181,8 @@ pipgd_pov_gap_nv <- function(params     = NULL,
 
   #   ____________________________________________________
   #   Computations                              ####
+
+
   if (!is.null(welfare)) {
     params <- pipgd_pov_headcount_nv(welfare  = welfare,
                                      weight   = weight,
@@ -197,7 +199,7 @@ pipgd_pov_gap_nv <- function(params     = NULL,
 
   # force selection of lorenz
   if (is.null(lorenz)) {
-    lorenz <- params$selected_lorenz$for_dist
+    lorenz <- params$selected_lorenz$for_pov
   } else {
     match.arg(lorenz, c("lq", "lb"))
   }
@@ -313,11 +315,174 @@ pipgd_pov_gap <- function(params     = NULL,
 }
 
 
-pipgd_pov_severity_nv <- function() {
+
+
+
+
+
+
+pipgd_pov_severity_nv <- function(
+    params     = NULL,
+    welfare    = NULL,
+    weight     = NULL,
+    mean       = 1,
+    times_mean = 1,
+    popshare   = NULL,
+    povline    = ifelse(is.null(popshare),
+                        mean*times_mean,
+                        NA_real_),
+    lorenz     = NULL,
+    pov_gap    = NULL,
+    complete   = getOption("pipster.return_complete")
+  ){
+    # __________________________________________________________________________
+    #   Defenses ---------------------------------------------------------------
+    pl <- as.list(environment())
+    check_pipgd_params(pl)
+
+    # __________________________________________________________________________
+    #   Computations -----------------------------------------------------------
+
+    if (!is.null(pov_gap)) {
+      if (is.null(povgap$pov_stats$pov_gap)) {
+        stop("argument `povgap` should be the output of `pipster:::pipgd_pov_gap_nv`, else leave `pov_gap = NULL`")
+      } else {
+        params <- povgap
+      }
+    } else{
+      if (!is.null(welfare)) {
+        params <- pipgd_pov_gap_nv(
+          welfare  = welfare,
+          weight   = weight,
+          complete = TRUE,
+          mean     = mean,
+          povline  = povline
+        )
+      } else {
+        params <- pipgd_pov_gap_nv(
+          welfare  =  params$data$welfare,
+          weight   =  params$data$weight,
+          complete = TRUE,
+          mean     = mean,
+          povline  = povline
+        )
+      }
+    }
+
+    # __________________________________________________________________________
+    #   Select Lorenz ----------------------------------------------------------
+    if (is.null(lorenz)) {
+      lorenz <- params$selected_lorenz$for_pov
+    } else {
+      match.arg(lorenz, c("lq", "lb"))
+    }
+
+    # __________________________________________________________________________
+    #   Calculate Severity -----------------------------------------------------
+    fun_to_vc <-
+      paste0("wbpip:::gd_compute_pov_severity_", lorenz) |>
+      parse(text = _)
+
+    if (lorenz == "lb") {
+      pov_severity <-
+        wbpip:::gd_compute_pov_severity_lb(
+          mean      = mean,
+          povline   = povline,
+          headcount = params$pov_stats$headcount,
+          pov_gap   = params$pov_stats$pov_gap,
+          A         = params$gd_params$lb$reg_results$coef[["A"]],
+          B         = params$gd_params$lb$reg_results$coef[["B"]],
+          C         = params$gd_params$lb$reg_results$coef[["C"]]
+        )
+    } else if (lorenz == "lq") {
+      pov_severity <-
+        wbpip:::gd_compute_pov_severity_lq(
+          mean      = mean,
+          povline   = povline,
+          headcount = params$pov_stats$headcount,
+          pov_gap   = params$pov_stats$pov_gap,
+          A         = params$gd_params$lq$reg_results$coef[["A"]],
+          B         = params$gd_params$lq$reg_results$coef[["B"]],
+          C         = params$gd_params$lq$reg_results$coef[["C"]],
+          e         = params$gd_params$lq$key_values$e,
+          m         = params$gd_params$lq$key_values$m,
+          n         = params$gd_params$lq$key_values$n,
+          r         = params$gd_params$lq$key_values$r,
+          s1        = params$gd_params$lq$key_values$s1,
+          s2        = params$gd_params$lq$key_values$s2
+        )
+    }
+
+    attributes(pov_severity) <- NULL
+
+    #   ____________________________________________________
+    #   Return                                           ####
+    if (isFALSE(complete)) {
+      params <- vector("list")
+    }
+
+    params$pov_stats$pov_severity <- pov_severity
+    params$pov_stats$lorenz       <- lorenz
+
+    return(
+      params
+    )
 
 }
 
-pipgd_pov_severity <- function() {
+
+pipgd_pov_severity <- function(
+    params     = NULL,
+    welfare    = NULL,
+    weight     = NULL,
+    mean       = 1,
+    times_mean = 1,
+    popshare   = NULL,
+    povline    = ifelse(is.null(popshare),
+                        mean*times_mean,
+                        NA_real_),
+    format     = c("dt", "list", "atomic"),
+    lorenz     = NULL,
+    pov_gap    = NULL,
+    complete   = getOption("pipster.return_complete")
+  ) {
+
+  # ____________________________________________________________________________
+  # Arguments ------------------------------------------------------------------
+  format <- match.arg(format)
+
+  # ____________________________________________________________________________
+  # Computations ---------------------------------------------------------------
+  pipgd_pov_severity_v <- Vectorize(
+    FUN            = pipgd_pov_severity_nv,
+    vectorize.args = "povline",
+    SIMPLIFY       = FALSE
+  )
+  list_povsev <- pipgd_pov_severity_v(
+    params     = params,
+    welfare    = welfare,
+    weight     = weight,
+    mean       = mean,
+    times_mean = times_mean,
+    popshare   = popshare,
+    povline    = povline,
+    lorenz     = lorenz,
+    pov_gap     = pov_gap,
+    complete   = complete
+  )
+
+  # ____________________________________________________________________________
+  # Format ---------------------------------------------------------------------
+  out <- return_format(
+    ld     = list_povsev,
+    var    = "pov_severity",
+    format = format
+  )
+
+  # ____________________________________________________________________________
+  # Return ---------------------------------------------------------------------
+  return(out)
 
 }
+
 

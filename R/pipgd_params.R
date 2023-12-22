@@ -52,11 +52,11 @@ pipgd_params <- function(welfare,
 
   ## STEP 1: Prep data to fit functional form-------------
   functional_form_lq <-
-    wbpip:::create_functional_form_lq(welfare    = welfare,
+    wbpip::create_functional_form_lq(welfare    = welfare,
                                      population = weight)
 
   ## STEP 2: Estimate regression coefficients using LQ parametrization------
-  reg_results_lq <- wbpip:::regres(functional_form_lq, is_lq = TRUE)
+  reg_results_lq <- wbpip::regres(functional_form_lq, is_lq = TRUE)
   names(reg_results_lq$coef) <- c("A", "B", "C")
 
   # add to results list
@@ -65,7 +65,7 @@ pipgd_params <- function(welfare,
 
   ## STEP 3: get key values
   # Compute key numbers from Lorenz quadratic form
-  kv <- wbpip:::gd_lq_key_values(reg_results_lq$coef[["A"]],
+  kv <- wbpip::gd_lq_key_values(reg_results_lq$coef[["A"]],
                          reg_results_lq$coef[["B"]],
                          reg_results_lq$coef[["C"]])
 
@@ -76,11 +76,11 @@ pipgd_params <- function(welfare,
 
   ## STEP 1: Prep data to fit functional form --------------
   functional_form_lb <-
-    wbpip:::create_functional_form_lb(welfare    = welfare,
+    wbpip::create_functional_form_lb(welfare    = welfare,
                                       population = weight)
 
   ## STEP 2: Estimate regression coefficients using LB parameterization
-  reg_results_lb <- wbpip:::regres(functional_form_lb, is_lq = FALSE)
+  reg_results_lb <- wbpip::regres(functional_form_lb, is_lq = FALSE)
   names(reg_results_lb$coef) <- c("A", "B", "C")
 
   # add to results list
