@@ -192,7 +192,7 @@ pipgd_quantile <-
     }
 
 
-    qfun <- paste0("wbpip:::derive_", lorenz) |>
+    qfun <- paste0("wbpip::derive_", lorenz) |>
       parse(text = _)
     # value_at_vc <- Vectorize(eval(qfun),
     #                          vectorize.args = "x",
