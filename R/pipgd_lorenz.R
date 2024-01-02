@@ -139,6 +139,7 @@ pipgd_validate_lorenz <-
 #' @inheritParams pipgd_params
 #' @inheritParams pipgd_validate_lorenz
 #' @param params list of parameters from `pipgd_validate_lorenz()`
+#' @param mean numeric scalar of distribution mean. Default is 1
 #'
 #' @return list of values with best lorenz fit for distributional Stats
 #' @export
