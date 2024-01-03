@@ -357,10 +357,10 @@ pipgd_pov_severity_nv <- function(
     #   Computations -----------------------------------------------------------
 
     if (!is.null(pov_gap)) {
-      if (is.null(povgap$pov_stats$pov_gap)) {
-        stop("argument `povgap` should be the output of `pipster:::pipgd_pov_gap_nv`, else leave `pov_gap = NULL`")
+      if (is.null(pov_gap$pov_stats$pov_gap)) {
+        stop("argument `pov_gap` should be the output of `pipster:::pipgd_pov_gap_nv`, else leave `pov_gap = NULL`")
       } else {
-        params <- povgap
+        params <- pov_gap
       }
     } else{
       if (!is.null(welfare)) {
@@ -392,10 +392,6 @@ pipgd_pov_severity_nv <- function(
 
     # __________________________________________________________________________
     #   Calculate Severity -----------------------------------------------------
-    fun_to_vc <-
-      paste0("wbpip:::gd_compute_pov_severity_", lorenz) |>
-      parse(text = _)
-
     if (lorenz == "lb") {
       pov_severity <-
         wbpip:::gd_compute_pov_severity_lb(
@@ -526,7 +522,7 @@ pipgd_pov_severity <- function(
     popshare   = popshare,
     povline    = povline,
     lorenz     = lorenz,
-    pov_gap     = pov_gap,
+    pov_gap    = pov_gap,
     complete   = complete
   )
 
@@ -545,3 +541,118 @@ pipgd_pov_severity <- function(
 }
 
 
+
+
+
+
+#' Estimate Watts ratio (non-vectorized)
+#'
+#' This function is not vectorized and thus is not exported. Use
+#' [pipgd_pov_watts] instead.
+#'
+#' @inheritParams pipgd_pov_gap_nv
+#'
+#' @return list: contains numeric Watts ratio and, if `complete=TRUE`,
+#' also returns all params.
+#' @keywords internal
+pipgd_pov_watts_nv <- function(
+    params       = NULL,
+    welfare      = NULL,
+    weight       = NULL,
+    mean         = 1,
+    times_mean   = 1,
+    popshare     = NULL,
+    povline      = ifelse(is.null(popshare),
+                        mean*times_mean,
+                        NA_real_),
+    lorenz       = NULL,
+    complete     = getOption("pipster.return_complete")
+){
+  # __________________________________________________________________________
+  #   Defenses ---------------------------------------------------------------
+  pl <- as.list(environment())
+  check_pipgd_params(pl)
+
+  # __________________________________________________________________________
+  #   Computations -----------------------------------------------------------
+
+
+    if (!is.null(welfare)) {
+      params <- pipgd_pov_gap_nv(
+        welfare  = welfare,
+        weight   = weight,
+        complete = TRUE,
+        mean     = mean,
+        povline  = povline
+      )
+    } else {
+      params <- pipgd_pov_gap_nv(
+        welfare  =  params$data$welfare,
+        weight   =  params$data$weight,
+        complete = TRUE,
+        mean     = mean,
+        povline  = povline
+      )
+    }
+
+
+  # __________________________________________________________________________
+  #   Select Lorenz ----------------------------------------------------------
+  if (is.null(lorenz)) {
+    lorenz <- params$selected_lorenz$for_pov
+  } else {
+    match.arg(lorenz, c("lq", "lb"))
+  }
+
+  # __________________________________________________________________________
+  #   Calculate Severity -----------------------------------------------------
+
+  if (lorenz == "lb") {
+    wr <-
+      wbpip:::gd_compute_watts_lb(
+        mean      = mean,
+        povline   = povline,
+        headcount = params$pov_stats$headcount,
+        A         = params$gd_params$lb$reg_results$coef[["A"]],
+        B         = params$gd_params$lb$reg_results$coef[["B"]],
+        C         = params$gd_params$lb$reg_results$coef[["C"]],
+        dd        = 0.005
+      )
+  } else if (lorenz == "lq") {
+    wr <-
+      wbpip:::gd_compute_watts_lq(
+        mu        = mean,
+        povline   = povline,
+        headcount = params$pov_stats$headcount,
+        A         = params$gd_params$lb$reg_results$coef[["A"]],
+        B         = params$gd_params$lb$reg_results$coef[["B"]],
+        C         = params$gd_params$lb$reg_results$coef[["C"]],
+        dd        = 0.01
+      )
+  }
+
+  attributes(wr) <- NULL
+
+  #   ____________________________________________________
+  #   Return                                           ####
+  if (isFALSE(complete)) {
+    params <- vector("list")
+  }
+
+  params$pov_stats$watts  <- wr
+  params$pov_stats$lorenz <- lorenz
+
+  return(
+    params
+  )
+
+}
+
+
+
+#' `gd_compute_watts_lb()` computes Watts Index from beta Lorenz fit
+#' The first distribution-sensitive poverty measure was proposed in 1968 by Watts
+#' It is defined as the mean across the population of the proportionate poverty
+#' gaps, as measured by the log of the ratio of the poverty line to income,
+#' where the mean is formed over the whole population, counting the nonpoor as
+#' having a zero poverty gap.
