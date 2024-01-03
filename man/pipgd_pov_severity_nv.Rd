@@ -2,7 +2,7 @@
 % Please edit documentation in R/pipgd_pov.R
 \name{pipgd_pov_severity_nv}
 \alias{pipgd_pov_severity_nv}
-\title{Estimate poverty severity}
+\title{Estimate poverty severity (non-vectorized)}
 \usage{
 pipgd_pov_severity_nv(
   params = NULL,

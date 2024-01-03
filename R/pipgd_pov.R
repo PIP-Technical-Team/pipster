@@ -321,6 +321,19 @@ pipgd_pov_gap <- function(params     = NULL,
 
 
 
+#' Estimate poverty severity (non-vectorized)
+#'
+#' This function is not vectorized and thus is not exported. Use
+#' [pipgd_pov_severity] instead.
+#'
+#' @inheritParams pipgd_pov_gap_nv
+#' @param pov_gap list: When NULL (default), the welfare and weight
+#' arguments are used to estimate all underlying parameters.
+#' Else, should be a list of output from [pipgd_pov_gap_nv].
+#'
+#' @return list: contains numeric poverty severity and, if `complete=TRUE`,
+#' also returns all params.
+#' @keywords internal
 pipgd_pov_severity_nv <- function(
     params     = NULL,
     welfare    = NULL,
@@ -431,6 +444,52 @@ pipgd_pov_severity_nv <- function(
 }
 
 
+#' Estimate poverty severity
+#'
+#' @inheritParams pipgd_pov_gap_nv
+#' @param format character: either "dt" for data.table, "list" or "atomic" for a
+#' single numeric vector, whose names are corresponding selected Lorenz for
+#' each value.  Default is "dt"
+#'
+#' @return list: contains numeric poverty severity. See `complete` and `format`
+#' @export
+#'
+#' @examples
+#' pipgd_pov_severity(
+#' welfare = pip_gd$L,
+#' weight  = pip_gd$P,
+#' mean = 109.90,
+#' povline = 89,
+#' complete = FALSE)
+#' # Return data.table
+#' pipgd_pov_severity(
+#' welfare = pip_gd$L,
+#' weight = pip_gd$P,
+#' povline = c(.5, 1, 2, 3),
+#' complete = FALSE)
+#'
+#' # Return list
+#' pipgd_pov_severity(
+#' welfare = pip_gd$L,
+#' weight = pip_gd$P,
+#' povline = c(.5, 1, 2, 3),
+#' format = "list")
+#'
+#' # Return list complete
+#' pipgd_pov_severity(
+#' welfare = pip_gd$L,
+#' weight = pip_gd$P,
+#' povline = c(.5, 1, 2, 3),
+#' format = "list",
+#' complete = TRUE)
+#'
+#' # Return data.table
+#' pipgd_pov_severity(
+#' welfare = pip_gd$L,
+#' weight = pip_gd$P,
+#' povline = c(.5, 1, 2, 3),
+#' format = "atomic",
+#' complete = FALSE)
 pipgd_pov_severity <- function(
     params     = NULL,
     welfare    = NULL,

@@ -42,15 +42,11 @@ each value.  Default is "dt"}
 \item{lorenz}{character or NULL. Lorenz curve selected. It could be "lq" for
 Lorenz Quadratic or "lb" for Lorenz Beta}
 
-\item{pov_gap}{list: When NULL (default), the welfare and weight
-arguments are used to estimate all underlying parameters.
-Else, should be a list of output from \link{pipgd_pov_gap_nv}.}
-
 \item{complete}{logical: If TRUE, returns a list a cumulative returns from
 previously used \code{get_gd} functions. Default is \code{FALSE}}
 }
 \value{
-list of poverty severity. See \code{format} parameter
+list: contains numeric poverty severity. See \code{complete} and \code{format}
 }
 \description{
 Estimate poverty severity
