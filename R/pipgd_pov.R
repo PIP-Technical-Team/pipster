@@ -650,9 +650,110 @@ pipgd_pov_watts_nv <- function(
 
 
 
-#' `gd_compute_watts_lb()` computes Watts Index from beta Lorenz fit
-#' The first distribution-sensitive poverty measure was proposed in 1968 by Watts
+
+#' Estimate Watts Index
+#'
+#' Computes Watts Index from either beta or quadratic Lorenz fit
+#' The first distribution-sensitive poverty measure was proposed in 1968 by Watts.
 #' It is defined as the mean across the population of the proportionate poverty
 #' gaps, as measured by the log of the ratio of the poverty line to income,
 #' where the mean is formed over the whole population, counting the nonpoor as
 #' having a zero poverty gap.
+#'
+#' @inheritParams pipgd_pov_gap_nv
+#' @param format character: either "dt" for data.table, "list" or "atomic" for a
+#' single numeric vector, whose names are corresponding selected Lorenz for
+#' each value.  Default is "dt"
+#'
+#' @return list: contains numeric poverty severity. See `complete` and `format`
+#' @export
+#'
+#' @examples
+#' pipgd_pov_watts(
+#' welfare = pip_gd$L,
+#' weight  = pip_gd$P,
+#' mean = 109.90,
+#' povline = 89,
+#' complete = FALSE)
+#' # Return data.table
+#' pipgd_pov_watts(
+#' welfare = pip_gd$L,
+#' weight = pip_gd$P,
+#' povline = c(.5, 1, 2, 3),
+#' complete = FALSE)
+#'
+#' # Return list
+#' pipgd_pov_watts(
+#' welfare = pip_gd$L,
+#' weight = pip_gd$P,
+#' povline = c(.5, 1, 2, 3),
+#' format = "list")
+#'
+#' # Return list complete
+#' pipgd_pov_watts(
+#' welfare = pip_gd$L,
+#' weight = pip_gd$P,
+#' povline = c(.5, 1, 2, 3),
+#' format = "list",
+#' complete = TRUE)
+#'
+#' # Return data.table
+#' pipgd_pov_watts(
+#' welfare = pip_gd$L,
+#' weight = pip_gd$P,
+#' povline = c(.5, 1, 2, 3),
+#' format = "atomic",
+#' complete = FALSE)
+pipgd_pov_watts <- function(
+    params     = NULL,
+    welfare    = NULL,
+    weight     = NULL,
+    mean       = 1,
+    times_mean = 1,
+    popshare   = NULL,
+    povline    = ifelse(is.null(popshare),
+                        mean*times_mean,
+                        NA_real_),
+    format     = c("dt", "list", "atomic"),
+    lorenz     = NULL,
+    complete   = getOption("pipster.return_complete")
+) {
+
+  # ____________________________________________________________________________
+  # Arguments ------------------------------------------------------------------
+  format <- match.arg(format)
+
+  # ____________________________________________________________________________
+  # Computations ---------------------------------------------------------------
+  pipgd_pov_watts_v <- Vectorize(
+    FUN            = pipgd_pov_watts_nv,
+    vectorize.args = "povline",
+    SIMPLIFY       = FALSE
+  )
+  list_watts <- pipgd_pov_watts_v(
+    params     = params,
+    welfare    = welfare,
+    weight     = weight,
+    mean       = mean,
+    times_mean = times_mean,
+    popshare   = popshare,
+    povline    = povline,
+    lorenz     = lorenz,
+    complete   = complete
+  )
+
+  # ____________________________________________________________________________
+  # Format ---------------------------------------------------------------------
+  out <- return_format(
+    ld     = list_watts,
+    var    = "watts",
+    format = format
+  )
+
+  # ____________________________________________________________________________
+  # Return ---------------------------------------------------------------------
+  return(out)
+
+}
+
+
