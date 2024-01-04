@@ -3,6 +3,7 @@
 export(as_pip)
 export(identify_pip_type)
 export(pipgd_gini)
+export(pipgd_lorenz_curve)
 export(pipgd_mld)
 export(pipgd_params)
 export(pipgd_pov_gap)
