@@ -545,17 +545,17 @@ pipgd_pov_severity <- function(
 
 
 
-#' Estimate Watts ratio (non-vectorized)
+#' Estimate Watts poverty index (non-vectorized)
 #'
 #' This function is not vectorized and thus is not exported. Use
-#' [pipgd_pov_watts] instead.
+#' [pipgd_watts] instead.
 #'
 #' @inheritParams pipgd_pov_gap_nv
 #'
 #' @return list: contains numeric Watts ratio and, if `complete=TRUE`,
 #' also returns all params.
 #' @keywords internal
-pipgd_pov_watts_nv <- function(
+pipgd_watts_nv <- function(
     params       = NULL,
     welfare      = NULL,
     weight       = NULL,
@@ -578,7 +578,7 @@ pipgd_pov_watts_nv <- function(
 
 
     if (!is.null(welfare)) {
-      params <- pipgd_pov_gap_nv(
+      params <- pipgd_pov_headcount_nv(
         welfare  = welfare,
         weight   = weight,
         complete = TRUE,
@@ -586,7 +586,7 @@ pipgd_pov_watts_nv <- function(
         povline  = povline
       )
     } else {
-      params <- pipgd_pov_gap_nv(
+      params <- pipgd_pov_headcount_nv(
         welfare  =  params$data$welfare,
         weight   =  params$data$weight,
         complete = TRUE,
@@ -609,7 +609,7 @@ pipgd_pov_watts_nv <- function(
 
   if (lorenz == "lb") {
     wr <-
-      wbpip:::gd_compute_watts_lb(
+      wbpip::gd_compute_watts_lb(
         mean      = mean,
         povline   = povline,
         headcount = params$pov_stats$headcount,
@@ -620,7 +620,7 @@ pipgd_pov_watts_nv <- function(
       )
   } else if (lorenz == "lq") {
     wr <-
-      wbpip:::gd_compute_watts_lq(
+      wbpip::gd_compute_watts_lq(
         mu        = mean,
         povline   = povline,
         headcount = params$pov_stats$headcount,
@@ -651,7 +651,7 @@ pipgd_pov_watts_nv <- function(
 
 
 
-#' Estimate Watts Index
+#' Estimate Watts poverty index
 #'
 #' Computes Watts Index from either beta or quadratic Lorenz fit
 #' The first distribution-sensitive poverty measure was proposed in 1968 by Watts.
@@ -704,7 +704,7 @@ pipgd_pov_watts_nv <- function(
 #' povline = c(.5, 1, 2, 3),
 #' format = "atomic",
 #' complete = FALSE)
-pipgd_pov_watts <- function(
+pipgd_watts <- function(
     params     = NULL,
     welfare    = NULL,
     weight     = NULL,
