@@ -26,7 +26,7 @@ pipgd_quantile(
 
 \item{popshare}{numeric: vector of share of population. Default is \code{seq(from = 1/n, to = 1, by = 1/n)}}
 
-\item{mean}{numeric: welfare mean of distribution.}
+\item{mean}{numeric scalar of distribution mean. Default is 1}
 
 \item{complete}{logical: If TRUE, returns a list a cumulative returns from
 previously used \code{get_gd} functions. Default is \code{FALSE}}

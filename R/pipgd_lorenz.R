@@ -1,7 +1,7 @@
 #' Check validity of Lorenz Curve
 #'
 #' @inheritParams pipgd_params
-#' @param params list of parameters from `pipgd_validate_lorenz()`
+#' @param params list of parameters from `pipgd_params()`
 #' @param complete logical: If TRUE, returns a list a cumulative returns from
 #'   previously used `get_gd` functions. Default is `FALSE`
 #' @param mean numeric: welfare mean of distribution.
@@ -73,7 +73,7 @@ pipgd_validate_lorenz <-
 
   }
 
-  # Validity or LQ
+  # Validity of LQ
   validity_lq <- wbpip::check_curve_validity_lq(
     params$gd_params$lq$reg_results$coef[["A"]],
     params$gd_params$lq$reg_results$coef[["B"]],
