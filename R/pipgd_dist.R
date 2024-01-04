@@ -21,13 +21,15 @@
 #' pipgd_welfare_share_at(welfare = pip_gd$L,
 #'                         weight = pip_gd$P,
 #'                         complete = FALSE)
-pipgd_welfare_share_at <- function(params   = NULL,
-                         welfare    = NULL,
-                         weight     = NULL,
-                         complete   = getOption("pipster.return_complete"),
-                         lorenz     = NULL,
-                         n          = 10,
-                         popshare   = seq(from = 1/n, to = 1, by = 1/n)) {
+pipgd_welfare_share_at <- function(
+    params     = NULL,
+    welfare    = NULL,
+    weight     = NULL,
+    complete   = getOption("pipster.return_complete"),
+    lorenz     = NULL,
+    n          = 10,
+    popshare   = seq(from = 1/n, to = 1, by = 1/n)
+) {
 
   #   ____________________________________________________________________________
   #   Defenses                                                                ####
@@ -91,7 +93,7 @@ pipgd_welfare_share_at <- function(params   = NULL,
 #'                         weight = pip_gd$P,
 #'                         complete = FALSE)
 pipgd_quantile_welfare_share <-
-  function(params   = NULL,
+  function(params     = NULL,
            welfare    = NULL,
            weight     = NULL,
            complete   = getOption("pipster.return_complete"),
@@ -154,7 +156,7 @@ pipgd_quantile_welfare_share <-
 #' **NOTE:** the outcome from `pipgd_quantile` is not necessarily the inverse of [pipgd_pov_headcount]. The reason for this ia that, [pipgd_pov_headcount] selects the Lorenz parametrization that fits better that the specified point of the distribution (e.i., the poverty lines). [pipgd_quantile], in contrast, use the same Lorenz parametrization for any point. The lorenz used is the one that fits best for all distributional measures.
 #'
 #' @inheritParams pipgd_welfare_share_at
-#' @inheritParams pipgd_validate_lorenz
+#' @inheritParams pipgd_select_lorenz
 #' @return vector of quantiles
 #' @export
 #'
@@ -162,7 +164,7 @@ pipgd_quantile_welfare_share <-
 #' pipgd_quantile(welfare = pip_gd$L,
 #'                weight  = pip_gd$P)
 pipgd_quantile <-
-  function(params   = NULL,
+  function(params     = NULL,
            welfare    = NULL,
            weight     = NULL,
            n          = 10,
@@ -212,4 +214,241 @@ pipgd_quantile <-
     params$dist_stats$quantile <- qt
     return(params)
 }
+
+
+
+
+
+#-------------------------------------------------
+# GINI -------------------------------------------
+#-------------------------------------------------
+
+#' Compute Gini coefficient
+#'
+#' Gini is computed using either the beta or quadratic Lorenz
+#' functions.
+#'
+#' @inheritParams pipgd_pov_headcount_nv
+#'
+#' @return list: contains numeric MLD and, if `complete=TRUE`,
+#' also returns all params.
+#' @export
+#'
+#' @examples
+#' pipgd_gini(welfare = pip_gd$L,
+#'            weight  = pip_gd$P)
+pipgd_gini <- function(
+  params     = NULL,
+  welfare    = NULL,
+  weight     = NULL,
+  mean       = 1,
+  times_mean = 1,
+  popshare   = NULL,
+  povline    = ifelse(is.null(popshare),
+                      mean*times_mean,
+                      NA_real_),
+  complete   = getOption("pipster.return_complete"),
+  lorenz     = NULL
+){
+
+  #   _________________________________________________________________
+  #   Defenses
+  #   _________________________________________________________________
+  pl <- as.list(environment())
+  check_pipgd_params(pl)
+
+  #   _________________________________________________________________
+  #   Params
+  #   _________________________________________________________________
+  if (!is.null(welfare)) {
+    params <- pipgd_select_lorenz(
+      welfare  = welfare,
+      weight   = weight,
+      complete = TRUE,
+      mean     = mean,
+      povline  = povline
+    )
+  } else {
+    params <- pipgd_select_lorenz(
+      welfare  =  params$data$welfare,
+      weight   =  params$data$weight,
+      complete = TRUE,
+      mean     = mean,
+      povline  = povline
+    )
+  }
+
+  #   _________________________________________________________________
+  #   Select Lorenz
+  #   _________________________________________________________________
+  if (is.null(lorenz)) {
+    lorenz <- params$selected_lorenz$for_dist
+  } else {
+    match.arg(lorenz, c("lq", "lb"))
+  }
+
+  #   _________________________________________________________________
+  #   Gini
+  #   _________________________________________________________________
+  if (lorenz == "lb") {
+    gini <-
+      wbpip::gd_compute_gini_lb(
+        A         = params$gd_params$lb$reg_results$coef[["A"]],
+        B         = params$gd_params$lb$reg_results$coef[["B"]],
+        C         = params$gd_params$lb$reg_results$coef[["C"]],
+        nbins     = 499
+      )
+  } else if (lorenz == "lq") {
+    gini <-
+      wbpip::gd_compute_gini_lq(
+        A         = params$gd_params$lq$reg_results$coef[["A"]],
+        B         = params$gd_params$lq$reg_results$coef[["B"]],
+        C         = params$gd_params$lq$reg_results$coef[["C"]],
+        e         = params$gd_params$lq$key_values$e,
+        m         = params$gd_params$lq$key_values$m,
+        n         = params$gd_params$lq$key_values$n,
+        r         = params$gd_params$lq$key_values$r
+      )
+  }
+
+  attributes(gini) <- NULL
+
+  #   ____________________________________________________
+  #   Return                                           ####
+  if (isFALSE(complete)) {
+    params <- vector("list")
+  }
+
+  params$dist_stats$gini  <- gini
+  params$dist_stats$lorenz <- lorenz
+
+  return(
+    params
+  )
+
+}
+
+
+
+
+#-------------------------------------------------
+# MLD -------------------------------------------
+#-------------------------------------------------
+
+#' Compute MLD
+#'
+#' MLD is computed using either the beta or quadratic Lorenz
+#' functions.
+#'
+#' @inheritParams pipgd_gini
+#'
+#' @return list: contains numeric MLD and, if `complete=TRUE`,
+#' also returns all params.
+#' @export
+#'
+#' @examples
+#' pipgd_mld(welfare = pip_gd$L,
+#'           weight  = pip_gd$P)
+pipgd_mld <- function(
+    params     = NULL,
+    welfare    = NULL,
+    weight     = NULL,
+    mean       = 1,
+    times_mean = 1,
+    popshare   = NULL,
+    povline    = ifelse(is.null(popshare),
+                        mean*times_mean,
+                        NA_real_),
+    complete   = getOption("pipster.return_complete"),
+    lorenz     = NULL
+){
+
+  #   _________________________________________________________________
+  #   Defenses
+  #   _________________________________________________________________
+  pl <- as.list(environment())
+  check_pipgd_params(pl)
+
+  #   _________________________________________________________________
+  #   Params
+  #   _________________________________________________________________
+  if (!is.null(welfare)) {
+    params <- pipgd_select_lorenz(
+      welfare  = welfare,
+      weight   = weight,
+      complete = TRUE,
+      mean     = mean,
+      povline  = povline
+    )
+  } else {
+    params <- pipgd_select_lorenz(
+      welfare  =  params$data$welfare,
+      weight   =  params$data$weight,
+      complete = TRUE,
+      mean     = mean,
+      povline  = povline
+    )
+  }
+
+  #   _________________________________________________________________
+  #   Select Lorenz
+  #   _________________________________________________________________
+  if (is.null(lorenz)) {
+    lorenz <- params$selected_lorenz$for_dist
+  } else {
+    match.arg(lorenz, c("lq", "lb"))
+  }
+
+  #   _________________________________________________________________
+  #   Gini
+  #   _________________________________________________________________
+  if (lorenz == "lb") {
+    mld <-
+      wbpip::gd_compute_gini_lb(
+        A         = params$gd_params$lb$reg_results$coef[["A"]],
+        B         = params$gd_params$lb$reg_results$coef[["B"]],
+        C         = params$gd_params$lb$reg_results$coef[["C"]],
+        dd        = 0.01
+      )
+  } else if (lorenz == "lq") {
+    mld <-
+      wbpip::gd_compute_mld_lq(
+        A         = params$gd_params$lq$reg_results$coef[["A"]],
+        B         = params$gd_params$lq$reg_results$coef[["B"]],
+        C         = params$gd_params$lq$reg_results$coef[["C"]],
+        dd        = 0.01
+      )
+  }
+
+  attributes(mld) <- NULL
+
+  #   ____________________________________________________
+  #   Return                                           ####
+  if (isFALSE(complete)) {
+    params <- vector("list")
+  }
+
+  params$dist_stats$mld    <- mld
+  params$dist_stats$lorenz <- lorenz
+
+  return(
+    params
+  )
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
