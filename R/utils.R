@@ -1,5 +1,5 @@
 # Collections of functions that are used across the package
-#
+
 #' Return data according to format
 #'
 #' @param ld list of data
@@ -66,4 +66,79 @@ return_format <-
 
 
   }
+
+
+
+
+
+#' Return data according to format - microdata
+#'
+#' @inheritParams return_format
+#'
+#' @return determined by `format`
+return_format_md <- function(
+    ld,
+    var,
+    povline,
+    complete = FALSE,
+    format   = c("dt", "list", "atomic")
+){
+
+  format <- match.arg(format)
+
+  inv_reduce <- function(x,f) {
+    Reduce(f,x)
+  }
+
+  # ____________________________________________________________________________
+  # Early Returns --------------------------------------------------------------
+  if (FALSE) {
+    return()
+  }
+
+  # ____________________________________________________________________________
+  # Computations ---------------------------------------------------------------
+  if (format == "list") {
+    names(ld) <- paste0("pl", povline)
+
+    return(ld)
+  } else{
+
+    if (complete == TRUE) {
+      cli::cli_abort("{.field complete} is only available with {.field format} = 'list'")
+    }
+
+    dt <- ld |>
+      inv_reduce(c) |>
+      inv_reduce(c)
+
+    names(dt) <- paste0("pl", povline)
+
+    if (format == "atomic") {
+      return(dt)
+    } else if (format == "dt") {
+
+      dt <- data.table::data.table(
+        povline = povline,
+        V1      = dt |> unname()
+      )
+      data.table::setnames(
+        dt,
+        old = "V1",
+        new = var
+      )
+      return(dt)
+    }
+
+  }
+
+}
+
+
+
+
+
+
+
+
 
