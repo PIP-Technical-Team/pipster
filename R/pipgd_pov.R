@@ -1,4 +1,5 @@
 # This file contains all the functions related to absolute poverty measures
+#  on grouped data (gd)
 
 
 #' Estimate poverty headcount (FGT0)
