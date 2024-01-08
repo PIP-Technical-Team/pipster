@@ -78,6 +78,11 @@ pipmd_pov_headcount_nv <- function(
 #' @export
 #'
 #' @examples
+#' pipmd_pov_headcount(
+#' welfare = pipmd_s$welfare,
+#' weight  = pipmd_s$weight,
+#' format  = "list"
+#' )
 pipmd_pov_headcount <- function(
     welfare = NULL,
     weight  = NULL,
