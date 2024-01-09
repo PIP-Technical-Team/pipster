@@ -57,11 +57,11 @@ pipmd_quantile <- function(
   if (is.na(welfare) |> any()) {
     cli::cli_abort("No elements in welfare vector can be NA")
   }
-  if (is.null(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
+  if (is.null(welfare)) {
+    cli::cli_abort("Welfare vector cannot be NULL")
   }
   if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NULL")
+    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
   }
   if (is.null(weight)) {
     weight <- rep(1, length = length(welfare))
@@ -107,6 +107,185 @@ pipmd_quantile <- function(
 
 
 }
+
+
+
+
+
+#' Welfare share by quantile in micro data
+#'
+#' `pipmd_welfare_share_at` returns the share of welfare held by the specified
+#' share of the population in the parameter `popshare`. Alternatively, you can
+#' select the number of quantiles (10 be default), to estimate the corresponding
+#' share of welfare in each.
+#'
+#' @inheritParams pipmd_quantile
+#'
+#' @return list with vector of share of welfare by quantiles
+#' @export
+#'
+#' @examples
+#' pipmd_welfare_share_at(welfare = pip_md_s$welfare,
+#'                         weight = pip_md_s$weight)
+pipmd_welfare_share_at <- function(
+    welfare    = NULL,
+    weight     = NULL,
+    n          = 10,
+    popshare   = seq(from = 1/n, to = 1, by = 1/n),
+    format     = c("dt", "list", "atomic")
+){
+  # ____________________________________________________________________________
+  # Arguments ------------------------------------------------------------------
+  if (is.na(welfare) |> any()) {
+    cli::cli_abort("No elements in welfare vector can be NA")
+  }
+  if (is.null(welfare)) {
+    cli::cli_abort("Welfare vector cannot be NULL")
+  }
+  if (length(weight) > 1 & any(is.na(weight))) {
+    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
+  }
+  if (is.null(weight)) {
+    weight <- rep(1, length = length(welfare))
+    cli::cli_alert_warning(
+      text = "No weight vector specified, each observation assigned equal weight"
+    )
+  }
+  if (is.null(n) & is.null(popshare)) {
+    cli::cli_abort("Either `n` or `popshare` must be non-NULL")
+  }
+  format <- match.arg(format)
+
+  # ____________________________________________________________________________
+  # Specify Quantiles ----------------------------------------------------------
+  if (!is.null(n)) {
+    popshare <- seq(from = 1/n, to = 1, by = 1/n)
+  }
+  weight  <- weight[order(welfare)]
+  welfare <- welfare[order(welfare)]
+  q       <- pipmd_quantile(
+    welfare  = welfare,
+    weight   = weight,
+    n        = n,
+    popshare = popshare,
+    format   = "list"
+  )
+  total_weight <- sum(weight)
+  output <- lapply(
+    q,
+    function(x){
+      share <- weight[welfare <= x]
+      share <- sum(share)/total_weight
+      return(share)
+    }
+  )
+
+  # ____________________________________________________________________________
+  # Format & Return -------------------------------------------------------------
+  if (format == "list") {
+    return(output)
+  } else if (format == "atomic") {
+    return(
+      output |> unlist()
+    )
+  } else if (format == "dt") {
+    output <- data.table::data.table(
+      quantile   = paste0("q_", names(output)),
+      share_at   = output |> as.numeric()
+    )
+    return(output)
+  }
+
+}
+
+
+
+
+
+
+#' Quantile welfare share
+#'
+#' `pipmd_quantile_welfare_share` returns the share of welfare held by a
+#' particular quantile. Notice that `pipmd_welfare_share_at` get the share of
+#' welfare held by a particular share of the population, which is in a sense
+#' the cumulative share. Instead, `pipmd_quantile_welfare_share` returns
+#' the proportion of welfare that only the specified quantile holds.
+#'
+#' @inheritParams pipmd_quantile
+#'
+#' @return list with vector of share of welfare by quantiles
+#' @export
+#'
+#' @examples
+#' pipmd_quantile_welfare_share(welfare = pip_md_s$welfare,
+#'                              weight = pip_md_s$weight)
+pipmd_quantile_welfare_share <- function(
+    welfare    = NULL,
+    weight     = NULL,
+    n          = 10,
+    popshare   = seq(from = 1/n, to = 1, by = 1/n),
+    format     = c("dt", "list", "atomic")
+){
+  # ____________________________________________________________________________
+  # Arguments ------------------------------------------------------------------
+  if (is.na(welfare) |> any()) {
+    cli::cli_abort("No elements in welfare vector can be NA")
+  }
+  if (is.null(welfare)) {
+    cli::cli_abort("Welfare vector cannot be NULL")
+  }
+  if (length(weight) > 1 & any(is.na(weight))) {
+    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
+  }
+  if (is.null(weight)) {
+    weight <- rep(1, length = length(welfare))
+    cli::cli_alert_warning(
+      text = "No weight vector specified, each observation assigned equal weight"
+    )
+  }
+  if (is.null(n) & is.null(popshare)) {
+    cli::cli_abort("Either `n` or `popshare` must be non-NULL")
+  }
+  format <- match.arg(format)
+
+
+  # ____________________________________________________________________________
+  # Specify Quantiles ----------------------------------------------------------
+  if (!is.null(n)) {
+    popshare <- seq(from = 1/n, to = 1, by = 1/n)
+  }
+  weight  <- weight[order(welfare)]
+  welfare <- welfare[order(welfare)]
+  output  <- pipmd_quantile(
+    welfare  = welfare,
+    weight   = weight,
+    n        = n,
+    popshare = popshare,
+    format   = "atomic"
+  )
+
+  # ____________________________________________________________________________
+  # Format & Return -------------------------------------------------------------
+  if (format == "list") {
+    return(output |> as.list())
+  } else if (format == "atomic") {
+    return(output)
+  } else if (format == "dt") {
+    output <- data.table::data.table(
+      quantile   = paste0("q_", names(output)),
+      share_at   = output |> as.numeric()
+    )
+    return(output)
+  }
+
+}
+
+
+
+
+
+
+
 
 
 #

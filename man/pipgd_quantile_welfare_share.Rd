@@ -37,9 +37,9 @@ list with welfare shares
 \description{
 \code{pipgd_quantile_welfare_share} returns the share of welfare held by a
 particular quantile. Notice that \code{pipgd_welfare_share_at} get the share of
-welfare held by a particular share of the population. Instead,
-\code{pipgd_quantile_welfare_share} returns the proportion of welfare that only
-the specified quantile holds.
+welfare held by a particular share of the population, which is in a sense
+the cumulative share. Instead, \code{pipgd_quantile_welfare_share} returns
+the proportion of welfare that only the specified quantile holds.
 }
 \examples{
 pipgd_quantile_welfare_share(welfare = pip_gd$L,

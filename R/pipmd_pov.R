@@ -32,11 +32,11 @@ pipmd_pov_headcount_nv <- function(
   if (is.na(welfare) |> any()) {
     cli::cli_abort("No elements in welfare vector can be NA")
   }
-  if (is.null(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
+  if (is.null(welfare)) {
+    cli::cli_abort("Welfare vector cannot be NULL")
   }
   if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NULL")
+    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
   }
   if (is.null(weight)) {
     weight <- rep(1, length = length(welfare))
@@ -164,11 +164,11 @@ pipmd_pov_gap_nv <- function(
   if (is.na(welfare) |> any()) {
     cli::cli_abort("No elements in welfare vector can be NA")
   }
-  if (is.null(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
+  if (is.null(welfare)) {
+    cli::cli_abort("Welfare vector cannot be NULL")
   }
   if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NULL")
+    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
   }
   if (is.null(weight)) {
     weight <- rep(1, length = length(welfare))
@@ -295,11 +295,11 @@ pipmd_pov_severity_nv <- function(
   if (is.na(welfare) |> any()) {
     cli::cli_abort("No elements in welfare vector can be NA")
   }
-  if (is.null(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
+  if (is.null(welfare)) {
+    cli::cli_abort("Welfare vector cannot be NULL")
   }
   if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NULL")
+    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
   }
   if (is.null(weight)) {
     weight <- rep(1, length = length(welfare))
@@ -422,11 +422,11 @@ pipmd_watts_nv <- function(
   if (is.na(welfare) |> any()) {
     cli::cli_abort("No elements in welfare vector can be NA")
   }
-  if (is.null(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
+  if (is.null(welfare)) {
+    cli::cli_abort("Welfare vector cannot be NULL")
   }
   if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NULL")
+    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
   }
   if (is.null(weight)) {
     weight <- rep(1, length = length(welfare))

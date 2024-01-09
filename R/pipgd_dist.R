@@ -81,9 +81,9 @@ pipgd_welfare_share_at <- function(
 #'
 #' `pipgd_quantile_welfare_share` returns the share of welfare held by a
 #' particular quantile. Notice that `pipgd_welfare_share_at` get the share of
-#' welfare held by a particular share of the population. Instead,
-#' `pipgd_quantile_welfare_share` returns the proportion of welfare that only
-#' the specified quantile holds.
+#' welfare held by a particular share of the population, which is in a sense
+#' the cumulative share. Instead, `pipgd_quantile_welfare_share` returns
+#' the proportion of welfare that only the specified quantile holds.
 #'
 #' @inheritParams pipgd_welfare_share_at
 #'
