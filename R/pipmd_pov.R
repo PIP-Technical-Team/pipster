@@ -32,6 +32,9 @@ pipmd_pov_headcount_nv <- function(
   if (is.na(welfare) |> any()) {
     cli::cli_abort("No elements in welfare vector can be NA")
   }
+  if (is.null(welfare) |> any()) {
+    cli::cli_abort("No elements in welfare vector can be NA")
+  }
   if (length(weight) > 1 & any(is.na(weight))) {
     cli::cli_abort("No elements in weight vector can be NULL")
   }
@@ -161,6 +164,9 @@ pipmd_pov_gap_nv <- function(
   if (is.na(welfare) |> any()) {
     cli::cli_abort("No elements in welfare vector can be NA")
   }
+  if (is.null(welfare) |> any()) {
+    cli::cli_abort("No elements in welfare vector can be NA")
+  }
   if (length(weight) > 1 & any(is.na(weight))) {
     cli::cli_abort("No elements in weight vector can be NULL")
   }
@@ -179,6 +185,7 @@ pipmd_pov_gap_nv <- function(
       text = "Note: specified poverty line is not within the welfare range"
     )
   }
+
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
@@ -286,6 +293,9 @@ pipmd_pov_severity_nv <- function(
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
   if (is.na(welfare) |> any()) {
+    cli::cli_abort("No elements in welfare vector can be NA")
+  }
+  if (is.null(welfare) |> any()) {
     cli::cli_abort("No elements in welfare vector can be NA")
   }
   if (length(weight) > 1 & any(is.na(weight))) {
@@ -412,6 +422,9 @@ pipmd_watts_nv <- function(
   if (is.na(welfare) |> any()) {
     cli::cli_abort("No elements in welfare vector can be NA")
   }
+  if (is.null(welfare) |> any()) {
+    cli::cli_abort("No elements in welfare vector can be NA")
+  }
   if (length(weight) > 1 & any(is.na(weight))) {
     cli::cli_abort("No elements in weight vector can be NULL")
   }
@@ -430,6 +443,7 @@ pipmd_watts_nv <- function(
       text = "Note: specified poverty line is not within the welfare range"
     )
   }
+
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------

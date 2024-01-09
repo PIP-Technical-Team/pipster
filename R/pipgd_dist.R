@@ -1,4 +1,6 @@
 # This file contains all the functions related to distributional measures.
+#  on grouped data
+
 
 #' Welfare share by quantile in group data
 #'
@@ -139,21 +141,26 @@ pipgd_quantile_welfare_share <-
 }
 
 
-#' Get quantile at specified shared of population
+#' Get quantile at specified shared of population - grouped data
 #'
 #' `pipgd_quantile` returns the quantile (i.e., monetary value) that corresponds
-#' to shared of the population that lives below that threshold.
+#' to share of the population that lives below that threshold.
 #'
 #' This is basically the inverse of estimating the poverty rate (headcount or
 #' population share) below the poverty line. In this case, you provide the
-#' headcount and `pipgs_quantile` returns the "poverty line".
+#' headcount and `pipgd_quantile` returns the "poverty line".
 #'
 #' The quantiles are calculated as function of the mean of the distribution
 #' times an `x` factor. Basically, the quantile is `x` times the mean. By
 #' default, the mean is equal to 1, which implies that, if no mean value if
 #' provided, the return value is equal to `x`.
 #'
-#' **NOTE:** the outcome from `pipgd_quantile` is not necessarily the inverse of [pipgd_pov_headcount]. The reason for this ia that, [pipgd_pov_headcount] selects the Lorenz parametrization that fits better that the specified point of the distribution (e.i., the poverty lines). [pipgd_quantile], in contrast, use the same Lorenz parametrization for any point. The lorenz used is the one that fits best for all distributional measures.
+#' **NOTE:** the outcome from `pipgd_quantile` is not necessarily the inverse
+#' of [pipgd_pov_headcount]. The reason for this is that, [pipgd_pov_headcount]
+#' selects the Lorenz parametrization that fits better at that specified point
+#' of the distribution (i.e., the poverty lines). [pipgd_quantile], in contrast,
+#' use the same Lorenz parametrization for any point. The lorenz used is the one
+#' that fits best for all distributional measures.
 #'
 #' @inheritParams pipgd_welfare_share_at
 #' @inheritParams pipgd_select_lorenz
