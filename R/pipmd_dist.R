@@ -1,16 +1,6 @@
 # This file contains all the functions related to distributional measures
 #  on microdata (md)
 
-# mean
-# median
-# quantile
-# welfare share at xth percentile
-# quantile's welfare share
-# quantile
-# gini
-# polarization
-# mld
-
 
 
 #' Get quantile at specified shared of population - micro data
@@ -279,6 +269,81 @@ pipmd_quantile_welfare_share <- function(
   }
 
 }
+
+
+
+
+#' Gini coefficient
+#'
+#' Compute the Gini coefficient for microdata.
+#'
+#' Given a vector of income or consumption values and their respective weights
+#' `pipmd_gini()` computes the Gini coefficient for the distribution.
+#'
+#' @inheritParams pipmd_quantile
+#'
+#' @return gini
+#' @export
+#'
+#' @examples
+#' pipmd_gini(welfare = pip_md_s$welfare,
+#'            weight = pip_md_s$weight)
+pipmd_gini <- function(
+    welfare = NULL,
+    weight  = NULL,
+    format  = c("dt", "list", "atomic")
+){
+  # ____________________________________________________________________________
+  # Arguments ------------------------------------------------------------------
+  if (is.na(welfare) |> any()) {
+    cli::cli_abort("No elements in welfare vector can be NA")
+  }
+  if (is.null(welfare)) {
+    cli::cli_abort("Welfare vector cannot be NULL")
+  }
+  if (length(weight) > 1 & any(is.na(weight))) {
+    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
+  }
+  if (is.null(weight)) {
+    weight <- rep(1, length = length(welfare))
+    cli::cli_alert_warning(
+      text = "No weight vector specified, each observation assigned equal weight"
+    )
+  }
+
+  # ____________________________________________________________________________
+  # Calculations ---------------------------------------------------------------
+  gn <- wbpip::md_compute_gini(
+    welfare = welfare,
+    weight  = weight
+  )
+  names(gn) <- "gini"
+
+  # ____________________________________________________________________________
+  # Format & Return ------------------------------------------------------------
+  if (format == "list") {
+    return(gn |> as.list())
+  } else if (format == "atomic") {
+    return(gn)
+  } else if (format == "dt") {
+    gn <- data.table::data.table(
+      indicator = "gini",
+      value     = gn
+    )
+    return(gn)
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
