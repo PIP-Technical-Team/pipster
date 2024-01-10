@@ -44,7 +44,7 @@ provided, the return value is equal to \code{x}.
 }
 \examples{
 pipmd_quantile(
-  welfare = pip_md_s$welfare
+  welfare = pip_md_s$welfare,
   weight  = pip_md_s$weight,
   n       = 5
 )

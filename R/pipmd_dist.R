@@ -30,7 +30,7 @@
 #'
 #' @examples
 #' pipmd_quantile(
-#'   welfare = pip_md_s$welfare
+#'   welfare = pip_md_s$welfare,
 #'   weight  = pip_md_s$weight,
 #'   n       = 5
 #' )
@@ -64,36 +64,19 @@ pipmd_quantile <- function(
   }
   format <- match.arg(format)
 
-
   # ____________________________________________________________________________
-  # Specify Quantiles ----------------------------------------------------------
-  if (!is.null(n)) {
-    popshare <- seq(from = 1/n, to = 1, by = 1/n)
-  }
-
-  # ____________________________________________________________________________
-  # Calculations ---------------------------------------------------------------
-  q <- fquantile(
-    x     = welfare,
-    w     = weight,
-    probs = popshare
+  # Computations ---------------------------------------------------------------
+  output <- wbpip::md_quantile_values(
+    welfare    = welfare,
+    weight     = weight,
+    n          = n,
+    popshare   = popshare,
+    format     = format
   )
 
   # ____________________________________________________________________________
   # Format and Return ----------------------------------------------------------
-  if (format == "atomic") {
-    return(q)
-  } else if (format == "dt") {
-    q <- data.table::data.table(
-      quantile = paste0("q_", names(q)),
-      values   = q |> as.numeric()
-    )
-    return(q)
-  } else if (format == "list") {
-    return(
-      as.list(q)
-    )
-  }
+  return(output)
 
 
 }
@@ -147,44 +130,18 @@ pipmd_welfare_share_at <- function(
   format <- match.arg(format)
 
   # ____________________________________________________________________________
-  # Specify Quantiles ----------------------------------------------------------
-  if (!is.null(n)) {
-    popshare <- seq(from = 1/n, to = 1, by = 1/n)
-  }
-  weight  <- weight[order(welfare)]
-  welfare <- welfare[order(welfare)]
-  q       <- pipmd_quantile(
-    welfare  = welfare,
-    weight   = weight,
-    n        = n,
-    popshare = popshare,
-    format   = "list"
-  )
-  total_weight <- sum(weight)
-  output <- lapply(
-    q,
-    function(x){
-      share <- weight[welfare <= x]
-      share <- sum(share)/total_weight
-      return(share)
-    }
+  # Computations ---------------------------------------------------------------
+  output <- wbpip::md_welfare_share_at(
+    welfare    = welfare,
+    weight     = weight,
+    n          = n,
+    popshare   = popshare,
+    format     = format
   )
 
   # ____________________________________________________________________________
   # Format & Return -------------------------------------------------------------
-  if (format == "list") {
-    return(output)
-  } else if (format == "atomic") {
-    return(
-      output |> unlist()
-    )
-  } else if (format == "dt") {
-    output <- data.table::data.table(
-      quantile   = paste0("q_", names(output)),
-      share_at   = output |> as.numeric()
-    )
-    return(output)
-  }
+  return(output)
 
 }
 
@@ -240,33 +197,18 @@ pipmd_quantile_welfare_share <- function(
 
 
   # ____________________________________________________________________________
-  # Specify Quantiles ----------------------------------------------------------
-  if (!is.null(n)) {
-    popshare <- seq(from = 1/n, to = 1, by = 1/n)
-  }
-  weight  <- weight[order(welfare)]
-  welfare <- welfare[order(welfare)]
-  output  <- pipmd_quantile(
-    welfare  = welfare,
-    weight   = weight,
-    n        = n,
-    popshare = popshare,
-    format   = "atomic"
+  # Calculations ---------------------------------------------------------------
+  output <- md_quantile_welfare_share(
+    welfare    = welfare,
+    weight     = weight,
+    n          = n,
+    popshare   = popshare,
+    format     = format
   )
 
   # ____________________________________________________________________________
-  # Format & Return -------------------------------------------------------------
-  if (format == "list") {
-    return(output |> as.list())
-  } else if (format == "atomic") {
-    return(output)
-  } else if (format == "dt") {
-    output <- data.table::data.table(
-      quantile   = paste0("q_", names(output)),
-      share_at   = output |> as.numeric()
-    )
-    return(output)
-  }
+  # Return ---------------------------------------------------------------------
+  return(output)
 
 }
 
