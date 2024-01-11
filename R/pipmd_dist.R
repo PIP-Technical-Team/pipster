@@ -198,7 +198,7 @@ pipmd_quantile_welfare_share <- function(
 
   # ____________________________________________________________________________
   # Calculations ---------------------------------------------------------------
-  output <- md_quantile_welfare_share(
+  output <- wbpip::md_quantile_welfare_share(
     welfare    = welfare,
     weight     = weight,
     n          = n,
@@ -329,7 +329,7 @@ pipmd_polarization <- function(
     gini <- pipmd_gini(
       welfare = welfare,
       weight  = weight,
-      format  = format
+      format  = "atomic"
     )
   }
   if (is.null(mean)) {
