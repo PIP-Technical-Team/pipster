@@ -252,6 +252,7 @@ pipmd_gini <- function(
       text = "No weight vector specified, each observation assigned equal weight"
     )
   }
+  format <- match.arg(format)
 
   # ____________________________________________________________________________
   # Calculations ---------------------------------------------------------------
@@ -279,7 +280,168 @@ pipmd_gini <- function(
 
 
 
+#' Wolfson polarization index
+#'
+#' Compute the Wolfson polarization index for microdata.
+#'
+#' Given a vector of income or consumption values and their respective weights
+#' `pipmd_polarization()` computes the Wolfson polarization index.
+#'
+#' @inheritParams pipmd_quantile
+#' @param gini numeric: gini coefficient. If NULL (default) then uses
+#' [pipmd_gini] to calculate the gini.
+#' @param mean numeric: weighted welfare mean. Default is NULL.
+#' @param median numeric: weighted welfare mean. Default is NULL.
+#'
+#' @return numeric: Wolfson polarization index, see `format` argument.
+#' @export
+#'
+#' @examples
+#' pipmd_polarization(welfare = pip_md_s$welfare,
+#'            weight = pip_md_s$weight)
+pipmd_polarization <- function(
+    welfare = NULL,
+    weight  = NULL,
+    gini    = NULL,
+    mean    = NULL,
+    median  = NULL,
+    format  = c("dt", "list", "atomic")
+){
+  # ____________________________________________________________________________
+  # Arguments ------------------------------------------------------------------
+  if (is.na(welfare) |> any()) {
+    cli::cli_abort("No elements in welfare vector can be NA")
+  }
+  if (is.null(welfare)) {
+    cli::cli_abort("Welfare vector cannot be NULL")
+  }
+  if (length(weight) > 1 & any(is.na(weight))) {
+    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
+  }
+  if (is.null(weight)) {
+    weight <- rep(1, length = length(welfare))
+    cli::cli_alert_warning(
+      text = "No weight vector specified, each observation assigned equal weight"
+    )
+  }
+  format <- match.arg(format)
+  if (is.null(gini)) {
+    gini <- pipmd_gini(
+      welfare = welfare,
+      weight  = weight,
+      format  = format
+    )
+  }
+  if (is.null(mean)) {
+    mean <- weighted.mean(
+      x = welfare,
+      w = weight
+    )
+  }
+  if (is.null(median)) {
+    median <- fquantile(
+      x     = welfare,
+      w     = weight,
+      probs = 0.5
+    )
+  }
 
+  # ____________________________________________________________________________
+  # Calculations ---------------------------------------------------------------
+  p <- wbpip::md_compute_polarization(
+    welfare = welfare,
+    weight  = weight,
+    gini    = gini,
+    mean    = mean,
+    median  = median
+  )
+  names(p) <- "polarization"
+
+  # ____________________________________________________________________________
+  # Format & Return ------------------------------------------------------------
+  if (format == "list") {
+    return(p |> as.list())
+  } else if (format == "atomic") {
+    return(p)
+  } else if (format == "dt") {
+    p <- data.table::data.table(
+      indicator = "polarization",
+      value     = p
+    )
+    return(p)
+  }
+}
+
+
+
+#' Mean Log Deviation
+#'
+#' Given a vector of weights and welfare, this functions computes the
+#' Mean Log Deviation (MLD).
+#'
+#'
+#' @inheritParams pipmd_polarization
+#'
+#' @return numeric: MLD, see `format` argument.
+#' @export
+#'
+#' @examples
+#' pipmd_mld(welfare = pip_md_s$welfare,
+#'            weight = pip_md_s$weight)
+pipmd_mld <- function(
+    welfare = NULL,
+    weight  = NULL,
+    mean    = NULL,
+    format  = c("dt", "list", "atomic")
+){
+  # ____________________________________________________________________________
+  # Arguments ------------------------------------------------------------------
+  if (is.na(welfare) |> any()) {
+    cli::cli_abort("No elements in welfare vector can be NA")
+  }
+  if (is.null(welfare)) {
+    cli::cli_abort("Welfare vector cannot be NULL")
+  }
+  if (length(weight) > 1 & any(is.na(weight))) {
+    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
+  }
+  if (is.null(weight)) {
+    weight <- rep(1, length = length(welfare))
+    cli::cli_alert_warning(
+      text = "No weight vector specified, each observation assigned equal weight"
+    )
+  }
+  format <- match.arg(format)
+  if (is.null(mean)) {
+    mean <- weighted.mean(
+      x = welfare,
+      w = weight
+    )
+  }
+
+  # ____________________________________________________________________________
+  # Calculations ---------------------------------------------------------------
+  p <- wbpip::md_compute_mld(
+    welfare = welfare,
+    weight  = weight,
+    mean    = mean
+  )
+  names(p) <- "mld"
+
+  # ____________________________________________________________________________
+  # Format & Return ------------------------------------------------------------
+  if (format == "list") {
+    return(p |> as.list())
+  } else if (format == "atomic") {
+    return(p)
+  } else if (format == "dt") {
+    p <- data.table::data.table(
+      indicator = "mld",
+      value     = p
+    )
+    return(p)
+  }
+}
 
 
 

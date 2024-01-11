@@ -57,10 +57,10 @@ pipmd_pov_headcount_nv <- function(
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   output <- list()
-  hc <- wbpip:::md_compute_poverty_stats(
+  hc <- wbpip::md_compute_poverty_stats(
     welfare      = welfare,
     weight       = weight,
-    povline_lcu = povline
+    povline_lcu  = povline
   )
   output$pov_headcount <- hc$headcount
 
