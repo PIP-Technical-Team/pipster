@@ -21,7 +21,7 @@ test_that("pipgd_select_lorenz work", {
   res <-
     pipgd_params(welfare = pip_gd$L,
                  weight = pip_gd$P) |>
-    pipgd_validate_lorenz() |>
+    pipgd_validate_lorenz(complete = TRUE) |>
     pipgd_select_lorenz()
 
   res2 <- pipgd_select_lorenz(welfare = pip_gd$L,
