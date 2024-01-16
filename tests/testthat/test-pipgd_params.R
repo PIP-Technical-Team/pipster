@@ -77,11 +77,11 @@ test_that("check_pipgd_params aborts on invalid params", {
   expect_error(check_pipgd_params(lp), "Lp input must be a list")
 
   # Params ---------------------------
-  lp <- pipgd_params(welfare = pip_gd$L, weight = pip_gd $P)$gd_params
+  lp <- pipgd_params(welfare = pip_gd$L, weight = pip_gd $P)$params
   nlp <- names(lp)
   res <- check_pipgd_params(lp)
   
-  if ("gd_params" %in% nlp) {
+  if ("params" %in% nlp) {
     if (!is.null(lp$params) && inherits(lp$params, "pipgd_params")) {
       expect_silent(check_pipgd_params(lp))
     }
@@ -114,11 +114,7 @@ test_that("check_pipgd_params aborts on invalid params", {
     }
   }
   
-
-
-
-
-
+#TODO: better understand the input of check_pipgd_params and double check this test 
 
 })
 
