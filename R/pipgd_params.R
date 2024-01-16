@@ -1,16 +1,15 @@
-#' Get Group Data Parameters
+?#' Get Group Data Parameters
 #'
 #' Get Parameters and key values derived from the quadratic and Beta Lorenz
 #' parametrization. `welfare` and `population` must be vectors of a group data
 #' dataset
-#'
+#' @name pipgd_params
 #' @param welfare numeric vector of cumulative share of welfare (income/consumption)
 #' @param weight numeric vector of cumulative share of the population
 #' @param mean numeric scalar of distribution mean. Default is NULL
 #' @param population numeric scalar with actual size of population. Default is NULL
 #'
 #' @return list with Group data parameters parameters
-#' @export
 #' @references
 #' Datt, G. 1998. "[Computational Tools For Poverty Measurement And
 #' Analysis](https://ageconsearch.umn.edu/record/94862/)". FCND
@@ -116,7 +115,7 @@ check_pipgd_params <- function(lp) {
   nlp <- names(lp)
 
   ## params --------------------
-  if ("params" %in% nlp) {
+  if ("gd_params" %in% nlp) {
     if (!is.null(lp$params) && !inherits(lp$params, "pipgd_params")) {
       cli::cli_abort(c("argument {.field params} must be of
                        class {.code pipgd_params}.",
@@ -172,3 +171,4 @@ check_pipgd_params <- function(lp) {
   return(invisible(TRUE))
 
 }
+

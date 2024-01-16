@@ -2,10 +2,9 @@
 % Please edit documentation in R/pipgd_params.R
 \name{pipgd_params}
 \alias{pipgd_params}
-\title{Get Group Data Parameters}
-\usage{
-pipgd_params(welfare, weight, mean = NULL, population = NULL)
-}
+\title{Get Parameters and key values derived from the quadratic and Beta Lorenz
+parametrization. \code{welfare} and \code{population} must be vectors of a group data
+dataset}
 \arguments{
 \item{welfare}{numeric vector of cumulative share of welfare (income/consumption)}
 

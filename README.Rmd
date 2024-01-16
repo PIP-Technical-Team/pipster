@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # pipster
 
 <!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/PIP-Technical-Team/pipster/branch/PROD/graph/badge.svg)](https://app.codecov.io/gh/PIP-Technical-Team/pipster?branch=PROD)
 <!-- badges: end -->
 
 The goal of pipster is to make use of `{wbpip}` functions easily. 
