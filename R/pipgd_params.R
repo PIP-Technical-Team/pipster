@@ -1,4 +1,4 @@
-?#' Get Group Data Parameters
+#' Get Group Data Parameters
 #'
 #' Get Parameters and key values derived from the quadratic and Beta Lorenz
 #' parametrization. `welfare` and `population` must be vectors of a group data
@@ -8,8 +8,9 @@
 #' @param weight numeric vector of cumulative share of the population
 #' @param mean numeric scalar of distribution mean. Default is NULL
 #' @param population numeric scalar with actual size of population. Default is NULL
-#' @export 
+#'
 #' @return list with Group data parameters parameters
+#' @export
 #' @references
 #' Datt, G. 1998. "[Computational Tools For Poverty Measurement And
 #' Analysis](https://ageconsearch.umn.edu/record/94862/)". FCND

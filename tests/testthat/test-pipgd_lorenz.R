@@ -87,9 +87,4 @@ test_that("pipgd_lorenz_curve", {
   names(res$lorenz_curve) |>
     expect_equal(c("outputs", "points", "lorenz"))
 
-
-
-
-
-
 })
