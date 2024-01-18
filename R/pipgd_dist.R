@@ -20,9 +20,35 @@
 #' @export
 #'
 #' @examples
-#' pipgd_welfare_share_at(welfare = pip_gd$L,
-#'                         weight = pip_gd$P,
-#'                         complete = FALSE)
+#' # Example 1: Basic usage with default parameters
+#' welfare_share_default <- pipgd_welfare_share_at(welfare = pip_gd$L,
+#'                                                 weight = pip_gd$P,
+#'                                                 complete = FALSE)
+#'
+#' # Example 2: Specifying a custom number of quantiles (n = 5)
+#' welfare_share_custom_quantiles <- pipgd_welfare_share_at(welfare = pip_gd$L,
+#'                                                          weight = pip_gd$P,
+#'                                                          complete = FALSE,
+#'                                                          n = 5)
+#'
+#' # Example 3: Using a custom population share vector
+#' welfare_share_custom_popshare <- pipgd_welfare_share_at(welfare = pip_gd$L,
+#'                                                         weight = pip_gd$P,
+#'                                                         complete = FALSE,
+#'                                                         popshare = pip_gd$R)
+#'
+#'
+#' # Example 4: Using a different Lorenz curve (e.g., Lorenz Beta)
+#' welfare_share_lorenz_beta <- pipgd_welfare_share_at(welfare = pip_gd$L,
+#'                                                     weight = pip_gd$P,
+#'                                                     complete = FALSE,
+#'                                                     lorenz = "lb")
+#'
+#'
+#' # Example 5: Detailed output with complete = TRUE
+#' welfare_share_detailed <- pipgd_welfare_share_at(welfare = pip_gd$L,
+#'                                                  weight = pip_gd$P,
+#'                                                  complete = TRUE)
 pipgd_welfare_share_at <- function(
     params     = NULL,
     welfare    = NULL,
