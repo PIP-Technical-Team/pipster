@@ -122,7 +122,7 @@ test_that("pipgd_pov_gap_nv works as expected", {
     expect_equal(c("lq", "lb"))
   
   names(res_params_complete$gd_params$lq) |>
-    expect_equal(names(res_params_complete$gd$params$lb))
+    expect_equal(names(res_params_complete$gd_params$lb))
   
   names(res_params_complete$gd_params$lb) |>
     expect_equal(c("reg_results", "key_values", "validity"))
@@ -139,13 +139,13 @@ test_that("pipgd_pov_gap_nv works as expected", {
   names(res_params_complete$gd_params$lq$key_values)|>
     expect_equal(c("e", "m", "n", "r", "s1","s2"))
   
-  names(res_params_complete$gd$params$data) |>
+  names(res_params_complete$data) |>
       expect_equal(c("welfare", "weight"))
     
-  names(res_params_complete$gd$params$selected_lorenz) |>
+  names(res_params_complete$selected_lorenz) |>
       expect_equal(c("for_dist", "for_pov", "use_lq_for_dist", "use_lq_for_pov"))
   
-  names(res_params_complete$gd$params$pov_stats) |>
+  names(res_params_complete$pov_stats) |>
       expect_equal(c("headcount", "lorenz", "pov_gap"))
 
 })
@@ -173,11 +173,11 @@ test_that("pipgd_pov_gap works as expected", {
 
   # Output format --------------------------------------------------------------
   class(pipgd_pov_gap(welfare = welfare, weight = weight, format = "list")) |>
-    expect_equal(class"list")
+    expect_equal("list")
   class(pipgd_pov_gap(welfare = welfare, weight = weight, format = "atomic")) |>
-    expect_equal(class"numeric")
+    expect_equal("numeric")
   #class(pipgd_pov_gap(welfare = welfare, weight = weight, format = "dt")) |>
-  #  expect_equal(class"list")
+  #  expect_equal("list")
   
 })
 
@@ -212,26 +212,213 @@ test_that("pipgd_pov_severity_nv() -mean works", {
   )
 
   expect_equal(
-    ps1, psnone
+    res_mean_1, res_mean_none
   )
   expect_equal(
-    ps1, psnull
+    res_mean_1, res_mean_null
   )
 })
 
 test_that("pipgd_pov_severity_nv() -lorenz works", {
-  res_lnull <- pipgd_pov_severity_nv(params = params, lorenz = NULL)
+  res_lnull <- pipgd_pov_severity_nv(welfare = welfare, weight = weight, lorenz = NULL)
   res_lnull$pov_severity
 
-})
-test_that("pipgd_pov_severity_nv() -pov_gap works", {
+  # Invalid Lorenz
+  expect_error(pipgd_pov_severity_nv(welfare = welfare, weight = weight, lorenz = "neither NULL, lb or lq"))
+  expect_error(pipgd_pov_severity_nv(welfare = welfare, weight = weight, lorenz = 5))
+
+  # Lorenz = "lb"
+  pipgd_pov_severity_nv(welfare = welfare, weight = weight, lorenz = "lb")$pov_stats$lorenz |>
+    expect_equal("lb")
+  # Lorenz = "lq"
+  pipgd_pov_severity_nv(welfare = welfare, weight = weight, lorenz = "lq")$pov_stats$lorenz  |>
+    expect_equal("lq")
+  # Lorenz = NULL
+  pipgd_pov_severity_nv(welfare = welfare, weight = weight, lorenz = NULL)$pov_stats$lorenz  |>
+    expect_equal(params$selected_lorenz$for_pov)
 
 })
+
+test_that("pipgd_pov_severity_nv() -pov_gap works", {
+  # pov gap must be either NULL or the result of pipster:::pipgd_pov_gap_nv
+  pov_gap <- pipgd_pov_gap_nv(params=params)$pov_stats$pov_gap
+  pipgd_pov_severity_nv(welfare = welfare, weight = weight, pov_gap = 0.2052332) |>
+    expect_equal(pipgd_pov_severity_nv(params = params, pov_gap = pov_gap))
+  # NOT WORKING WHEN POV GAP IS NOT NULL
+})
+
 test_that("pipgd_pov_severity_nv() -complete works", {
+  res_complete <- pipgd_pov_severity_nv(welfare = welfare, weight = weight, complete = TRUE)
+  res_not_complete <- pipgd_pov_severity_nv(welfare = welfare, weight = weight)
+
+  names(res_complete) |>
+    expect_equal(c("gd_params", "data", "selected_lorenz", "pov_stats"))
+  
+  names(res_complete$gd_params) |>
+    expect_equal(c("lq", "lb"))
+
+  names(res_complete$gd_params$lq) |>
+    expect_equal(names(res_complete$gd_params$lb))
+  
+  names(res_complete$gd_params$lb) |>
+    expect_equal(c("reg_results", "key_values", "validity"))
+
+  names(res_complete$gd_params$lb$reg_results) |>
+    expect_equal(c("ymean", "sst", "coef", "sse", "r2", "mse", "se"))
+
+  names(res_complete$gd_params$lb$reg_results$coef) |>
+    expect_equal(c("A", "B", "C"))
+  
+  names(res_complete$gd_params$lb$validity) |>
+    expect_equal(c("is_valid", "is_normal", "headcount"))
+  
+  names(res_complete$gd_params$lq$key_values)|>
+    expect_equal(c("e", "m", "n", "r", "s1","s2"))
+  
+  names(res_complete$data) |>
+      expect_equal(c("welfare", "weight"))
+    
+  names(res_complete$selected_lorenz) |>
+      expect_equal(c("for_dist", "for_pov", "use_lq_for_dist", "use_lq_for_pov"))
+  
+  names(res_complete$pov_stats) |>
+      expect_equal(c("headcount", "lorenz", "pov_gap", "pov_severity"))
+  
+  # Test output class
+  class(res_complete) |>
+    expect_equal("pipgd_params")
+  
+  #class(res_not_complete) |>
+  #  expect_equal("list")
+
+})
+
+test_that("pipgd_pov_severity_nv() -pov_severity works", {
+  params_pov_gap <- pipgd_pov_gap_nv(welfare = welfare, weight = weight, complete = TRUE)
+  mean = 1
+  times_mean = 1
+  # Test pov_severity is returned from wbpip::wbpip:::gd_compute_pov_severity_lb (when lorenz='lb')
+  pipgd_pov_severity_nv(welfare = welfare, weight = weight, lorenz = "lb")$pov_stats$pov_severity |>
+    expect_equal(
+      wbpip:::gd_compute_pov_severity_lb(mean = mean,
+      povline    = mean*times_mean,
+       headcount = params$pov_stats$headcount,
+       pov_gap   = params$pov_stats$pov_gap,
+       A         = params$gd_params$lb$reg_results$coef[["A"]],
+       B         = params$gd_params$lb$reg_results$coef[["B"]],
+       C         = params$gd_params$lb$reg_results$coef[["C"]])
+    )
+  # Test pov_severity is returned from wbpip::wbpip:::gd_compute_pov_severity_lb (when lorenz='lq')
+  # NOTE: pipgd_pov_severity_nv is not working when lorenz = "lq", 
+  # because it does not find wbpip::gd_compute_poverty_severity_lq
 
 })
 
 # Test pipgd_pov_severity (vectorized)
+
+test_that("pipgd_pov_severity inputs works as expected", {
+  povline = c(.5, 1, 2, 3) 
+  
+  # Test params, welfare and weights arguments work as expected
+  pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline) |>
+    expect_equal(pipgd_pov_severity(params = params, povline = povline))
+  
+  pipgd_pov_severity(welfare = welfare, weight = NULL, povline = povline) |>
+    expect_error()
+  
+  pipgd_pov_severity(welfare = NULL, weight = weight, povline = povline) |>
+    expect_error()
+  
+  # Test format argument works as expected
+  pipgd_pov_severity(welfare = welfare, weight = weight, 
+                      povline = povline, format = "Neither dt, list or atomic") |>
+    expect_error()
+  
+  # Test lorenz argument works as expected
+  pipgd_pov_severity(welfare = welfare, weight = weight, 
+                      povline = povline, lorenz = "Neither NULL, lb or lq") |>
+    expect_error()
+  
+  # Test mean argument works as expected
+  pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline, mean = 1) |>
+    expect_equal(pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline))
+  
+  pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline, mean = 1) |>
+    expect_equal(pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline, mean = NULL))
+
+  # Test popshare argument works as expected
+  # When popshare is provided (not NULL), 
+  # Error: in if (fl * fh >= 0) { : missing value where TRUE/FALSE needed
+
+  # Test pov_gap argument works as expected
+  # When pov_gap is provided (not NULL),
+  # Error: Error in params$selected_lorenz : $ operator is invalid for atomic vectors
+  
+  # Test complete argument works as expected
+  # Output is the same when Complete is TRUE or FALSE 
+})
+
+test_that("pipgd_pov_severity -outputs",{
+  res_atomic_v <- pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline, format = "atomic")
+  res_dt_v <- pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline, format = "dt")
+  res_list_v <- pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline, format = "list")
+ 
+  class(res_atomic_v) |>
+    expect_equal("numeric")
+
+  class(res_list_v) |>
+    expect_equal("list")
+  
+  # Check names in output list - !! the tests below will fail because the function at the current version
+  # does not produce correct outputs names !!
+
+  names(res_list_v) |>
+    expect_equal(c("pl0.5", "pl1", "pl2", "pl3"))
+
+  names(res_list_v$pl0.5) |>
+    expect_equal(names(res_list_v$pl1))
+  
+  names(res_list_v$pl0.5) |>
+    expect_equal(names(res_list_v$pl2))
+
+  names(res_list_v$pl0.5) |>
+    expect_equal(names(res_list_v$pl3))
+  
+  names(res_list_v$pl0.5) |>
+    expect_equal("pov_stats")
+  
+  names(res_list_v$pl0.5$pov_stats) |>
+    expect_equal(c("pov_severity", "lorenz"))
+
+  #class(pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline, format = "dt")) |>
+  #  expect_equal("data.table")
+
+  # Check that vectorization works
+  res_povsev_nv <- pipgd_pov_severity_nv(welfare = welfare, weight = weight, povline = 0.5)$pov_stats$pov_severity
+  
+  res_atomic_v[1] |>
+    expect_equal(res_povsev_nv)
+  
+  res_dt_v$pov_severity[1] |>
+    expect_equal(res_povsev_nv)
+  
+  # The code below will fail because, currently, when format = "list" the output names are incorrect 
+  res_list_v$pl0.5$pov_stats$pov_severity |>
+    expect_equal(res_povsev_nv)
+}
+)
+
+# Test Poverty Watts Index functions ####
+# Test pipgd_watts_nv() function (non vectorized)
+test_that("pipgd_watts_nv inputs work as expected", {
+  
+
+
+})
+
+
+
+# Test pipgd_watts() function
  
 
 

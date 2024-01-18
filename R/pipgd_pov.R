@@ -358,7 +358,8 @@ pipgd_pov_severity_nv <- function(
     #   Computations -----------------------------------------------------------
 
     if (!is.null(pov_gap)) {
-      if (is.null(pov_gap$pov_stats$pov_gap)) {
+      if (pov_gap != pipgd_pov_gap_nv(welfare = welfare, weight = weight)$pov_stats$pov_gap) {
+      # previous v.: if (is.null(pov_gap$pov_stats$pov_gap)) {
         stop("argument `pov_gap` should be the output of `pipster:::pipgd_pov_gap_nv`, else leave `pov_gap = NULL`")
       } else {
         params <- pov_gap
@@ -444,7 +445,7 @@ pipgd_pov_severity_nv <- function(
 #' Estimate poverty severity
 #'
 #' @inheritParams pipgd_pov_gap_nv
-#' @param format character: either "dt" for data.table, "list" or "atomic" for a
+#' @format character: either "dt" for data.table, "list" or "atomic" for a
 #' single numeric vector, whose names are corresponding selected Lorenz for
 #' each value.  Default is "dt"
 #'
