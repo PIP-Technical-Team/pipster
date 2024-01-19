@@ -28,12 +28,27 @@
 #' @return quantiles: see `format`
 #' @export
 #'
+#'
 #' @examples
-#' pipmd_quantile(
-#'   welfare = pip_md_s$welfare,
-#'   weight  = pip_md_s$weight,
-#'   n       = 5
-#' )
+#' # Example 1: Calculating quintiles
+#' pipmd_quantile(welfare = pip_md_s$welfare,
+#'                weight  = pip_md_s$weight,
+#'                n       = 5,
+#'                format  = "list")
+#'
+#' # Example 2: Calculating deciles with data.table format
+#' pipmd_quantile(welfare = pip_md_s$welfare,
+#'                weight  = pip_md_s$weight,
+#'                n       = 10,
+#'                format  = "dt")
+#'
+#' # Example 3: Calculating quantiles at specific population shares and format atomic
+#' specific_popshares <- seq(from = 0, to = 1, length.out = 100)
+#' pipmd_quantile(welfare = pip_md_s$welfare,
+#'                weight  = pip_md_s$weight,
+#'                popshare = specific_popshares,
+#'                format  = "atomic")
+#'
 pipmd_quantile <- function(
   welfare    = NULL,
   weight     = NULL,
