@@ -81,11 +81,24 @@ pipmd_pov_headcount_nv <- function(
 #' @export
 #'
 #' @examples
-#' pipmd_pov_headcount(
-#' welfare = pipmd_s$welfare,
-#' weight  = pipmd_s$weight,
-#' format  = "list"
-#' )
+#' # Example 1: Basic poverty headcount calculation
+#' pipmd_pov_headcount(welfare = pip_md_s$welfare,
+#'                     weight  = pip_md_s$weight,
+#'                     povline = 1.3,
+#'                     format  = "list")
+#'
+#' # Example 2: Returning data.table format
+#' pipmd_pov_headcount(welfare = pip_md_s$welfare,
+#'                     weight  = pip_md_s$weight,
+#'                     povline = 1.3,
+#'                     format  = "dt")
+#'
+#' # Example 3: Returning atomic format
+#' pipmd_pov_headcount(welfare = pip_md_s$welfare,
+#'                     weight  = pip_md_s$weight,
+#'                     povline = 1.3,
+#'                     format  = "atomic")
+#'
 pipmd_pov_headcount <- function(
     welfare    = NULL,
     weight     = NULL,
@@ -214,11 +227,24 @@ pipmd_pov_gap_nv <- function(
 #' @export
 #'
 #' @examples
-#' pipmd_pov_gap(
-#' welfare = pipmd_s$welfare,
-#' weight  = pipmd_s$weight,
-#' format  = "list"
-#' )
+#' # Example 1: Basic poverty gap calculation
+#' pipmd_pov_gap(welfare = pipmd_s$welfare,
+#'               weight  = pipmd_s$weight,
+#'               povline = 1.3,
+#'               format  = "list")
+#'
+#' # Example 2: Returning data.table format
+#' pipmd_pov_gap(welfare = pipmd_s$welfare,
+#'               weight  = pipmd_s$weight,
+#'               povline = 1.3,
+#'               format  = "dt")
+#'
+#' # Example 3: Returning atomic format
+#' pipmd_pov_gap(welfare = pipmd_s$welfare,
+#'               weight  = pipmd_s$weight,
+#'               povline = 1.3,
+#'               format  = "atomic")
+#'
 pipmd_pov_gap <- function(
     welfare    = NULL,
     weight     = NULL,
@@ -344,11 +370,24 @@ pipmd_pov_severity_nv <- function(
 #' @export
 #'
 #' @examples
-#' pipmd_pov_severity(
-#' welfare = pipmd_s$welfare,
-#' weight  = pipmd_s$weight,
-#' format  = "list"
-#' )
+#' # Example 1: Basic poverty headcount calculation
+#' pipmd_pov_severity_nv(welfare = pip_md_s$welfare,
+#'                       weight  = pip_md_s$weight,
+#'                       povline = 1.3,
+#'                       format  = "list")
+#'
+#' # Example 2: Returning data.table format
+#' pipmd_pov_severity_nv(welfare = pip_md_s$welfare,
+#'                       weight  = pip_md_s$weight,
+#'                       povline = 1.3,
+#'                       format  = "dt")
+#'
+#' # Example 3: Returning atomic format
+#' pipmd_pov_severity_nv(welfare = pip_md_s$welfare,
+#'                       weight  = pip_md_s$weight,
+#'                       povline = 1.3,
+#'                       format  = "atomic")
+#'
 pipmd_pov_severity <- function(
     welfare    = NULL,
     weight     = NULL,
@@ -472,11 +511,24 @@ pipmd_watts_nv <- function(
 #' @export
 #'
 #' @examples
-#' pipmd_pov_watts(
-#' welfare = pipmd_s$welfare,
-#' weight  = pipmd_s$weight,
-#' format  = "list"
-#' )
+#' # Example 1: Basic poverty headcount calculation
+#' pipmd_watts_nv(welfare = pip_md_s$welfare,
+#'                weight  = pip_md_s$weight,
+#'                povline = 1.3,
+#'                format  = "list")
+#'
+#' # Example 2: Returning data.table format
+#' pipmd_watts_nv(welfare = pip_md_s$welfare,
+#'                weight  = pip_md_s$weight,
+#'                povline = 1.3,
+#'                format  = "dt")
+#'
+#' # Example 3: Returning atomic format
+#' pipmd_watts_nv(welfare = pip_md_s$welfare,
+#'                weight  = pip_md_s$weight,
+#'                povline = 1.3,
+#'                format  = "atomic")
+#'
 pipmd_watts <- function(
     welfare    = NULL,
     weight     = NULL,
