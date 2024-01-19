@@ -25,10 +25,26 @@
 #' *Journal of Econometrics 40* (2): 327-338.
 #'
 #' @examples
-#' # Get Lorenz parameters
+#' # Example 1: Get Lorenz parameters
 #' res <- pipgd_params(
 #'   welfare = pip_gd$L,
 #'   weight = pip_gd$P)
+#' str(res)
+#'
+#' # Example 2: Get Lorenz parameters with Specific Mean
+#' actual_mean <- 90
+#' res <- pipgd_params(
+#'   welfare = pip_gd$L,
+#'   weight = pip_gd$P,
+#'   mean = actual_mean)
+#' str(res)
+#'
+#' # Example 3: Get Lorenz parameters with Specific Population Count
+#' actual_pop <- 1000
+#' res <- pipgd_params(
+#'   welfare = pip_gd$L,
+#'   weight = pip_gd$P,
+#'   population = actual_pop)
 #' str(res)
 pipgd_params <- function(welfare,
                          weight,
