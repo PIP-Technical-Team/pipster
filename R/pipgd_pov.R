@@ -76,41 +76,38 @@ pipgd_pov_headcount_nv <-
 #' @export
 #'
 #' @examples
-#' pipgd_pov_headcount(
-#' welfare = pip_gd$L,
-#' weight  = pip_gd$P,
-#' mean = 109.90,
-#' povline = 89,
-#' complete = FALSE)
-#' # Return data.table
-#' pipgd_pov_headcount(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' complete = FALSE)
+#' # Example 1: Basic usage with specified mean and poverty line
+#' pipgd_pov_headcount(welfare = pip_gd$L,
+#'                     weight  = pip_gd$P,
+#'                     mean    = 109.90,
+#'                     povline = 89,
+#'                     complete = FALSE)
 #'
-#' # Return list
-#' pipgd_pov_headcount(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list")
+#' # Example 2: Multiple poverty lines, returning data.table
+#' pipgd_pov_headcount(welfare = pip_gd$L,
+#'                     weight  = pip_gd$P,
+#'                     povline = c(0.5, 1, 2, 3),
+#'                     complete = FALSE)
 #'
-#' # Return list complete
-#' pipgd_pov_headcount(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list",
-#' complete = TRUE)
+#' # Example 3: Multiple poverty lines, returning list format
+#' pipgd_pov_headcount(welfare = pip_gd$L,
+#'                     weight  = pip_gd$P,
+#'                     povline = c(0.5, 1, 2, 3),
+#'                     format  = "list")
 #'
-#' # Return data.table
-#' pipgd_pov_headcount(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "atomic",
-#' complete = FALSE)
+#' # Example 4: Multiple poverty lines, returning detailed list format
+#' pipgd_pov_headcount(welfare = pip_gd$L,
+#'                     weight  = pip_gd$P,
+#'                     povline = c(0.5, 1, 2, 3),
+#'                     format  = "list",
+#'                     complete = TRUE)
+#'
+#' # Example 5: Multiple poverty lines, returning atomic format
+#' pipgd_pov_headcount(welfare = pip_gd$L,
+#'                     weight  = pip_gd$P,
+#'                     povline = c(0.5, 1, 2, 3),
+#'                     format  = "atomic",
+#'                     complete = FALSE)
 pipgd_pov_headcount <-
   function(params     = NULL,
            welfare    = NULL,
@@ -237,41 +234,38 @@ pipgd_pov_gap_nv <- function(params     = NULL,
 #' @export
 #'
 #' @examples
-#' pipgd_pov_gap(
-#' welfare = pip_gd$L,
-#' weight  = pip_gd$P,
-#' mean = 109.90,
-#' povline = 89,
-#' complete = FALSE)
-#' # Return data.table
-#' pipgd_pov_gap(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' complete = FALSE)
+#' # Example 1: Basic usage with specified mean and poverty line
+#' pipgd_pov_gap(welfare = pip_gd$L,
+#'               weight  = pip_gd$P,
+#'               mean    = 109.90,
+#'               povline = 89,
+#'               complete = FALSE)
 #'
-#' # Return list
-#' pipgd_pov_gap(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list")
+#' # Example 2: Multiple poverty lines, returning data.table
+#' pipgd_pov_gap(welfare = pip_gd$L,
+#'               weight  = pip_gd$P,
+#'               povline = c(0.5, 1, 2, 3),
+#'               complete = FALSE)
 #'
-#' # Return list complete
-#' pipgd_pov_gap(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list",
-#' complete = TRUE)
+#' # Example 3: Multiple poverty lines, returning list format
+#' pipgd_pov_gap(welfare = pip_gd$L,
+#'               weight  = pip_gd$P,
+#'               povline = c(0.5, 1, 2, 3),
+#'               format  = "list")
 #'
-#' # Return data.table
-#' pipgd_pov_gap(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "atomic",
-#' complete = FALSE)
+#' # Example 4: Multiple poverty lines, returning detailed list format
+#' pipgd_pov_gap(welfare = pip_gd$L,
+#'               weight  = pip_gd$P,
+#'               povline = c(0.5, 1, 2, 3),
+#'               format  = "list",
+#'               complete = TRUE)
+#'
+#' # Example 5: Multiple poverty lines, returning atomic format
+#' pipgd_pov_gap(welfare = pip_gd$L,
+#'               weight  = pip_gd$P,
+#'               povline = c(0.5, 1, 2, 3),
+#'               format  = "atomic",
+#'               complete = FALSE)
 pipgd_pov_gap <- function(params     = NULL,
                           welfare    = NULL,
                           weight     = NULL,
@@ -452,41 +446,38 @@ pipgd_pov_severity_nv <- function(
 #' @export
 #'
 #' @examples
-#' pipgd_pov_severity(
-#' welfare = pip_gd$L,
-#' weight  = pip_gd$P,
-#' mean = 109.90,
-#' povline = 89,
-#' complete = FALSE)
-#' # Return data.table
-#' pipgd_pov_severity(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' complete = FALSE)
+#' # Example 1: Basic usage with specified mean and poverty line
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    mean    = 109.90,
+#'                    povline = 89,
+#'                    complete = FALSE)
 #'
-#' # Return list
-#' pipgd_pov_severity(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list")
+#' # Example 2: Multiple poverty lines, returning data.table
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    povline = c(0.5, 1, 2, 3),
+#'                    complete = FALSE)
 #'
-#' # Return list complete
-#' pipgd_pov_severity(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list",
-#' complete = TRUE)
+#' # Example 3: Multiple poverty lines, returning list format
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    povline = c(0.5, 1, 2, 3),
+#'                    format  = "list")
 #'
-#' # Return data.table
-#' pipgd_pov_severity(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "atomic",
-#' complete = FALSE)
+#' # Example 4: Multiple poverty lines, returning detailed list format
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    povline = c(0.5, 1, 2, 3),
+#'                    format  = "list",
+#'                    complete = TRUE)
+#'
+#' # Example 5: Multiple poverty lines, returning atomic format
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    povline = c(0.5, 1, 2, 3),
+#'                    format  = "atomic",
+#'                    complete = FALSE)
 pipgd_pov_severity <- function(
     params     = NULL,
     welfare    = NULL,
@@ -670,41 +661,39 @@ pipgd_watts_nv <- function(
 #' @export
 #'
 #' @examples
-#' pipgd_pov_watts(
-#' welfare = pip_gd$L,
-#' weight  = pip_gd$P,
-#' mean = 109.90,
-#' povline = 89,
-#' complete = FALSE)
-#' # Return data.table
-#' pipgd_pov_watts(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' complete = FALSE)
+#' # Example 1: Basic usage with specified mean and poverty line
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    mean    = 109.90,
+#'                    povline = 89,
+#'                    complete = FALSE)
 #'
-#' # Return list
-#' pipgd_pov_watts(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list")
+#' # Example 2: Multiple poverty lines, returning data.table
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    povline = c(0.5, 1, 2, 3),
+#'                    complete = FALSE)
 #'
-#' # Return list complete
-#' pipgd_pov_watts(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list",
-#' complete = TRUE)
+#' # Example 3: Multiple poverty lines, returning list format
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    povline = c(0.5, 1, 2, 3),
+#'                    format  = "list")
 #'
-#' # Return data.table
-#' pipgd_pov_watts(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "atomic",
-#' complete = FALSE)
+#' # Example 4: Multiple poverty lines, returning detailed list format
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    povline = c(0.5, 1, 2, 3),
+#'                    format  = "list",
+#'                    complete = TRUE)
+#'
+#' # Example 5: Multiple poverty lines, returning atomic format
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    povline = c(0.5, 1, 2, 3),
+#'                    format  = "atomic",
+#'                    complete = FALSE)
+
 pipgd_watts <- function(
     params     = NULL,
     welfare    = NULL,
