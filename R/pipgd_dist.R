@@ -201,7 +201,7 @@ pipgd_quantile <-
     }
 
 
-    qfun <- paste0("wbpip::derive_", lorenz) |>
+    qfun <- paste0("wbpip:::derive_", lorenz) |>
       parse(text = _)
     # value_at_vc <- Vectorize(eval(qfun),
     #                          vectorize.args = "x",
@@ -237,7 +237,7 @@ pipgd_quantile <-
 #'
 #' @inheritParams pipgd_pov_headcount_nv
 #'
-#' @return list: contains numeric MLD and, if `complete=TRUE`,
+#' @return list: contains numeric Gini and, if `complete=TRUE`,
 #' also returns all params.
 #' @export
 #'
@@ -299,7 +299,7 @@ pipgd_gini <- function(
   #   _________________________________________________________________
   if (lorenz == "lb") {
     gini <-
-      wbpip::gd_compute_gini_lb(
+      wbpip:::gd_compute_gini_lb(
         A         = params$gd_params$lb$reg_results$coef[["A"]],
         B         = params$gd_params$lb$reg_results$coef[["B"]],
         C         = params$gd_params$lb$reg_results$coef[["C"]],
@@ -307,7 +307,7 @@ pipgd_gini <- function(
       )
   } else if (lorenz == "lq") {
     gini <-
-      wbpip::gd_compute_gini_lq(
+      wbpip:::gd_compute_gini_lq(
         A         = params$gd_params$lq$reg_results$coef[["A"]],
         B         = params$gd_params$lq$reg_results$coef[["B"]],
         C         = params$gd_params$lq$reg_results$coef[["C"]],
@@ -411,7 +411,7 @@ pipgd_mld <- function(
   #   _________________________________________________________________
   if (lorenz == "lb") {
     mld <-
-      wbpip::gd_compute_gini_lb(
+      wbpip:::gd_compute_gini_lb(
         A         = params$gd_params$lb$reg_results$coef[["A"]],
         B         = params$gd_params$lb$reg_results$coef[["B"]],
         C         = params$gd_params$lb$reg_results$coef[["C"]],
@@ -419,7 +419,7 @@ pipgd_mld <- function(
       )
   } else if (lorenz == "lq") {
     mld <-
-      wbpip::gd_compute_mld_lq(
+      wbpip:::gd_compute_mld_lq(
         A         = params$gd_params$lq$reg_results$coef[["A"]],
         B         = params$gd_params$lq$reg_results$coef[["B"]],
         C         = params$gd_params$lq$reg_results$coef[["C"]],

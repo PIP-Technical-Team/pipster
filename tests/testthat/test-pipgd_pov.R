@@ -396,7 +396,7 @@ test_that("pipgd_pov_severity -outputs",{
   # Check that vectorization works
   res_povsev_nv <- pipgd_pov_severity_nv(welfare = welfare, weight = weight, povline = 0.5)$pov_stats$pov_severity
   
-  res_atomic_v[1] |>
+  res_atomic_v[[1]] |>
     expect_equal(res_povsev_nv)
   
   res_dt_v$pov_severity[1] |>
@@ -405,20 +405,240 @@ test_that("pipgd_pov_severity -outputs",{
   # The code below will fail because, currently, when format = "list" the output names are incorrect 
   res_list_v$pl0.5$pov_stats$pov_severity |>
     expect_equal(res_povsev_nv)
-}
-)
+})
 
 # Test Poverty Watts Index functions ####
-# Test pipgd_watts_nv() function (non vectorized)
-test_that("pipgd_watts_nv inputs work as expected", {
-  
 
+# Test pipgd_watts_nv() function (non vectorized) -INPUTS
+params <- pipgd_pov_gap_nv(welfare = welfare, weight = weight, complete = TRUE)
+test_that("pipgd_watts_nv inputs work as expected", {
+  res <- pipgd_watts_nv(welfare = welfare, weight = weight)
+  res_params <- pipgd_watts_nv(params = params)
+
+  # Check the output is the same when providing welfare and wieght or params
+  expect_equal(res, res_params)
+  
+  # Check either params or (welfare and weights) are provided
+  pipgd_watts_nv(params = NULL, welfare = NULL, weight = NULL) |>
+    expect_error()
+  pipgd_watts_nv(params = NULL, welfare = welfare, weight = NULL) |>
+    expect_error()
+  pipgd_watts_nv(params = NULL, welfare = NULL, weight = weight) |>
+    expect_error()
+  
+  # Check invalid mean, times_mean give errors
+  pipgd_watts_nv(welfare = welfare, weight = weight, mean = "invalid mean") |>
+    expect_error()
+  pipgd_watts_nv(welfare = welfare, weight = weight, times_mean = "invalid times_mean") |>
+    expect_error()
+  
+  # Check popshare argument works as expected
+  pipgd_watts_nv(welfare = welfare, weight = weight, popshare = "invalid popshare") |>
+    expect_error()
+  pipgd_watts_nv(welfare = welfare, weight = weight, popshare = 0.3) |>
+    expect_no_error()
+  
+  # Check either popshare or povline are provided
+  pipgd_watts_nv(welfare = welfare, weight = weight, popshare = 0.4, povline = 0.5) |>
+    expect_error()
+  
+  # Check that Lorenz argument works as expected
+  pipgd_watts_nv(welfare = welfare, weight = weight, lorenz = "Neither NULL, lq or lb") |>
+    expect_error()
 
 })
 
+# Test pipgd_watts_nv() function (non vectorized) -OUTPUTS
+test_that("pipgd_watts_nv outputs work as expected", {
+  params <- pipgd_pov_gap_nv(welfare = welfare, weight = weight, complete = TRUE)
+  res <- pipgd_watts_nv(welfare = welfare, weight = weight)
+  res_params <- pipgd_watts_nv(params = params)
 
+  res_complete <- pipgd_watts_nv(welfare = welfare, weight = weight, complete = TRUE)
+  res_params_complete <- pipgd_watts_nv(params = params, complete = TRUE)
 
-# Test pipgd_watts() function
+  # Output class
+  class(res) |>
+    expect_equal(class(res_params))
+
+  # To check !
+  #class(res) |>
+  #  expect_equal("list")
+
+  class(res_complete) |>
+    expect_equal(class(res_params_complete))
+  
+  class(res_params_complete) |>
+    expect_equal("pipgd_params")
+
+  # Names in output list when complete is FALSE
+  names(res) |>
+    expect_equal("pov_stats")
+
+  names(res) |>
+    expect_equal(names(res_params))
+
+  names(res$pov_stats) |>
+    expect_equal(c("watts, lorenz"))
+  
+  # Names in output list when complete is TRUE
+  names(res_complete) |>
+    expect_equal(c("gd_params", "data", "selected_lorenz", "pov_stats"))
+  
+  names(res_complete$gd_params) |>
+    expect_equal(c("lq", "lb"))
+  
+  names(res_complete$gd_params$lq) |>
+    expect_equal(names(res_complete$gd_params$lb))
+  
+  names(res_complete$gd_params$lq) |>
+    expect_equal(c("res_results", "key_values", "validity"))
+  
+  names(res_complete$gd_params$lq$reg_results) |>
+    expect_equal(c("ymean", "sst", "coef", "sse", "r2", "mse", "se"))
+  
+  names(res_complete$gd_params$lq$key_values) |>
+    expect_equal(c("e", "m", "n", "r", "s1", "s2"))
+  
+  names(res_complete$gd_params$lq$validity) |>
+    expect_equal(c("is_normal", "is_valid", "headcount"))
+  
+  names(res_complete$gd_params$lb$key_values) |>
+    expect_equal(NULL)
+  
+  names(res_complete$data) |>
+    expect_equal(c("welfare", "weight"))
+  
+  names(res_complete$selected_lorenz) |>
+    expect_equal(c( "for_dist", "for_pov", "use_lq_for_dist", "use_lq_for_pov" ))
+  
+   names(res_complete$pov_stats) |>
+    expect_equal("headcount", "lorenz", "watts")
+
+})
+
+# Test pipgd_watts_nv() function (non vectorized) -CALCULATION OF WATTS
+test_that("pipgd_watts_nv watts output is as expected", {
+  params <- pipgd_pov_gap_nv(welfare = welfare, weight = weight, complete = TRUE)
+  res_with_lb <- pipgd_watts_nv(welfare = welfare, weight = weight, lorenz = "lb")
+  res_with_lq <- pipgd_watts_nv(welfare = welfare, weight = weight, lorenz = "lq")
+  mean <- 1
+  times_mean <- 1
+
+  res_with_lb$pov_stats$watts |>
+    expect_equal(
+      wbpip:::gd_compute_watts_lb(
+       mean      = mean,
+       povline   = 1,
+       headcount = params$pov_stats$headcount,
+       A         = params$gd_params$lb$reg_results$coef[["A"]],
+       B         = params$gd_params$lb$reg_results$coef[["B"]],
+       C         = params$gd_params$lb$reg_results$coef[["C"]],
+       dd        = 0.005)
+    )
+  
+  res_with_lq$pov_stats$watts |>
+    expect_equal(
+      wbpip:::gd_compute_watts_lq(
+       mu        = mean,
+       povline   = 1,
+       headcount = params$pov_stats$headcount,
+       A         = params$gd_params$lb$reg_results$coef[["A"]],
+       B         = params$gd_params$lb$reg_results$coef[["B"]],
+       C         = params$gd_params$lb$reg_results$coef[["C"]],
+       dd        = 0.005)
+    )
+
+})
+
+test_that("pipgd_watts inputs works as expected", {
+  povline = c(.5, 1, 2, 3) 
+  
+  # Test params, welfare and weights arguments work as expected
+  pipgd_watts(welfare = welfare, weight = weight, povline = povline) |>
+    expect_equal(pipgd_watts(params = params, povline = povline))
+  
+  pipgd_watts(welfare = welfare, weight = NULL, povline = povline) |>
+    expect_error()
+  
+  pipgd_watts(welfare = NULL, weight = weight, povline = povline) |>
+    expect_error()
+  
+  # Test format argument works as expected
+  pipgd_watts(welfare = welfare, weight = weight, 
+                      povline = povline, format = "Neither dt, list or atomic") |>
+    expect_error()
+  
+  # Test lorenz argument works as expected
+  pipgd_watts(welfare = welfare, weight = weight, 
+                      povline = povline, lorenz = "Neither NULL, lb or lq") |>
+    expect_error()
+  
+  # Test mean argument works as expected
+  pipgd_watts(welfare = welfare, weight = weight, povline = povline, mean = 1) |>
+    expect_equal(pipgd_watts(welfare = welfare, weight = weight, povline = povline))
+  
+  pipgd_watts(welfare = welfare, weight = weight, povline = povline, mean = 1) |>
+    expect_equal(pipgd_watts(welfare = welfare, weight = weight, povline = povline, mean = NULL))
+
+  # Test popshare argument works as expected
+  pipgd_watts(welfare = welfare, weight = weight, popshare = 0.5) |>
+    expect_no_error()
+
+  # The check right above fails because When popshare is provided (not NULL), 
+  # Error: in if (fl * fh >= 0) { : missing value where TRUE/FALSE needed
+  
+})
+
+# Test pipgd_watts() function (vectorized) -OUTPUTS
+test_that("pipgd_watts -outputs",{
+  povline = c(.5, 1, 2, 3)
+  res_atomic <- pipgd_watts(welfare = welfare, weight = weight, povline = povline, format = "atomic")
+  res_dt <- pipgd_watts(welfare = welfare, weight = weight, povline = povline, format = "dt")
+  res_list <- pipgd_watts(welfare = welfare, weight = weight, povline = povline, format = "list")
  
+  class(res_atomic) |>
+    expect_equal("numeric")
+
+  class(res_list) |>
+    expect_equal("list")
+  
+  #class(res_dt) |>
+  # expect_equal(c("data.frame", "data.table"))
+  
+  # Check names in output list 
+  names(res_list) |>
+    expect_equal(c("pl0.5", "pl1", "pl2", "pl3"))
+
+  names(res_list$pl0.5) |>
+    expect_equal(names(res_list$pl1))
+  
+  names(res_list$pl0.5) |>
+    expect_equal(names(res_list$pl2))
+
+  names(res_list$pl0.5) |>
+    expect_equal(names(res_list$pl3))
+  
+  names(res_list$pl0.5) |>
+    expect_equal("pov_stats")
+  
+  names(res_list$pl0.5$pov_stats) |>
+    expect_equal(c("pov_severity", "lorenz"))
+
+  # Check that vectorization works
+  res_watts_nv <- pipgd_watts_nv(welfare = welfare, weight = weight, povline = 0.5)$pov_stats$watts
+  
+  res_atomic[[1]] |>
+    expect_equal(res_watts_nv)
+  
+  res_dt$watts[1] |>
+    expect_equal(res_watts_nv)
+  
+  # The code below will fail also because, currently, when format = "list" the output names are incorrect 
+  res_list$pl0.5$pov_stats$watts |>
+    expect_equal(res_watts_nv)
+})
+
+
 
 

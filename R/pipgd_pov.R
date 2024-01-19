@@ -445,7 +445,7 @@ pipgd_pov_severity_nv <- function(
 #' Estimate poverty severity
 #'
 #' @inheritParams pipgd_pov_gap_nv
-#' @format character: either "dt" for data.table, "list" or "atomic" for a
+#' @param format character: either "dt" for data.table, "list" or "atomic" for a
 #' single numeric vector, whose names are corresponding selected Lorenz for
 #' each value.  Default is "dt"
 #'
@@ -611,7 +611,7 @@ pipgd_watts_nv <- function(
 
   if (lorenz == "lb") {
     wr <-
-      wbpip::gd_compute_watts_lb(
+      wbpip:::gd_compute_watts_lb(
         mean      = mean,
         povline   = povline,
         headcount = params$pov_stats$headcount,
@@ -622,7 +622,7 @@ pipgd_watts_nv <- function(
       )
   } else if (lorenz == "lq") {
     wr <-
-      wbpip::gd_compute_watts_lq(
+      wbpip:::gd_compute_watts_lq(
         mu        = mean,
         povline   = povline,
         headcount = params$pov_stats$headcount,
@@ -728,7 +728,7 @@ pipgd_watts <- function(
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   pipgd_pov_watts_v <- Vectorize(
-    FUN            = pipgd_pov_watts_nv,
+    FUN            = pipgd_watts_nv,
     vectorize.args = "povline",
     SIMPLIFY       = FALSE
   )
