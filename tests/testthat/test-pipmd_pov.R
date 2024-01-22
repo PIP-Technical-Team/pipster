@@ -230,7 +230,47 @@ test_that("pipmd_pov_headcount work as expected -when format is atomic", {
 })
 
 # Testing poverty gap function (non vectorized) ####
+# Arguments --------------------------------------------------------
+test_that("pipmd_pov_gap_nv arguments work as expected", {
+  welfare_test <- welfare_s 
+  welfare_test[1] = NA
 
+  weight_test <- weight_s
+  weight_test[1] = NA
+  # Arguments
+  pipmd_pov_gap_nv(welfare = welfare_test, weight = weight_s) |>
+    expect_error()
+  
+  pipmd_pov_headcount(welfare = NULL, weight = weight_s) |>
+    expect_error()
+  
+  pipmd_pov_headcount(welfare = welfare_s, weight = weight_test, povline = povline, format = format) |>
+    expect_error()
+  
+  pipmd_pov_headcount(welfare = welfare_s, povline = povline, format = format) |>
+    expect_message()
+  
+  pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = "non numeric povline", format = format) |>
+    expect_error()
+  
+  pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = NULL, format = format) |>
+    expect_error()
+  
+  pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = -0.5, format = format) |>
+    expect_message()
+  
+  pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = 19, format = format) |>
+    expect_message()
+  
+  pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = povline, format = format) |>
+    expect_no_error()
+  
+  pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = povline, format = "neither atomic, dt or list") |>
+    expect_error()
+
+
+
+})
 
 # Testing poverty gap function (vectorized) ####
 
