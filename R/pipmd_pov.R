@@ -12,7 +12,7 @@
 #' @param weight 	numeric: A vector of population weights. If NULL, a vector of 1s
 #' is used to give equal weight to each observation.
 #' @param povline numeric: Poverty line in international dollars, same units as welfare.
-#' @param mean numeric scalar of distribution mean. Default is
+#' @param mean numeric scalar of distribution mean. Default is 1
 #' @param times_mean numeric factor that multiplies the mean to create a relative poverty line. Default is 1
 #'
 #' @return numeric: Poverty headcount ratio
@@ -44,11 +44,13 @@ pipmd_pov_headcount_nv <- function(
       text = "No weight vector specified, each observation assigned equal weight"
     )
   }
-  if (is.null(povline) && is.numeric(povline)) {
+  if (is.null(povline) || !is.numeric(povline)) {
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } else if (povline < min(welfare) && povline > max(welfare)) {
+  } 
+  
+  if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
     )
@@ -125,7 +127,6 @@ pipmd_pov_headcount <- function(
   # Return ---------------------------------------------------------------------
   return(out)
 
-
 }
 
 
@@ -176,16 +177,17 @@ pipmd_pov_gap_nv <- function(
       text = "No weight vector specified, each observation assigned equal weight"
     )
   }
-  if (is.null(povline) && is.numeric(povline)) {
+  if (is.null(povline) || !is.numeric(povline)) {
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } else if (povline < min(welfare) && povline > max(welfare)) {
+  } 
+  
+  if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
     )
   }
-
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
