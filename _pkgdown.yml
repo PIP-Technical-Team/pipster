@@ -3,4 +3,5 @@ template:
   bootstrap: 5
 deployment:
   branch: DEV_website
+  mode: auto
 
