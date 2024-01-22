@@ -589,9 +589,8 @@ pipgd_mld <- function(
   params$dist_stats$mld    <- mld
   params$dist_stats$lorenz <- lorenz
 
-  return(
-    params
-  )
+  params
+
 
 }
 
