@@ -446,7 +446,7 @@ pipmd_watts_nv <- function(
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   output <- list()
-  wi <- wbpip:::md_compute_poverty_stats(
+  wi <- wbpip::md_compute_poverty_stats(
     welfare      = welfare,
     weight       = weight,
     povline_lcu  = povline
