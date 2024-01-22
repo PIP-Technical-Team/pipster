@@ -16,7 +16,14 @@
 #'   = 1/n, to = 1, by = 1/n)`
 #' @param n numeric scalar for the number of quantiles to be used in `popshare`
 #'
-#' @return list with vector of share of welfare by quantiles
+#' @return Returns a nested list containing distribution statistics:
+#' `$dist_stats$pop_share` is a numeric vector containing the share of the
+#' population.
+#' `$dist_stats$welfare_share_at` is a numeric vector showing the
+#' corresponding share of welfare.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
@@ -114,7 +121,14 @@ pipgd_welfare_share_at <- function(
 #'
 #' @inheritParams pipgd_welfare_share_at
 #'
-#' @return list with welfare shares
+#' @return Returns a nested list containing distribution statistics:
+#' `$dist_stats$pop_share` is a numeric vector containing the share of the
+#' population.
+#' `$dist_stats$quantile_welfare_share` is a numeric vector showing the
+#' corresponding share of welfare.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
@@ -216,7 +230,15 @@ pipgd_quantile_welfare_share <-
 #'
 #' @inheritParams pipgd_welfare_share_at
 #' @inheritParams pipgd_select_lorenz
-#' @return vector of quantiles
+#'
+#' @return Returns a nested list containing distribution statistics:
+#' `$dist_stats$pop_share` is a numeric vector containing the share of the
+#' population.
+#' `$dist_stats$quantile` is a numeric vector showing the
+#' corresponding quantile.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
@@ -230,7 +252,8 @@ pipgd_quantile_welfare_share <-
 #'                                   n       = 5)
 #'
 #' # Example 3: Using a custom population share vector
-#' custom_popshare_vector <- c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95)
+#' custom_popshare_vector <- c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6,
+#' 0.7, 0.8, 0.9, 0.95)
 #' quantile_custom_shares <- pipgd_quantile(welfare = pip_gd$L,
 #'                                          weight  = pip_gd$P,
 #'                                          popshare = custom_popshare_vector)
@@ -314,8 +337,12 @@ pipgd_quantile <-
 #'
 #' @inheritParams pipgd_pov_headcount_nv
 #'
-#' @return list: contains numeric MLD and, if `complete=TRUE`,
-#' also returns all params.
+#' @return Returns a nested list containing distribution statistics:
+#' `$dist_stats$gini` is a numeric vector containing the gini coefficient.
+#' `$dist_stats$lorenz` is a numeric vector showing the lorenz curve used.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
@@ -447,8 +474,12 @@ pipgd_gini <- function(
 #'
 #' @inheritParams pipgd_gini
 #'
-#' @return list: contains numeric MLD and, if `complete=TRUE`,
-#' also returns all params.
+#' @return Returns a nested list containing distribution statistics:
+#' `$dist_stats$mld` is a numeric vector containing the mld calculation.
+#' `$dist_stats$lorenz` is a numeric vector showing the lorenz curve used.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
