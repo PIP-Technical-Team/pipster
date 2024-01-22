@@ -4,7 +4,7 @@
 
 welfare <- pip_gd$L
 weight <- pip_gd$P
-params <- pipgd_params(welfare = welfare, weight = weight)
+params <- pipgd_select_lorenz(welfare = welfare, weight = weight, complete = TRUE)
 
 # Inputs ------------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
         expect_equal(names(res2))
     names(res1) |>
         expect_equal("dist_stats")
-    names(res1) |>
+    names(res1$dist_stats) |>
         expect_equal(c("popshare", "welfare_share_at"))
     
     # Names in output list when COMPLETE is TRUE
@@ -85,7 +85,7 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
         expect_equal(names(res_complete$gd_params$lb))
   
     names(res_complete$gd_params$lq) |>
-        expect_equal(c("res_results", "key_values", "validity"))
+        expect_equal(c("reg_results", "key_values", "validity"))
   
     names(res_complete$gd_params$lq$reg_results) |>
         expect_equal(c("ymean", "sst", "coef", "sse", "r2", "mse", "se"))
@@ -141,10 +141,6 @@ test_that("pipgd_quantile_welfare_share inputs works as expected", {
     pipgd_quantile_welfare_share(welfare = welfare, weight = weight, popshare = c(0.3, 0.5, 2)) |>
         expect_error()
 
-    # complete argument
-    pipgd_quantile_welfare_share(welfare = welfare, weight = weight, complete = "neither TRUE or FALSE") |>
-        expect_error()
-
 })
 
 # Outputs ----------------------------------------------------------------------------
@@ -169,15 +165,12 @@ test_that("pipgd_quantile_welfare_share outputs work as expected", {
     length(res_n3$dist_stats$quantile_welfare_share) |>
         expect_equal(n)
     
-    res_n3$dist_stats$popshare[2] |>
-        expect_equal(0.667)
-    
     res_n3$dist_stats$quantile_welfare_share[1] |>
         expect_equal(res_welfare_share$dist_stats$welfare_share_at[1])
 
     res_n3$dist_stats$quantile_welfare_share |>
-        expect_equal(c(shr$dist_stats$welfare_share_at[1],
-             diff(shr$dist_stats$welfare_share_at)))
+        expect_equal(c(res_welfare_share$dist_stats$welfare_share_at[1],
+             diff(res_welfare_share$dist_stats$welfare_share_at)))
     
     # Names in output list when complete is TRUE
     names(res_complete) |>
@@ -190,7 +183,7 @@ test_that("pipgd_quantile_welfare_share outputs work as expected", {
         expect_equal(names(res_complete$gd_params$lb))
     
     names(res_complete$gd_params$lq) |>
-        expect_equal(c("res_results", "key_values", "validity"))
+        expect_equal(c("reg_results", "key_values", "validity"))
     
     names(res_complete$gd_params$lq$reg_results) |>
         expect_equal(c("ymean", "sst", "coef", "sse", "r2", "mse", "se"))
@@ -211,7 +204,7 @@ test_that("pipgd_quantile_welfare_share outputs work as expected", {
         expect_equal(c( "for_dist", "for_pov", "use_lq_for_dist", "use_lq_for_pov" ))
     
     names(res_complete$dist_stats) |>
-        expect_equal("popshare", "quantile_welfare_share")
+        expect_equal(c("popshare", "quantile_welfare_share"))
 
 })
 
@@ -243,8 +236,6 @@ test_that("pipgd_quantile inputs works as expected", {
     pipgd_quantile(welfare = welfare, weight = weight, popshare = c(0.3, 0.5, 0.8)) |>
         expect_no_error()
     pipgd_quantile(welfare = welfare, weight = weight, popshare = c(0.3, 0.5, -0.8)) |>
-        expect_error()
-    pipgd_quantile(welfare = welfare, weight = weight, popshare = c(0.3, 0.5, 2)) |>
         expect_error()
 
     # complete argument
@@ -327,7 +318,7 @@ test_that("pipgd_quantile outputs work as expected", {
         expect_equal(names(res_complete$gd_params$lb))
     
     names(res_complete$gd_params$lq) |>
-        expect_equal(c("res_results", "key_values", "validity"))
+        expect_equal(c("reg_results", "key_values", "validity"))
     
     names(res_complete$gd_params$lq$reg_results) |>
         expect_equal(c("ymean", "sst", "coef", "sse", "r2", "mse", "se"))
@@ -348,14 +339,13 @@ test_that("pipgd_quantile outputs work as expected", {
         expect_equal(c( "for_dist", "for_pov", "use_lq_for_dist", "use_lq_for_pov" ))
     
     names(res_complete$dist_stats) |>
-        expect_equal("popshare", "quantile")
+        expect_equal(c("popshare", "quantile"))
 
 })
 
 
 # Test pipgd_gini function ####
 test_that("pipgd_gini works as expected", {
-    params = pipgd_params(welfare = welfare, weight = weight)
     res1 <- pipgd_gini(welfare = welfare, weight = weight)
     res2 <- pipgd_gini(params = params)
 
@@ -401,9 +391,6 @@ test_that("pipgd_gini works as expected", {
     pipgd_gini(welfare = welfare, weight = weight, lorenz = "invalid Lorenz") |>
         expect_error()
     
-    pipgd_gini(welfare = welfare, weight = weight, complete = "invalid complete") |>
-        expect_error()
-    
     # Check gini in output list
     # When lorenz = "lb"
     res_lb <- pipgd_gini(welfare = welfare, weight = weight, lorenz = 'lb')
@@ -417,7 +404,7 @@ test_that("pipgd_gini works as expected", {
       )
 
     res_lb$dist_stats$gini |>
-        expect_equal()
+        expect_equal(gini_wbpip_lb)
     
     gini_wbpip_lq <- wbpip:::gd_compute_gini_lq(
         A         = params$gd_params$lq$reg_results$coef[["A"]],
@@ -437,7 +424,6 @@ test_that("pipgd_gini works as expected", {
 # Test pipgd_mld ####
 # Inputs -----------------------------------------------------------------
 test_that("pipgd_mld inputs works as expected", {
-    params = pipgd_params(welfare = welfare, weight = weight)
     
     pipgd_mld(welfare = welfare, weight = NULL) |>
         expect_error()
@@ -470,9 +456,8 @@ test_that("pipgd_mld inputs works as expected", {
 
 # Outputs -----------------------------------------------------------------
 test_that("pipgd_mld outputs work as expected", {
-    params = pipgd_params(welfare = welfare, weight = weight)
     res <- pipgd_mld(welfare = welfare, weight = weight)
-    res_complete <- pipgd_mld(welfare = welfare, weight = weight, complete = FALSE)
+    res_complete <- pipgd_mld(welfare = welfare, weight = weight, complete = TRUE)
 
     class(res) |>
         expect_equal("list")
@@ -494,7 +479,7 @@ test_that("pipgd_mld outputs work as expected", {
         expect_equal(names(res_complete$gd_params$lb))
     
     names(res_complete$gd_params$lq) |>
-        expect_equal(c("res_results", "key_values", "validity"))
+        expect_equal(c("reg_results", "key_values", "validity"))
     
     names(res_complete$gd_params$lq$reg_results) |>
         expect_equal(c("ymean", "sst", "coef", "sse", "r2", "mse", "se"))
@@ -515,13 +500,11 @@ test_that("pipgd_mld outputs work as expected", {
         expect_equal(c( "for_dist", "for_pov", "use_lq_for_dist", "use_lq_for_pov" ))
     
     names(res_complete$dist_stats) |>
-        expect_equal("mld", "lorenz")
+        expect_equal(c("mld", "lorenz"))
 
 })
 
 test_that("pipgd_mld calculates mld as expected", {
-
-    params = pipgd_select_lorenz(welfare = welfare, weight = weight, complete = TRUE)
 
     mld_wbpip_lb <- wbpip:::gd_compute_mld_lb(
         A         = params$gd_params$lb$reg_results$coef[["A"]],

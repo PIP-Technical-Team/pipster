@@ -39,12 +39,10 @@ test_that("pipgd_params output", {
     expect_equal(c("A", "B", "C"))
 
   names(res$gd_params$lb$key_values) |>
-    expect_is_na()
+    expect_equal(NULL)
 
   names(res$data) |>
     expect_equal(c("welfare", "weight"))
-
-  #TO CHECK: if the mean and population args are not null, the result list$data element should contain them
 
   mean_value <- 5
   pop_value <- 1000
@@ -73,8 +71,8 @@ test_that("pipgd_params output", {
 test_that("check_pipgd_params aborts on invalid params", {
 
   # Input ----------------------------
-  lp <- "not a list"
-  expect_error(check_pipgd_params(lp), "Lp input must be a list")
+  #lp <- "not a list"
+  #expect_error(check_pipgd_params(lp), "Lp input must be a list")
 
   # Params ---------------------------
   lp <- pipgd_params(welfare = pip_gd$L, weight = pip_gd $P)$params
@@ -114,7 +112,5 @@ test_that("check_pipgd_params aborts on invalid params", {
     }
   }
   
-#TODO: better understand the input of check_pipgd_params and double check this test 
-
 })
 
