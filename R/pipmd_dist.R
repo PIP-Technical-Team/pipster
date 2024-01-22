@@ -25,24 +25,28 @@
 #' @param format character: "dt", "list", "atomic", giving the format of the
 #' output
 #'
-#' @return quantiles: see `format`
+#' @return Returns a `data.table` and `data.frame` object with two variables:
+#' `quantile` and `value`.  Check `format` argument to change
+#' the output format.
+#'
 #' @export
 #'
 #'
 #' @examples
-#' # Example 1: Calculating quintiles
+#' # Example 1: Calculating quintiles.
 #' pipmd_quantile(welfare = pip_md_s$welfare,
 #'                weight  = pip_md_s$weight,
 #'                n       = 5,
 #'                format  = "list")
 #'
-#' # Example 2: Calculating deciles with data.table format
+#' # Example 2: Calculating deciles with data.table format.
 #' pipmd_quantile(welfare = pip_md_s$welfare,
 #'                weight  = pip_md_s$weight,
 #'                n       = 10,
 #'                format  = "dt")
 #'
-#' # Example 3: Calculating quantiles at specific population shares and format atomic
+#' # Example 3: Calculating quantiles at specific population shares and format
+#' atomic.
 #' specific_popshares <- seq(from = 0, to = 1, length.out = 100)
 #' pipmd_quantile(welfare = pip_md_s$welfare,
 #'                weight  = pip_md_s$weight,
@@ -109,12 +113,36 @@ pipmd_quantile <- function(
 #'
 #' @inheritParams pipmd_quantile
 #'
-#' @return list with vector of share of welfare by quantiles
+#' @return Returns a `data.table` and `data.frame` object with two variables:
+#' `quantile` and `share_at`.  Check `format` argument to change
+#' the output format.
+#'
 #' @export
 #'
 #' @examples
+#' # Example 1: Basic usage with default quantiles (10)
 #' pipmd_welfare_share_at(welfare = pip_md_s$welfare,
-#'                         weight = pip_md_s$weight)
+#'                        weight = pip_md_s$weight)
+#'
+#' # Example 2: Specifying a different number of quantiles
+#' pipmd_welfare_share_at(welfare = pip_md_s$welfare,
+#'                        weight = pip_md_s$weight,
+#'                        n = 5,  # For quintiles
+#'                        format = "list")
+#'
+#' # Example 3: Using specific population shares
+#' specific_popshares <- seq(from = 0.1, to = 1, by = 0.1)  # Deciles
+#' pipmd_welfare_share_at(welfare = pip_md_s$welfare,
+#'                        weight = pip_md_s$weight,
+#'                        popshare = specific_popshares,
+#'                        format = "dt")
+#'
+#' # Example 4: Returning atomic format
+#' pipmd_welfare_share_at(welfare = pip_md_s$welfare,
+#'                        weight = pip_md_s$weight,
+#'                        n = 4,  # For quartiles
+#'                        format = "atomic")
+#'
 pipmd_welfare_share_at <- function(
     welfare    = NULL,
     weight     = NULL,
@@ -175,7 +203,10 @@ pipmd_welfare_share_at <- function(
 #'
 #' @inheritParams pipmd_quantile
 #'
-#' @return list with vector of share of welfare by quantiles
+#' @return Returns a `data.table` and `data.frame` object with two variables:
+#' `quantile` and `share_at`.  Check `format` argument to change
+#' the output format.
+#'
 #' @export
 #'
 #' @examples
