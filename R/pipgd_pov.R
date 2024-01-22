@@ -62,7 +62,7 @@ pipgd_pov_headcount_nv <-
   }
 
   params$pov_stats$headcount <- headcount
-  params$pov_stats$lorenz <- lorenz
+  params$pov_stats$lorenz    <- lorenz
   return(params)
 }
 
@@ -189,9 +189,9 @@ pipgd_pov_gap_nv <- function(params     = NULL,
   if (!is.null(welfare)) {
     params <- pipgd_pov_headcount_nv(welfare  = welfare,
                                      weight   = weight,
-                                    complete = TRUE,
-                                    mean     = mean,
-                                    povline  = povline)
+                                     complete = TRUE,
+                                     mean     = mean,
+                                     povline  = povline)
   } else {
     params <- pipgd_pov_headcount_nv(welfare  =  params$data$welfare,
                                      weight   =  params$data$weight,
@@ -213,11 +213,11 @@ pipgd_pov_gap_nv <- function(params     = NULL,
 
   pov_gap <-
     eval(fun_to_vc)(mean      = mean,
-                   povline   = povline,
-                   headcount = params$pov_stats$headcount,
-                   A         = params$gd_params[[lorenz]]$reg_results$coef[["A"]],
-                   B         = params$gd_params[[lorenz]]$reg_results$coef[["B"]],
-                   C         = params$gd_params[[lorenz]]$reg_results$coef[["C"]])
+                    povline   = povline,
+                    headcount = params$pov_stats$headcount,
+                    A         = params$gd_params[[lorenz]]$reg_results$coef[["A"]],
+                    B         = params$gd_params[[lorenz]]$reg_results$coef[["B"]],
+                    C         = params$gd_params[[lorenz]]$reg_results$coef[["C"]])
   attributes(pov_gap) <- NULL
 
   #   ____________________________________________________
@@ -439,9 +439,8 @@ pipgd_pov_severity_nv <- function(
     params$pov_stats$pov_severity <- pov_severity
     params$pov_stats$lorenz       <- lorenz
 
-    return(
-      params
-    )
+    params
+
 
 }
 
@@ -537,14 +536,15 @@ pipgd_pov_severity <- function(
   # ____________________________________________________________________________
   # Format ---------------------------------------------------------------------
   out <- return_format(
-    ld     = list_povsev,
-    var    = "pov_severity",
-    format = format
+    ld       = list_povsev,
+    var      = "pov_severity",
+    format   = format,
+    complete = complete
   )
 
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------
-  return(out)
+  out
 
 }
 
@@ -651,9 +651,8 @@ pipgd_watts_nv <- function(
   params$pov_stats$watts  <- wr
   params$pov_stats$lorenz <- lorenz
 
-  return(
-    params
-  )
+  params
+
 
 }
 
@@ -701,12 +700,12 @@ pipgd_watts <- function(
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
-  pipgd_pov_watts_v <- Vectorize(
+  pipgd_watts_v <- Vectorize(
     FUN            = pipgd_watts_nv,
     vectorize.args = "povline",
     SIMPLIFY       = FALSE
   )
-  list_watts <- pipgd_watts_nv(
+  list_watts <- pipgd_watts_v(
     params     = params,
     welfare    = welfare,
     weight     = weight,
@@ -721,15 +720,45 @@ pipgd_watts <- function(
   # ____________________________________________________________________________
   # Format ---------------------------------------------------------------------
   out <- return_format(
-    ld     = list_watts,
-    var    = "watts",
-    format = format
+    ld       = list_watts,
+    var      = "watts",
+    format   = format,
+    complete = complete
   )
 
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------
-  return(out)
+  out
 
 }
-
-
+#
+#
+# pipgd_pov_headcount_v <- Vectorize(pipgd_pov_headcount_nv,
+#                                    vectorize.args = "povline",
+#                                    SIMPLIFY = FALSE)
+#
+#
+# ld <- pipgd_pov_headcount_v(welfare    = welfare,
+#                             weight     = weight,
+#                             params     = params,
+#                             povline    = povline,
+#                             complete   = complete,
+#                             lorenz     = lorenz,
+#                             mean       = mean,
+#                             times_mean = times_mean)
+#
+# #   ____________________________________________________
+# #   Return                                           ####
+#
+# out <- return_format(ld,
+#                      var = "headcount",
+#                      povline = povline,
+#                      complete = complete,
+#                      format = format)
+#pip
+# out <- return_format(
+#   ld       = list_povsev,
+#   var      = "pov_severity",
+#   format   = format,
+#   complete = complete
+# )
