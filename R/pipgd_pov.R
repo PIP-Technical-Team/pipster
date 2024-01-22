@@ -72,7 +72,10 @@ pipgd_pov_headcount_nv <-
 #' @inheritParams pipgd_pov_headcount_nv
 #' @inheritParams return_format
 #'
-#' @return list of numeric vector. Check `format` argument
+#' @return Returns a `data.table` and `data.frame` object with three variables:
+#' `povline`, `headcount`, and `lorenz`.  Check `format` argument to change
+#' the output format.
+#'
 #' @export
 #'
 #' @examples

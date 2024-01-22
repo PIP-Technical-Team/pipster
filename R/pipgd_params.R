@@ -9,7 +9,9 @@
 #' @param mean numeric scalar of distribution mean. Default is NULL
 #' @param population numeric scalar with actual size of population. Default is NULL
 #'
-#' @return list with Group data parameters parameters
+#' @return Returns a `pipgd_params` object with Group data parameters accessible
+#' at `$gd_params` and the data used accessible at `$data`.
+#'
 #' @export
 #' @references
 #' Datt, G. 1998. "[Computational Tools For Poverty Measurement And

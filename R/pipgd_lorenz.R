@@ -12,7 +12,10 @@
 #'   relative poverty line. Default is 1
 #'
 #'
-#' @return list of distributional validity of each Lorenz model
+#' @return Returns a nested list of distributional validity of each Lorenz model
+#' accessible at `$gd_params$lq$validity$is_normal` for the Lorenz beta and
+#' `$gd_params$lq$validity$is_normal` for the Lorenz quadratic.
+#'
 #' @export
 #'
 #' @examples
@@ -291,6 +294,7 @@ pipgd_select_lorenz <-
 #' @return list: contains i) numeric lorenz curve, ii) corresponding points on
 #' x-axis, iii) whether lq or lb parameterization, and
 #' iv) if `complete=TRUE`, also returns all params.
+#'
 #' @export
 #'
 #' @examples
@@ -311,6 +315,7 @@ pipgd_select_lorenz <-
 #' # Example 4: Generating Lorenz Curve with a specific Lorenz model
 #' lorenz_curve_lq <- pipgd_lorenz_curve(params = params, lorenz = "lq")
 #' lorenz_curve_lb <- pipgd_lorenz_curve(params = params, lorenz = "lb")
+#'
 pipgd_lorenz_curve <- function(
     params     = NULL,
     welfare    = NULL,
