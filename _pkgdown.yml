@@ -1,4 +1,6 @@
 url: https://pip-technical-team.github.io/pipster/
 template:
   bootstrap: 5
+deployment:
+  branch: DEV_website
 
