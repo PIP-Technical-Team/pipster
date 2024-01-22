@@ -562,7 +562,7 @@ pipgd_mld <- function(
   #   _________________________________________________________________
   if (lorenz == "lb") {
     mld <-
-      wbpip::gd_compute_gini_lb(
+      wbpip::gd_compute_mld_lb(
         A         = params$gd_params$lb$reg_results$coef[["A"]],
         B         = params$gd_params$lb$reg_results$coef[["B"]],
         C         = params$gd_params$lb$reg_results$coef[["C"]],
