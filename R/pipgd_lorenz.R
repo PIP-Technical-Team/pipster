@@ -310,6 +310,7 @@ pipgd_select_lorenz <-
 #' # Example 3: Using pre-calculated parameters
 #' params <- pipgd_validate_lorenz(welfare = pip_gd$L,
 #'                                 weight = pip_gd$P)
+#'
 #' lorenz_curve_params <- pipgd_lorenz_curve(params = params)
 #'
 #' # Example 4: Generating Lorenz Curve with a specific Lorenz model

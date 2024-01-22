@@ -75,6 +75,8 @@ pipgd_pov_headcount_nv <-
 #' @return Returns a `data.table` and `data.frame` object with three variables:
 #' `povline`, `headcount`, and `lorenz`.  Check `format` argument to change
 #' the output format.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
 #'
 #' @export
 #'
@@ -233,7 +235,13 @@ pipgd_pov_gap_nv <- function(params     = NULL,
 #' Estimate poverty gap (FGT1)
 #'
 #' @inheritParams pipgd_pov_headcount
-#' @return list of poverty gaps. See `format` parameter
+#'
+#' @return Returns a `data.table` and `data.frame` object with three variables:
+#' `povline`, `pov_gap`, and `lorenz`.  Check `format` argument to change
+#' the output format.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
@@ -445,7 +453,12 @@ pipgd_pov_severity_nv <- function(
 #' single numeric vector, whose names are corresponding selected Lorenz for
 #' each value.  Default is "dt"
 #'
-#' @return list: contains numeric poverty severity. See `complete` and `format`
+#' @return Returns a `data.table` and `data.frame` object with two variables:
+#' `pov_severity` and `lorenz`.  Check `format` argument to change
+#' the output format.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
@@ -549,6 +562,7 @@ pipgd_pov_severity <- function(
 #'
 #' @return list: contains numeric Watts ratio and, if `complete=TRUE`,
 #' also returns all params.
+#'
 #' @keywords internal
 pipgd_watts_nv <- function(
     params       = NULL,
@@ -648,7 +662,7 @@ pipgd_watts_nv <- function(
 
 #' Estimate Watts poverty index
 #'
-#' Computes Watts Index from either beta or quadratic Lorenz fit
+#' Computes Watts Index from either beta or quadratic Lorenz fit.
 #' The first distribution-sensitive poverty measure was proposed in 1968 by Watts.
 #' It is defined as the mean across the population of the proportionate poverty
 #' gaps, as measured by the log of the ratio of the poverty line to income,
@@ -660,42 +674,11 @@ pipgd_watts_nv <- function(
 #' single numeric vector, whose names are corresponding selected Lorenz for
 #' each value.  Default is "dt"
 #'
-#' @return list: contains numeric poverty severity. See `complete` and `format`
+#' @return Returns a list: contains numeric poverty severity. See `complete` and `format`
 #' @export
 #'
 #' @examples
-#' # Example 1: Basic usage with specified mean and poverty line
-#' pipgd_pov_severity(welfare = pip_gd$L,
-#'                    weight  = pip_gd$P,
-#'                    mean    = 109.90,
-#'                    povline = 89,
-#'                    complete = FALSE)
 #'
-#' # Example 2: Multiple poverty lines, returning data.table
-#' pipgd_pov_severity(welfare = pip_gd$L,
-#'                    weight  = pip_gd$P,
-#'                    povline = c(0.5, 1, 2, 3),
-#'                    complete = FALSE)
-#'
-#' # Example 3: Multiple poverty lines, returning list format
-#' pipgd_pov_severity(welfare = pip_gd$L,
-#'                    weight  = pip_gd$P,
-#'                    povline = c(0.5, 1, 2, 3),
-#'                    format  = "list")
-#'
-#' # Example 4: Multiple poverty lines, returning detailed list format
-#' pipgd_pov_severity(welfare = pip_gd$L,
-#'                    weight  = pip_gd$P,
-#'                    povline = c(0.5, 1, 2, 3),
-#'                    format  = "list",
-#'                    complete = TRUE)
-#'
-#' # Example 5: Multiple poverty lines, returning atomic format
-#' pipgd_pov_severity(welfare = pip_gd$L,
-#'                    weight  = pip_gd$P,
-#'                    povline = c(0.5, 1, 2, 3),
-#'                    format  = "atomic",
-#'                    complete = FALSE)
 
 pipgd_watts <- function(
     params     = NULL,
@@ -719,11 +702,11 @@ pipgd_watts <- function(
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   pipgd_pov_watts_v <- Vectorize(
-    FUN            = pipgd_pov_watts_nv,
+    FUN            = pipgd_watts_nv,
     vectorize.args = "povline",
     SIMPLIFY       = FALSE
   )
-  list_watts <- pipgd_pov_watts_v(
+  list_watts <- pipgd_watts_nv(
     params     = params,
     welfare    = welfare,
     weight     = weight,
