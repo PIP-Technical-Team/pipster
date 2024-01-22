@@ -291,8 +291,8 @@ pipgd_select_lorenz <-
 #' @param n_bins atomic double vector of length 1: number of points on the
 #' lorenz curve
 #'
-#' @return list: contains i) numeric lorenz curve, ii) corresponding points on
-#' x-axis, iii) whether lq or lb parameterization, and
+#' @return Returns a list: contains i) numeric lorenz curve, ii) corresponding
+#' points on x-axis, iii) whether lq or lb parameterization, and
 #' iv) if `complete=TRUE`, also returns all params.
 #'
 #' @export
@@ -378,9 +378,9 @@ pipgd_lorenz_curve <- function(
 
     lc <- wbpip:::value_at_lb(
       x = x_vec,
-      A = foo$gd_params$lb$reg_results$coef[["A"]],
-      B = foo$gd_params$lb$reg_results$coef[["B"]],
-      C = foo$gd_params$lb$reg_results$coef[["C"]]
+      A = params$gd_params$lb$reg_results$coef[["A"]],
+      B = params$gd_params$lb$reg_results$coef[["B"]],
+      C = params$gd_params$lb$reg_results$coef[["C"]]
     )
 
   } else if (lorenz == "lq") {
@@ -390,9 +390,9 @@ pipgd_lorenz_curve <- function(
       FUN = function(x1){
         wbpip:::value_at_lq(
           x = x1,
-          A = foo$gd_params$lq$reg_results$coef[["A"]],
-          B = foo$gd_params$lq$reg_results$coef[["B"]],
-          C = foo$gd_params$lq$reg_results$coef[["C"]]
+          A = params$gd_params$lq$reg_results$coef[["A"]],
+          B = params$gd_params$lq$reg_results$coef[["B"]],
+          C = params$gd_params$lq$reg_results$coef[["C"]]
         )
 
       }
