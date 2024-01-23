@@ -26,7 +26,9 @@ used if \code{n = NULL}}
 output}
 }
 \value{
-list with vector of share of welfare by quantiles
+Returns a \code{data.table} and \code{data.frame} object with two variables:
+\code{quantile} and \code{share_at}.  Check \code{format} argument to change
+the output format.
 }
 \description{
 \code{pipmd_quantile_welfare_share} returns the share of welfare held by a

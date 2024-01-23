@@ -26,7 +26,9 @@ used if \code{n = NULL}}
 output}
 }
 \value{
-quantiles: see \code{format}
+Returns a \code{data.table} and \code{data.frame} object with two variables:
+\code{quantile} and \code{value}.  Check \code{format} argument to change
+the output format.
 }
 \description{
 \code{pipmd_quantile} returns the quantile (i.e., monetary value) that corresponds
@@ -43,9 +45,24 @@ default, the mean is equal to 1, which implies that, if no mean value if
 provided, the return value is equal to \code{x}.
 }
 \examples{
-pipmd_quantile(
-  welfare = pip_md_s$welfare,
-  weight  = pip_md_s$weight,
-  n       = 5
-)
+# Example 1: Calculating quintiles.
+pipmd_quantile(welfare = pip_md_s$welfare,
+               weight  = pip_md_s$weight,
+               n       = 5,
+               format  = "list")
+
+# Example 2: Calculating deciles with data.table format.
+pipmd_quantile(welfare = pip_md_s$welfare,
+               weight  = pip_md_s$weight,
+               n       = 10,
+               format  = "dt")
+
+# Example 3: Calculating quantiles at specific population shares and format
+atomic.
+specific_popshares <- seq(from = 0, to = 1, length.out = 100)
+pipmd_quantile(welfare = pip_md_s$welfare,
+               weight  = pip_md_s$weight,
+               popshare = specific_popshares,
+               format  = "atomic")
+
 }
