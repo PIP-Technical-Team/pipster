@@ -25,7 +25,7 @@ pipgd_select_lorenz(
 \item{mean}{numeric scalar of distribution mean. Default is 1}
 
 \item{times_mean}{numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1}
+relative poverty line. Default is 1}
 
 \item{popshare}{numeric: range (0,1). Share of population. Provide share of
 population instead of poverty line}
@@ -42,7 +42,7 @@ list of values with best lorenz fit for distributional Stats
 Get selected Lorenz curve for distributional stats
 }
 \examples{
-# Using Lorenz parameters from get_gd_lorenz_params
+# Example 1: Using Lorenz parameters from get_gd_lorenz_params
 withr::local_options(pipster.return_complete  = TRUE)
 params <- pipgd_validate_lorenz(
   welfare = pip_gd$L,
@@ -53,14 +53,14 @@ params <- pipgd_validate_lorenz(
   complete = TRUE)
 pipgd_select_lorenz(params = params)
 
-# Using Lorenz parameters from pipgd_validate_lorenz
+# Example 2: Using Lorenz parameters from pipgd_validate_lorenz
 params <- pipgd_validate_lorenz(
   welfare = pip_gd$L,
   weight = pip_gd$P,
   complete = TRUE)
 pipgd_select_lorenz(params = params)
 
-# Using original vectors
+# Example 3: Using original vectors
 
 pipgd_select_lorenz(
   welfare = pip_gd$L,

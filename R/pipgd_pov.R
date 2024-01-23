@@ -113,6 +113,7 @@ pipgd_pov_headcount_nv <-
 #'                     povline = c(0.5, 1, 2, 3),
 #'                     format  = "atomic",
 #'                     complete = FALSE)
+#'
 pipgd_pov_headcount <-
   function(params     = NULL,
            welfare    = NULL,
@@ -277,6 +278,7 @@ pipgd_pov_gap_nv <- function(params     = NULL,
 #'               povline = c(0.5, 1, 2, 3),
 #'               format  = "atomic",
 #'               complete = FALSE)
+#'
 pipgd_pov_gap <- function(params     = NULL,
                           welfare    = NULL,
                           weight     = NULL,
@@ -493,6 +495,7 @@ pipgd_pov_severity_nv <- function(
 #'                    povline = c(0.5, 1, 2, 3),
 #'                    format  = "atomic",
 #'                    complete = FALSE)
+#'
 pipgd_pov_severity <- function(
     params     = NULL,
     welfare    = NULL,
@@ -673,12 +676,37 @@ pipgd_watts_nv <- function(
 #' single numeric vector, whose names are corresponding selected Lorenz for
 #' each value.  Default is "dt"
 #'
-#' @return Returns a list: contains numeric poverty severity. See `complete` and `format`
+#' @return Returns a `data.table` and `data.frame` object with two variables:
+#' `watts` and `lorenz`.  Check `format` argument to change
+#' the output format.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
+#' # Example 1: Basic usage with the pip_gd dataset and default poverty line
+#' pipgd_watts(welfare = pip_gd$L,
+#'             weight  = pip_gd$P)
 #'
-
+#' # Example 2: Specifying a different poverty line and output as a list
+#' pipgd_watts(welfare = pip_gd$L,
+#'             weight  = pip_gd$P,
+#'             povline = 1.9,
+#'             format  = "list")
+#'
+#'
+#' # Example 3: Detailed output with complete = TRUE
+#' pipgd_watts(welfare = pip_gd$L,
+#'             weight  = pip_gd$P,
+#'             complete = TRUE)
+#'
+#' # Example 4: Custom mean and times_mean with data.table format
+#' pipgd_watts(welfare = pip_gd$L,
+#'             weight  = pip_gd$P,
+#'             mean    = 109.9,
+#'             times_mean = 1.5)
+#'
 pipgd_watts <- function(
     params     = NULL,
     welfare    = NULL,

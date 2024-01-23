@@ -27,7 +27,7 @@ pipgd_watts(
 \item{mean}{numeric scalar of distribution mean. Default is 1}
 
 \item{times_mean}{numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1}
+relative poverty line. Default is 1}
 
 \item{popshare}{numeric: range (0,1). Share of population. Provide share of
 population instead of poverty line}
@@ -45,10 +45,14 @@ Lorenz Quadratic or "lb" for Lorenz Beta}
 previously used \code{get_gd} functions. Default is \code{FALSE}}
 }
 \value{
-list: contains numeric poverty severity. See \code{complete} and \code{format}
+Returns a \code{data.table} and \code{data.frame} object with two variables:
+\code{watts} and \code{lorenz}.  Check \code{format} argument to change
+the output format.
+If \code{complete = TRUE}, it returns a \code{pipgd_params} object with additional
+details and intermediate calculations.
 }
 \description{
-Computes Watts Index from either beta or quadratic Lorenz fit
+Computes Watts Index from either beta or quadratic Lorenz fit.
 The first distribution-sensitive poverty measure was proposed in 1968 by Watts.
 It is defined as the mean across the population of the proportionate poverty
 gaps, as measured by the log of the ratio of the poverty line to income,
@@ -56,39 +60,26 @@ where the mean is formed over the whole population, counting the nonpoor as
 having a zero poverty gap.
 }
 \examples{
-pipgd_pov_watts(
-welfare = pip_gd$L,
-weight  = pip_gd$P,
-mean = 109.90,
-povline = 89,
-complete = FALSE)
-# Return data.table
-pipgd_pov_watts(
-welfare = pip_gd$L,
-weight = pip_gd$P,
-povline = c(.5, 1, 2, 3),
-complete = FALSE)
+# Example 1: Basic usage with the pip_gd dataset and default poverty line
+pipgd_watts(welfare = pip_gd$L,
+            weight  = pip_gd$P)
 
-# Return list
-pipgd_pov_watts(
-welfare = pip_gd$L,
-weight = pip_gd$P,
-povline = c(.5, 1, 2, 3),
-format = "list")
+# Example 2: Specifying a different poverty line and output as a list
+pipgd_watts(welfare = pip_gd$L,
+            weight  = pip_gd$P,
+            povline = 1.9,
+            format  = "list")
 
-# Return list complete
-pipgd_pov_watts(
-welfare = pip_gd$L,
-weight = pip_gd$P,
-povline = c(.5, 1, 2, 3),
-format = "list",
-complete = TRUE)
 
-# Return data.table
-pipgd_pov_watts(
-welfare = pip_gd$L,
-weight = pip_gd$P,
-povline = c(.5, 1, 2, 3),
-format = "atomic",
-complete = FALSE)
+# Example 3: Detailed output with complete = TRUE
+pipgd_watts(welfare = pip_gd$L,
+            weight  = pip_gd$P,
+            complete = TRUE)
+
+# Example 4: Custom mean and times_mean with data.table format
+pipgd_watts(welfare = pip_gd$L,
+            weight  = pip_gd$P,
+            mean    = 109.9,
+            times_mean = 1.5)
+
 }

@@ -27,7 +27,7 @@ pipgd_lorenz_curve(
 \item{mean}{numeric scalar of distribution mean. Default is 1}
 
 \item{times_mean}{numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1}
+relative poverty line. Default is 1}
 
 \item{popshare}{numeric: range (0,1). Share of population. Provide share of
 population instead of poverty line}
@@ -44,8 +44,8 @@ Lorenz Quadratic or "lb" for Lorenz Beta}
 lorenz curve}
 }
 \value{
-list: contains i) numeric lorenz curve, ii) corresponding points on
-x-axis, iii) whether lq or lb parameterization, and
+Returns a list: contains i) numeric lorenz curve, ii) corresponding
+points on x-axis, iii) whether lq or lb parameterization, and
 iv) if \code{complete=TRUE}, also returns all params.
 }
 \description{
@@ -55,6 +55,23 @@ By default, the best fitting Lorenz parameterization (quadratic or beta) is
 selected.
 }
 \examples{
-pipgd_lorenz_curve(welfare = pip_gd$L,
-                   weight  = pip_gd$P)
+# Example 1: Generating a Lorenz Curve with default settings
+lorenz_curve_default <- pipgd_lorenz_curve(welfare = pip_gd$L,
+                                           weight = pip_gd$P)
+
+# Example 2: Specifying the number of bins for the Lorenz Curve
+lorenz_curve_bins <- pipgd_lorenz_curve(welfare = pip_gd$L,
+                                        weight = pip_gd$P,
+                                        n_bins = 50)
+
+# Example 3: Using pre-calculated parameters
+params <- pipgd_validate_lorenz(welfare = pip_gd$L,
+                                weight = pip_gd$P)
+
+lorenz_curve_params <- pipgd_lorenz_curve(params = params)
+
+# Example 4: Generating Lorenz Curve with a specific Lorenz model
+lorenz_curve_lq <- pipgd_lorenz_curve(params = params, lorenz = "lq")
+lorenz_curve_lb <- pipgd_lorenz_curve(params = params, lorenz = "lb")
+
 }

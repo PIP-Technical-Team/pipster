@@ -26,7 +26,7 @@ pipgd_mld(
 \item{mean}{numeric scalar of distribution mean. Default is 1}
 
 \item{times_mean}{numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1}
+relative poverty line. Default is 1}
 
 \item{popshare}{numeric: range (0,1). Share of population. Provide share of
 population instead of poverty line}
@@ -40,14 +40,39 @@ previously used \code{get_gd} functions. Default is \code{FALSE}}
 Lorenz Quadratic or "lb" for Lorenz Beta}
 }
 \value{
-list: contains numeric MLD and, if \code{complete=TRUE},
-also returns all params.
+Returns a nested list containing distribution statistics:
+\verb{$dist_stats$mld} is a numeric vector containing the mld calculation.
+\verb{$dist_stats$lorenz} is a numeric vector showing the lorenz curve used.
+If \code{complete = TRUE}, it returns a \code{pipgd_params} object with additional
+details and intermediate calculations.
 }
 \description{
-MLD is computed using either the beta or quadratic Lorenz
-functions.
+MLD (Mean Logarithimic Deviation) is computed using either the beta or
+quadratic Lorenz functions.
 }
 \examples{
-pipgd_mld(welfare = pip_gd$L,
-          weight  = pip_gd$P)
+# Basic MLD Calculation
+basic_mld <- pipgd_mld(welfare = pip_gd$L,
+                       weight = pip_gd$P)
+
+# MLD with a Specific Lorenz Curve
+mld_lorenz_beta <- pipgd_mld(welfare = pip_gd$L,
+                             weight = pip_gd$P,
+                             lorenz = "lb")
+
+# Detailed Output of MLD Calculation
+detailed_mld <- pipgd_mld(welfare = pip_gd$L,
+                          weight = pip_gd$P,
+                          complete = TRUE)
+
+# Adjusting for a Specific Mean
+actual_mean <- 90  # Replace with the actual mean of your data
+adjusted_mean_mld <- pipgd_mld(welfare = pip_gd$L,
+                               weight = pip_gd$P,
+                               mean = actual_mean)
+
+# MLD Focusing on Specific Poverty Line
+poverty_line_mld <- pipgd_mld(welfare = pip_gd$L,
+                             weight = pip_gd$P,
+                             povline = 50)
 }
