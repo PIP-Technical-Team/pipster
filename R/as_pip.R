@@ -17,25 +17,23 @@
 #' @export
 #'
 #' @examples
-#' # Example 1: Basic usage
-#'
-#' pip_converted <- as_pip(dt = pip_md,
-#'                         welfare_var = "welfare",
-#'                         weight_var = "weight")
+#' # Example 1: Basic usage with md data
+#' as_pip(dt = pip_md,
+#'        welfare_var = "welfare",
+#'        weight_var = "weight")
 #'
 #' # Example 2: Including imputation_id_var
+#' as_pip(dt = pip_id,
+#'        welfare_var = "welfare",
+#'        weight_var = "weight",
+#'        imputation_id_var = "imputation_id")
 #'
-#' pip_with_id <- as_pip(dt = pip_id,
-#'                       welfare_var = "welfare",
-#'                       weight_var = "weight",
-#'                       imputation_id_var = "imputation_id")
+#' # Example 3: Basic usage with gd data and explicit pip_type
+#' as_pip(dt = pip_gd,
+#'        welfare_var = "X",
+#'        weight_var = "W",
+#'        pip_type = "gd")
 #'
-#' # Example 3: Specifying pip_type explicitly
-#'
-#' pip_type_specified <- as_pip(dt = pip_gd,
-#'                              welfare_var = "X",
-#'                              weight_var = "W",
-#'                              pip_type = "gd")
 as_pip <- function(
     dt,
     welfare_var,
