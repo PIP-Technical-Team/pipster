@@ -1,5 +1,5 @@
 # Test poverty headcount functions ####
-# Test pipgd_pov_headcount_nv (non vectorized function) 
+# Test pipgd_pov_headcount_nv (non vectorized function)
 
 welfare <- pip_gd$L
 weight  <- pip_gd$P
@@ -13,7 +13,7 @@ test_that("pipgd_pov_headcount_nv works", {
   expect_equal(res_with_params, res_with_welfare_weight)
   expect_equal(class(res_with_params), "list")
   expect_equal(class(res_with_welfare_weight), "list")
-  
+
   expect_error(pipgd_pov_headcount_nv(welfare = welfare, weight = weight, lorenz = "neither NULL, lb or lq"))
   expect_error(pipgd_pov_headcount_nv(params = params, lorenz = "neither NULL, lb or lq"))
   expect_error(pipgd_pov_headcount_nv(params = NULL, welfare = NULL, weight = weight))
@@ -29,12 +29,12 @@ test_that("pipgd_pov_headcount_nv works", {
 
   pipgd_pov_headcount_nv(welfare = welfare, weight = weight, lorenz = "lq")$pov_stats$headcount |>
     expect_equal(params$gd_params$lq$validity$headcount)
-  
+
   pipgd_pov_headcount_nv(params = params, lorenz = NULL)$pov_stats$headcount |>
     expect_equal(params$gd_params[[params$selected_lorenz$for_pov]]$validity$headcount)
 })
 
-# Test pipgd_pov_headcount (vectorized function) 
+# Test pipgd_pov_headcount (vectorized function)
 test_that("pipgd_pov_headcount works as expected", {
 
   povline = c(.5, 1, 2, 3)
@@ -48,7 +48,7 @@ test_that("pipgd_pov_headcount works as expected", {
   expect_equal(pipgd_pov_headcount(params = params, povline = povline, format = "dt"), pipgd_pov_headcount(welfare = welfare, weight=weight, povline = povline, format = "dt"))
   expect_equal(pipgd_pov_headcount(params = params, povline = povline, format = "atomic"), pipgd_pov_headcount(welfare = welfare, weight=weight, povline = povline, format = "atomic"))
   expect_equal(pipgd_pov_headcount(params = params, povline = povline, format = "list"), pipgd_pov_headcount(welfare = welfare, weight=weight, povline = povline, format = "list"))
-  
+
   # Computations -------------------------------------------------------------------
   res_atomic <- pipgd_pov_headcount(welfare = welfare, weight=weight, povline = c(.5, 1, 2, 3), format = "atomic")
   expect_equal(res_atomic[[1]], pipgd_pov_headcount_nv(welfare=welfare, weight=weight, povline = 0.5)$pov_stats$headcount)
@@ -64,27 +64,27 @@ test_that("pipgd_pov_headcount works as expected", {
 # Test pipgd_pov_gap_nv (non vectorized function)
 
 test_that("pipgd_pov_gap_nv works as expected", {
-  
+
   # Inputs -------------------------------------------------------
   pipgd_pov_gap_nv(params = NULL, welfare = NULL, weight = NULL) |>
     expect_error()
-  
+
   pipgd_pov_gap_nv(params = NULL, welfare = NULL, weight = weight) |>
     expect_error()
-  
+
   pipgd_pov_gap_nv(params = NULL, welfare = welfare, weight = NULL) |>
     expect_error()
-  
+
   pipgd_pov_gap_nv(params = params, lorenz = "Neither NULL, lq or lb") |>
     expect_error()
-  
+
   pipgd_pov_gap_nv(welfare = welfare, weight = weight, lorenz = "Neither NULL, lq or lb") |>
     expect_error()
 
   # Output -------------------------------------------------------
   res_params_complete <- pipgd_pov_gap_nv(params = params, complete = TRUE)
   res_params <- pipgd_pov_gap_nv(params = params)
-  
+
   pipgd_pov_gap_nv(welfare = welfare, weight = weight, lorenz = NULL)$pov_stats$lorenz |>
     expect_equal(pipgd_pov_headcount_nv(welfare = welfare, weight = weight, complete = TRUE)$selected_lorenz$for_pov)
 
@@ -97,18 +97,18 @@ test_that("pipgd_pov_gap_nv works as expected", {
   pipgd_pov_gap_nv(params = params, lorenz = "lq")$pov_stats$lorenz |>
     expect_equal("lq")
 
-  # QUESTION: is it an error or is it correct that when complete is FALSE the output is of class list 
+  # QUESTION: is it an error or is it correct that when complete is FALSE the output is of class list
   # and not of class pipgd_params? (i am aware this is because in the function definition we specify:
   #  if (isFALSE(complete)) {
   #   params <- vector("list")
   #    })
   # but I am unsure on why we want to specify it
-  
+
   # If this is not what we want, I would add expect_equal(class(res_params), class(res_params_complete))
-  
+
   expect_equal(class(res_params), "list")
   expect_equal(class(res_params_complete), "pipgd_params")
-  
+
   names(res_params) |>
     expect_equal("pov_stats")
 
@@ -117,13 +117,13 @@ test_that("pipgd_pov_gap_nv works as expected", {
 
   names(res_params_complete) |>
     expect_equal(c("gd_params", "data", "selected_lorenz", "pov_stats"))
-  
+
   names(res_params_complete$gd_params) |>
     expect_equal(c("lq", "lb"))
-  
+
   names(res_params_complete$gd_params$lq) |>
     expect_equal(names(res_params_complete$gd_params$lb))
-  
+
   names(res_params_complete$gd_params$lb) |>
     expect_equal(c("reg_results", "key_values", "validity"))
 
@@ -132,19 +132,19 @@ test_that("pipgd_pov_gap_nv works as expected", {
 
   names(res_params_complete$gd_params$lb$reg_results$coef) |>
     expect_equal(c("A", "B", "C"))
-  
+
   names(res_params_complete$gd_params$lb$validity) |>
     expect_equal(c("is_valid", "is_normal", "headcount"))
-  
+
   names(res_params_complete$gd_params$lq$key_values)|>
     expect_equal(c("e", "m", "n", "r", "s1","s2"))
-  
+
   names(res_params_complete$data) |>
       expect_equal(c("welfare", "weight"))
-    
+
   names(res_params_complete$selected_lorenz) |>
       expect_equal(c("for_dist", "for_pov", "use_lq_for_dist", "use_lq_for_pov"))
-  
+
   names(res_params_complete$pov_stats) |>
       expect_equal(c("headcount", "lorenz", "pov_gap"))
 
@@ -160,7 +160,7 @@ test_that("pipgd_pov_gap works as expected", {
     expect_error()
   pipgd_pov_gap(params = NULL, welfare = NULL, weight = weight) |>
     expect_error()
-  
+
   # Computations ---------------------------------------------------------------
   res_povgap_atomic <- pipgd_pov_gap(welfare = welfare, weight=weight, povline = c(.5, 1, 2, 3), format = "atomic")
   expect_equal(res_povgap_atomic[[1]], pipgd_pov_gap_nv(welfare=welfare, weight=weight, povline = 0.5)$pov_stats$pov_gap)
@@ -178,7 +178,7 @@ test_that("pipgd_pov_gap works as expected", {
     expect_equal("numeric")
   #class(pipgd_pov_gap(welfare = welfare, weight = weight, format = "dt")) |>
   #  expect_equal("list")
-  
+
 })
 
 
@@ -186,7 +186,7 @@ test_that("pipgd_pov_gap works as expected", {
 # pipgd_pov_severity_nv (non vectorized)
 test_that("pipgd_pov_severity_nv() -params works", {
   res_ps_params <- pipgd_pov_severity_nv(params = params)
-  
+
   res_ps_welfare_weight <- pipgd_pov_severity_nv(welfare = welfare, weight  = weight)
 
   expect_equal(res_ps_params, res_ps_welfare_weight)
@@ -205,7 +205,7 @@ test_that("pipgd_pov_severity_nv() -mean works", {
     welfare = welfare,
     weight  = weight
   )
-  
+
   pipgd_pov_severity_nv(
     welfare = welfare,
     weight  = weight,
@@ -215,7 +215,7 @@ test_that("pipgd_pov_severity_nv() -mean works", {
   expect_equal(
     res_mean_1, res_mean_none
   )
-  
+
 })
 
 test_that("pipgd_pov_severity_nv() -lorenz works", {
@@ -229,7 +229,7 @@ test_that("pipgd_pov_severity_nv() -lorenz works", {
   # Lorenz = "lb"
   pipgd_pov_severity_nv(welfare = welfare, weight = weight, lorenz = "lb")$pov_stats$lorenz |>
     expect_equal("lb")
-  
+
   # Lorenz = "lq"
   # pipgd_pov_severity_nv(welfare = welfare, weight = weight, lorenz = "lq")$pov_stats$lorenz  |>
   #  expect_equal("lq") --> Does not find gd_compute_pov_severity_lq
@@ -253,13 +253,13 @@ test_that("pipgd_pov_severity_nv() -complete works", {
 
   names(res_complete) |>
     expect_equal(c("gd_params", "data", "selected_lorenz", "pov_stats"))
-  
+
   names(res_complete$gd_params) |>
     expect_equal(c("lq", "lb"))
 
   names(res_complete$gd_params$lq) |>
     expect_equal(names(res_complete$gd_params$lb))
-  
+
   names(res_complete$gd_params$lb) |>
     expect_equal(c("reg_results", "key_values", "validity"))
 
@@ -268,26 +268,26 @@ test_that("pipgd_pov_severity_nv() -complete works", {
 
   names(res_complete$gd_params$lb$reg_results$coef) |>
     expect_equal(c("A", "B", "C"))
-  
+
   names(res_complete$gd_params$lb$validity) |>
     expect_equal(c("is_valid", "is_normal", "headcount"))
-  
+
   names(res_complete$gd_params$lq$key_values)|>
     expect_equal(c("e", "m", "n", "r", "s1","s2"))
-  
+
   names(res_complete$data) |>
       expect_equal(c("welfare", "weight"))
-    
+
   names(res_complete$selected_lorenz) |>
       expect_equal(c("for_dist", "for_pov", "use_lq_for_dist", "use_lq_for_pov"))
-  
+
   names(res_complete$pov_stats) |>
       expect_equal(c("headcount", "lorenz", "pov_gap", "pov_severity"))
-  
+
   # Test output class
   class(res_complete) |>
     expect_equal("pipgd_params")
-  
+
   class(res_not_complete) |>
     expect_equal("list")
 
@@ -308,9 +308,9 @@ test_that("pipgd_pov_severity_nv() -pov_severity works", {
        B         = params_pov_gap$gd_params$lb$reg_results$coef[["B"]],
        C         = params_pov_gap$gd_params$lb$reg_results$coef[["C"]])
     )
-  
+
   # Test pov_severity is returned from wbpip::wbpip:::gd_compute_pov_severity_lb (when lorenz='lq')
-  # NOTE: pipgd_pov_severity_nv is not working when lorenz = "lq", 
+  # NOTE: pipgd_pov_severity_nv is not working when lorenz = "lq",
   # because it does not find wbpip:::gd_compute_poverty_severity_lq
 
 })
@@ -318,61 +318,62 @@ test_that("pipgd_pov_severity_nv() -pov_severity works", {
 # Test pipgd_pov_severity (vectorized)
 
 test_that("pipgd_pov_severity inputs works as expected", {
-  povline = c(.5, 1, 2, 3) 
-  
+  povline = c(.5, 1, 2, 3)
+
   # Test params, welfare and weights arguments work as expected
   pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline) |>
     expect_equal(pipgd_pov_severity(params = params, povline = povline))
-  
+
   pipgd_pov_severity(welfare = welfare, weight = NULL, povline = povline) |>
     expect_error()
-  
+
   pipgd_pov_severity(welfare = NULL, weight = weight, povline = povline) |>
     expect_error()
-  
+
   # Test format argument works as expected
-  pipgd_pov_severity(welfare = welfare, weight = weight, 
+  pipgd_pov_severity(welfare = welfare, weight = weight,
                       povline = povline, format = "Neither dt, list or atomic") |>
     expect_error()
-  
+
   # Test lorenz argument works as expected
-  pipgd_pov_severity(welfare = welfare, weight = weight, 
+  pipgd_pov_severity(welfare = welfare, weight = weight,
                       povline = povline, lorenz = "Neither NULL, lb or lq") |>
     expect_error()
-  
+
   # Test mean argument works as expected
   pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline, mean = 1) |>
     expect_equal(pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline))
-  
+
   pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline, mean = NULL) |>
     expect_error()
 
   # Test popshare argument works as expected
   # NOTE:
-  #  When popshare is provided (not NULL), 
+  #  When popshare is provided (not NULL),
   #  Error: in if (fl * fh >= 0) { : missing value where TRUE/FALSE needed
 
   # Test pov_gap argument works as expected
   # NOTE:
   #  When pov_gap is provided (not NULL),
   #  Error: Error in params$selected_lorenz : $ operator is invalid for atomic vectors
-  
+
   # Test complete argument works as expected
   # NOTE:
-  #  Output is the same when Complete is TRUE or FALSE 
+  #  Output is the same when Complete is TRUE or FALSE
 })
 
 test_that("pipgd_pov_severity -outputs",{
+  povline = c(.5, 1, 2, 3)
   res_atomic_v <- pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline, format = "atomic")
   res_dt_v <- pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline, format = "dt")
   res_list_v <- pipgd_pov_severity(welfare = welfare, weight = weight, povline = povline, format = "list")
- 
+
   class(res_atomic_v) |>
     expect_equal("numeric")
 
   class(res_list_v) |>
     expect_equal("list")
-  
+
   # Check names in output list - !! the checks below will fail because the function at the current version
   # does not produce correct outputs names !!
 
@@ -381,16 +382,16 @@ test_that("pipgd_pov_severity -outputs",{
 
   names(res_list_v$pl0.5) |>
     expect_equal(names(res_list_v$pl1))
-  
+
   names(res_list_v$pl0.5) |>
     expect_equal(names(res_list_v$pl2))
 
   names(res_list_v$pl0.5) |>
     expect_equal(names(res_list_v$pl3))
-  
+
   names(res_list_v$pl0.5) |>
     expect_equal("pov_stats")
-  
+
   names(res_list_v$pl0.5$pov_stats) |>
     expect_equal(c("pov_severity", "lorenz"))
 
@@ -399,14 +400,14 @@ test_that("pipgd_pov_severity -outputs",{
 
   # Check that vectorization works
   res_povsev_nv <- pipgd_pov_severity_nv(welfare = welfare, weight = weight, povline = 0.5)$pov_stats$pov_severity
-  
+
   res_atomic_v[[1]] |>
     expect_equal(res_povsev_nv)
-  
+
   res_dt_v$pov_severity[1] |>
     expect_equal(res_povsev_nv)
-  
-  # The check below will fail because, currently, when format = "list" the output names are incorrect 
+
+  # The check below will fail because, currently, when format = "list" the output names are incorrect
    res_list_v$pl0.5$pov_stats$pov_severity |>
     expect_equal(res_povsev_nv)
 })
@@ -422,7 +423,7 @@ test_that("pipgd_watts_nv inputs work as expected", {
 
   # Check the output is the same when providing welfare and wieght or params
   expect_equal(res, res_params)
-  
+
   # Check either params or (welfare and weights) are provided
   pipgd_watts_nv(params = NULL, welfare = NULL, weight = NULL) |>
     expect_error()
@@ -430,23 +431,23 @@ test_that("pipgd_watts_nv inputs work as expected", {
     expect_error()
   pipgd_watts_nv(params = NULL, welfare = NULL, weight = weight) |>
     expect_error()
-  
+
   # Check invalid mean, times_mean give errors
   pipgd_watts_nv(welfare = welfare, weight = weight, mean = "invalid mean") |>
     expect_error()
   pipgd_watts_nv(welfare = welfare, weight = weight, times_mean = "invalid times_mean") |>
     expect_error()
-  
+
   # Check popshare argument works as expected
   pipgd_watts_nv(welfare = welfare, weight = weight, popshare = "invalid popshare") |>
     expect_error()
   pipgd_watts_nv(welfare = welfare, weight = weight, popshare = 0.3) |>
     expect_no_error()
-  
+
   # Check either popshare or povline are provided
   pipgd_watts_nv(welfare = welfare, weight = weight, popshare = 0.4, povline = 0.5) |>
     expect_error()
-  
+
   # Check that Lorenz argument works as expected
   pipgd_watts_nv(welfare = welfare, weight = weight, lorenz = "Neither NULL, lq or lb") |>
     expect_error()
@@ -472,7 +473,7 @@ test_that("pipgd_watts_nv outputs work as expected", {
 
   class(res_complete) |>
     expect_equal(class(res_params_complete))
-  
+
   class(res_params_complete) |>
     expect_equal("pipgd_params")
 
@@ -485,38 +486,38 @@ test_that("pipgd_watts_nv outputs work as expected", {
 
   names(res$pov_stats) |>
     expect_equal(c("watts", "lorenz"))
-  
+
   # Names in output list when complete is TRUE
   names(res_complete) |>
     expect_equal(c("gd_params", "data", "selected_lorenz", "pov_stats"))
-  
+
   names(res_complete$gd_params) |>
     expect_equal(c("lq", "lb"))
-  
+
   names(res_complete$gd_params$lq) |>
     expect_equal(names(res_complete$gd_params$lb))
-  
+
   names(res_complete$gd_params$lq) |>
     expect_equal(c("reg_results", "key_values", "validity"))
-  
+
   names(res_complete$gd_params$lq$reg_results) |>
     expect_equal(c("ymean", "sst", "coef", "sse", "r2", "mse", "se"))
-  
+
   names(res_complete$gd_params$lq$key_values) |>
     expect_equal(c("e", "m", "n", "r", "s1", "s2"))
-  
+
   names(res_complete$gd_params$lq$validity) |>
     expect_equal(c("is_normal", "is_valid", "headcount"))
-  
+
   names(res_complete$gd_params$lb$key_values) |>
     expect_equal(NULL)
-  
+
   names(res_complete$data) |>
     expect_equal(c("welfare", "weight"))
-  
+
   names(res_complete$selected_lorenz) |>
     expect_equal(c( "for_dist", "for_pov", "use_lq_for_dist", "use_lq_for_pov" ))
-  
+
    names(res_complete$pov_stats) |>
     expect_equal(c("headcount", "lorenz", "watts"))
 
@@ -541,7 +542,7 @@ test_that("pipgd_watts_nv watts output is as expected", {
        C         = params$gd_params$lb$reg_results$coef[["C"]],
        dd        = 0.005)
     )
-  
+
   res_with_lq$pov_stats$watts |>
     expect_equal(
       wbpip:::gd_compute_watts_lq(
@@ -557,32 +558,32 @@ test_that("pipgd_watts_nv watts output is as expected", {
 })
 
 test_that("pipgd_watts inputs works as expected", {
-  povline = c(.5, 1, 2, 3) 
-  
+  povline = c(.5, 1, 2, 3)
+
   # Test params, welfare and weights arguments work as expected
   pipgd_watts(welfare = welfare, weight = weight, povline = povline) |>
     expect_equal(pipgd_watts(params = params, povline = povline))
-  
+
   pipgd_watts(welfare = welfare, weight = NULL, povline = povline) |>
     expect_error()
-  
+
   pipgd_watts(welfare = NULL, weight = weight, povline = povline) |>
     expect_error()
-  
+
   # Test format argument works as expected
-  pipgd_watts(welfare = welfare, weight = weight, 
+  pipgd_watts(welfare = welfare, weight = weight,
                       povline = povline, format = "Neither dt, list or atomic") |>
     expect_error()
-  
+
   # Test lorenz argument works as expected
-  pipgd_watts(welfare = welfare, weight = weight, 
+  pipgd_watts(welfare = welfare, weight = weight,
                       povline = povline, lorenz = "Neither NULL, lb or lq") |>
     expect_error()
-  
+
   # Test mean argument works as expected
   pipgd_watts(welfare = welfare, weight = weight, povline = povline, mean = 1) |>
     expect_equal(pipgd_watts(welfare = welfare, weight = weight, povline = povline))
-  
+
   pipgd_watts(welfare = welfare, weight = weight, povline = povline, mean = NULL) |>
     expect_error()
 
@@ -591,9 +592,9 @@ test_that("pipgd_watts inputs works as expected", {
     expect_no_error()
 
   # NOE:
-  #  The check right above fails -when popshare is provided (not NULL), 
+  #  The check right above fails -when popshare is provided (not NULL),
   #  Error: in if (fl * fh >= 0) { : missing value where TRUE/FALSE needed
-  
+
 })
 
 # Test pipgd_watts() function (vectorized) -OUTPUTS
@@ -602,45 +603,45 @@ test_that("pipgd_watts -outputs",{
   res_atomic <- pipgd_watts(welfare = welfare, weight = weight, povline = povline, format = "atomic")
   res_dt <- pipgd_watts(welfare = welfare, weight = weight, povline = povline, format = "dt")
   res_list <- pipgd_watts(welfare = welfare, weight = weight, povline = povline, format = "list")
- 
+
   class(res_atomic) |>
     expect_equal("numeric")
 
   class(res_list) |>
     expect_equal("list")
-  
+
   #class(res_dt) |>
   # expect_equal(c("data.frame", "data.table"))
-  
-  # Check names in output list 
+
+  # Check names in output list
   names(res_list) |>
     expect_equal(c("pl0.5", "pl1", "pl2", "pl3"))
 
   names(res_list$pl0.5) |>
     expect_equal(names(res_list$pl1))
-  
+
   names(res_list$pl0.5) |>
     expect_equal(names(res_list$pl2))
 
   names(res_list$pl0.5) |>
     expect_equal(names(res_list$pl3))
-  
+
   names(res_list$pl0.5) |>
     expect_equal("pov_stats")
-  
+
   names(res_list$pl0.5$pov_stats) |>
     expect_equal(c("pov_severity", "lorenz"))
 
   # Check that vectorization works
   res_watts_nv <- pipgd_watts_nv(welfare = welfare, weight = weight, povline = 0.5)$pov_stats$watts
-  
+
   res_atomic[[1]] |>
     expect_equal(res_watts_nv)
-  
+
   res_dt$watts[1] |>
     expect_equal(res_watts_nv)
-  
-  # The check below will fail also because, currently, when format = "list" the output names are incorrect 
+
+  # The check below will fail also because, currently, when format = "list" the output names are incorrect
   res_list$pl0.5$pov_stats$watts |>
     expect_equal(res_watts_nv)
 })

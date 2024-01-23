@@ -1,3 +1,6 @@
+ # Increasing the max number of failures allowed
+ testthat::set_max_fails(Inf) 
+
 # pipgd_params function ####
 test_that("pipgd_params output", {
   res <- pipgd_params(
