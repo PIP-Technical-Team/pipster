@@ -109,7 +109,7 @@ test_that("return_format_md works as expected ", {
   format = "list"
   
   res <- return_format_md(
-    ld      = list_headcount,
+    ld      = data_list_md,
     var     = "pov_headcount",
     format  = format,
     povline = povline)
