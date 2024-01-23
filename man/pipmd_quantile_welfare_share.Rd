@@ -27,8 +27,7 @@ output}
 }
 \value{
 Returns a \code{data.table} and \code{data.frame} object with two variables:
-\code{quantile} and \code{share_at}.  Check \code{format} argument to change
-the output format.
+\code{quantile} and \code{share_at}.  Check \code{format} argument to change the output format.
 }
 \description{
 \code{pipmd_quantile_welfare_share} returns the share of welfare held by a
@@ -38,6 +37,28 @@ the cumulative share. Instead, \code{pipmd_quantile_welfare_share} returns
 the proportion of welfare that only the specified quantile holds.
 }
 \examples{
+# Example 1: Basic usage with default quantiles (10)
 pipmd_quantile_welfare_share(welfare = pip_md_s$welfare,
                              weight = pip_md_s$weight)
+
+# Example 2: Specifying a different number of quantiles
+pipmd_quantile_welfare_share(welfare = pip_md_s$welfare,
+                             weight = pip_md_s$weight,
+                             n = 5,  # For quintiles
+                             format = "list")
+
+# Example 3: Using specific population shares
+specific_popshares <- seq(from = 0.1, to = 1, by = 0.1)  # Deciles
+pipmd_quantile_welfare_share(welfare = pip_md_s$welfare,
+                             weight = pip_md_s$weight,
+                             popshare = specific_popshares,
+                             format = "dt")
+rm(specific_popshares)
+
+# Example 4: Returning atomic format
+pipmd_quantile_welfare_share(welfare = pip_md_s$welfare,
+                             weight = pip_md_s$weight,
+                             n = 4,  # For quartiles
+                             format = "atomic")
+
 }

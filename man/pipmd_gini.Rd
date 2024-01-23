@@ -15,7 +15,8 @@ pipmd_gini(welfare = NULL, weight = NULL, format = c("dt", "list", "atomic"))
 output}
 }
 \value{
-gini
+Returns a \code{data.table} and \code{data.frame} object with two variables:
+\code{indicator} and \code{value}. Check \code{format} argument to change the output format.
 }
 \description{
 Compute the Gini coefficient for microdata.
@@ -25,6 +26,22 @@ Given a vector of income or consumption values and their respective weights
 \code{pipmd_gini()} computes the Gini coefficient for the distribution.
 }
 \examples{
+# Example 1: Basic Gini coefficient calculation with default settings
 pipmd_gini(welfare = pip_md_s$welfare,
            weight = pip_md_s$weight)
+
+# Example 2: Returning Gini coefficient in data.table format
+pipmd_gini(welfare = pip_md_s$welfare,
+           weight = pip_md_s$weight,
+           format = "dt")
+
+# Example 3: Returning Gini coefficient as an atomic value
+pipmd_gini(welfare = pip_md_s$welfare,
+           weight = pip_md_s$weight,
+           format = "atomic")
+
+# Example 4: Using equal weights (weight vector is NULL)
+pipmd_gini(welfare = pip_md_s$welfare,
+           format = "list")
+
 }

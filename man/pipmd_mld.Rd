@@ -22,13 +22,32 @@ pipmd_mld(
 output}
 }
 \value{
-numeric: MLD, see \code{format} argument.
+Returns a \code{data.table} and \code{data.frame} object with two variables:
+\code{indicator} and \code{value}. Check \code{format} argument to change the output format.
 }
 \description{
 Given a vector of weights and welfare, this functions computes the
 Mean Log Deviation (MLD).
 }
 \examples{
+# Example 1: Basic usage with default settings
 pipmd_mld(welfare = pip_md_s$welfare,
-           weight = pip_md_s$weight)
+          weight = pip_md_s$weight)
+
+# Example 2: Specifying mean and returning as a list
+custom_mean <- mean(pip_md_s$welfare)
+pipmd_mld(welfare = pip_md_s$welfare,
+          weight = pip_md_s$weight,
+          mean = custom_mean,
+          format = "list")
+
+# Example 3: Returning MLD as an atomic value
+pipmd_mld(welfare = pip_md_s$welfare,
+          weight = pip_md_s$weight,
+          format = "atomic")
+
+# Example 4: Using equal weights (weight vector is NULL)
+pipmd_mld(welfare = pip_md_s$welfare,
+          format = "list")
+
 }

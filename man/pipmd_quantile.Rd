@@ -27,8 +27,7 @@ output}
 }
 \value{
 Returns a \code{data.table} and \code{data.frame} object with two variables:
-\code{quantile} and \code{value}.  Check \code{format} argument to change
-the output format.
+\code{quantile} and \code{value}.  Check \code{format} argument to change the output format.
 }
 \description{
 \code{pipmd_quantile} returns the quantile (i.e., monetary value) that corresponds

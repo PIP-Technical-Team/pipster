@@ -26,8 +26,7 @@
 #' output
 #'
 #' @return Returns a `data.table` and `data.frame` object with two variables:
-#' `quantile` and `value`.  Check `format` argument to change
-#' the output format.
+#' `quantile` and `value`.  Check `format` argument to change the output format.
 #'
 #' @export
 #'
@@ -114,8 +113,7 @@ pipmd_quantile <- function(
 #' @inheritParams pipmd_quantile
 #'
 #' @return Returns a `data.table` and `data.frame` object with two variables:
-#' `quantile` and `share_at`.  Check `format` argument to change
-#' the output format.
+#' `quantile` and `share_at`.  Check `format` argument to change the output format.
 #'
 #' @export
 #'
@@ -204,14 +202,35 @@ pipmd_welfare_share_at <- function(
 #' @inheritParams pipmd_quantile
 #'
 #' @return Returns a `data.table` and `data.frame` object with two variables:
-#' `quantile` and `share_at`.  Check `format` argument to change
-#' the output format.
+#' `quantile` and `share_at`.  Check `format` argument to change the output format.
 #'
 #' @export
 #'
 #' @examples
+#' # Example 1: Basic usage with default quantiles (10)
 #' pipmd_quantile_welfare_share(welfare = pip_md_s$welfare,
 #'                              weight = pip_md_s$weight)
+#'
+#' # Example 2: Specifying a different number of quantiles
+#' pipmd_quantile_welfare_share(welfare = pip_md_s$welfare,
+#'                              weight = pip_md_s$weight,
+#'                              n = 5,  # For quintiles
+#'                              format = "list")
+#'
+#' # Example 3: Using specific population shares
+#' specific_popshares <- seq(from = 0.1, to = 1, by = 0.1)  # Deciles
+#' pipmd_quantile_welfare_share(welfare = pip_md_s$welfare,
+#'                              weight = pip_md_s$weight,
+#'                              popshare = specific_popshares,
+#'                              format = "dt")
+#' rm(specific_popshares)
+#'
+#' # Example 4: Returning atomic format
+#' pipmd_quantile_welfare_share(welfare = pip_md_s$welfare,
+#'                              weight = pip_md_s$weight,
+#'                              n = 4,  # For quartiles
+#'                              format = "atomic")
+#'
 pipmd_quantile_welfare_share <- function(
     welfare    = NULL,
     weight     = NULL,
@@ -270,12 +289,30 @@ pipmd_quantile_welfare_share <- function(
 #'
 #' @inheritParams pipmd_quantile
 #'
-#' @return gini
+#' @return Returns a `data.table` and `data.frame` object with two variables:
+#' `indicator` and `value`. Check `format` argument to change the output format.
+#'
 #' @export
 #'
 #' @examples
+#' # Example 1: Basic Gini coefficient calculation with default settings
 #' pipmd_gini(welfare = pip_md_s$welfare,
 #'            weight = pip_md_s$weight)
+#'
+#' # Example 2: Returning Gini coefficient in data.table format
+#' pipmd_gini(welfare = pip_md_s$welfare,
+#'            weight = pip_md_s$weight,
+#'            format = "dt")
+#'
+#' # Example 3: Returning Gini coefficient as an atomic value
+#' pipmd_gini(welfare = pip_md_s$welfare,
+#'            weight = pip_md_s$weight,
+#'            format = "atomic")
+#'
+#' # Example 4: Using equal weights (weight vector is NULL)
+#' pipmd_gini(welfare = pip_md_s$welfare,
+#'            format = "list")
+#'
 pipmd_gini <- function(
     welfare = NULL,
     weight  = NULL,
@@ -339,12 +376,39 @@ pipmd_gini <- function(
 #' @param mean numeric: weighted welfare mean. Default is NULL.
 #' @param median numeric: weighted welfare mean. Default is NULL.
 #'
-#' @return numeric: Wolfson polarization index, see `format` argument.
+#' @return Returns a `data.table` and `data.frame` object with two variables:
+#' `indicator` and `value`. Check `format` argument to change the output format.
+#'
 #' @export
 #'
 #' @examples
+#' # Example 1: Basic polarization calculation with default settings
 #' pipmd_polarization(welfare = pip_md_s$welfare,
-#'            weight = pip_md_s$weight)
+#'                    weight = pip_md_s$weight)
+#'
+#' # Example 2: Specifying Gini coefficient, mean, and median
+#' custom_gini <- pipmd_gini(welfare = pip_md_s$welfare,
+#'                           weight = pip_md_s$weight,
+#'                           format = "atomic")
+#' custom_mean <- mean(pip_md_s$welfare)
+#' custom_median <- median(pip_md_s$welfare)
+#' pipmd_polarization(welfare = pip_md_s$welfare,
+#'                    weight = pip_md_s$weight,
+#'                    gini = custom_gini,
+#'                    mean = custom_mean,
+#'                    median = custom_median,
+#'                    format = "list")
+#' rm(custom_gini, custom_mean, custom_median)
+#'
+#' # Example 3: Returning polarization index in data.table format
+#' pipmd_polarization(welfare = pip_md_s$welfare,
+#'                    weight = pip_md_s$weight,
+#'                    format = "dt")
+#'
+#' # Example 4: Using equal weights (weight vector is NULL)
+#' pipmd_polarization(welfare = pip_md_s$welfare,
+#'                    format = "atomic")
+#'
 pipmd_polarization <- function(
     welfare = NULL,
     weight  = NULL,
@@ -428,12 +492,32 @@ pipmd_polarization <- function(
 #'
 #' @inheritParams pipmd_polarization
 #'
-#' @return numeric: MLD, see `format` argument.
+#' @return Returns a `data.table` and `data.frame` object with two variables:
+#' `indicator` and `value`. Check `format` argument to change the output format.
+#'
 #' @export
 #'
 #' @examples
+#' # Example 1: Basic usage with default settings
 #' pipmd_mld(welfare = pip_md_s$welfare,
-#'            weight = pip_md_s$weight)
+#'           weight = pip_md_s$weight)
+#'
+#' # Example 2: Specifying mean and returning as a list
+#' custom_mean <- mean(pip_md_s$welfare)
+#' pipmd_mld(welfare = pip_md_s$welfare,
+#'           weight = pip_md_s$weight,
+#'           mean = custom_mean,
+#'           format = "list")
+#'
+#' # Example 3: Returning MLD as an atomic value
+#' pipmd_mld(welfare = pip_md_s$welfare,
+#'           weight = pip_md_s$weight,
+#'           format = "atomic")
+#'
+#' # Example 4: Using equal weights (weight vector is NULL)
+#' pipmd_mld(welfare = pip_md_s$welfare,
+#'           format = "list")
+#'
 pipmd_mld <- function(
     welfare = NULL,
     weight  = NULL,

@@ -27,8 +27,7 @@ output}
 }
 \value{
 Returns a \code{data.table} and \code{data.frame} object with two variables:
-\code{quantile} and \code{share_at}.  Check \code{format} argument to change
-the output format.
+\code{quantile} and \code{share_at}.  Check \code{format} argument to change the output format.
 }
 \description{
 \code{pipmd_welfare_share_at} returns the share of welfare held by the specified
