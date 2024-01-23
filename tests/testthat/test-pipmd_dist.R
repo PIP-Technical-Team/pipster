@@ -51,7 +51,7 @@ test_that("pipmd_quantile -outputs", {
         welfare    = welfare,
         weight     = weight,
         n          = n,
-        format     = "list")
+        format     = "list")[[1]]
         )
   
   res_atomic[[1]] |>
@@ -295,8 +295,8 @@ test_that("pipmd_gini -outputs", {
   class(res_list) |>
     expect_equal("list")
   
-  class(res_atomic) |>
-    expect_equal("array")
+  class(res_atom) |>
+    expect_equal("numeric")
   
   #class(res_dt) |>
   #  expect_equal("data.frame")
