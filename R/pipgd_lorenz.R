@@ -19,43 +19,25 @@
 #' @export
 #'
 #' @examples
-#' # Example 1:
-#' # !!!! This example is not working
-#' # Using Lorenz parameters from pipgd_validate_lorenz
-#'
-#'  res <-
-#' pipgd_params(welfare = pip_gd$L,
-#'              weight = pip_gd$P) |>
-#'   pipgd_validate_lorenz() |>
-#'   pipgd_select_lorenz()
-#'
-#' # Using welfare and population vectors
-#' res2 <- pipgd_select_lorenz(welfare = pip_gd$L,
-#'                             weight = pip_gd$P)
-#' identical(res, res2)
-#'
-#'
-#' # Example 2: Validate Lorenz Curves using pre-calculated params
+#' # Example 1: Validate Lorenz Curves using pre-calculated params
 #' params <- pipgd_params(welfare = pip_gd$L, weight = pip_gd$P)
-#' validated_lorenz <- pipgd_validate_lorenz(params = params)
+#' pipgd_validate_lorenz(params = params)
 #'
-#' # Example 3: Directly using welfare and weight vectors
-#' validated_lorenz_direct <- pipgd_validate_lorenz(welfare = pip_gd$L,
-#'                                                  weight = pip_gd$P)
+#' # Example 2: Directly using welfare and weight vectors
+#' pipgd_validate_lorenz(welfare = pip_gd$L,
+#'                       weight = pip_gd$P)
 #'
-#' # Example 4: Specifying mean and poverty line
-#' mean_welfare <- mean(pip_gd$X)  # Calculate mean welfare from your data
-#' poverty_line <- 50  # Example poverty line value
-#' validated_lorenz_custom <- pipgd_validate_lorenz(welfare = pip_gd$L,
-#'                                                  weight = pip_gd$P,
-#'                                                  mean = mean_welfare,
-#'                                                  povline = poverty_line)
+#' # Example 3: Specifying mean and poverty line
+#' pipgd_validate_lorenz(welfare = pip_gd$L,
+#'                       weight = pip_gd$P,
+#'                       mean = mean(pip_gd$X),
+#'                       povline = 50)
 #'
-#' # Example 5: Using a custom population share
-#' pop_share_custom <- 0.5  # For example, the middle of the distribution
-#' validated_lorenz_popshare <- pipgd_validate_lorenz(welfare = pip_gd$L,
-#'                                                    weight = pip_gd$P,
-#'                                                    popshare = pop_share_custom)
+#' # Example 4: Using a custom population share
+#' pipgd_validate_lorenz(welfare = pip_gd$L,
+#'                       weight = pip_gd$P,
+#'                       popshare = 0.5)
+#'
 pipgd_validate_lorenz <-
   function(params     = NULL,
            welfare    = NULL,
@@ -170,33 +152,30 @@ pipgd_validate_lorenz <-
 #' @param params list of parameters from `pipgd_validate_lorenz()`
 #' @param mean numeric scalar of distribution mean. Default is 1
 #'
-#' @return list of values with best lorenz fit for distributional Stats
+#' @return Returns a list of values with the best lorenz fit given the
+#' distributional Stats.
+#'
 #' @export
 #'
 #' @examples
-#' # Example 1: Using Lorenz parameters from get_gd_lorenz_params
-#' withr::local_options(pipster.return_complete  = TRUE)
-#' params <- pipgd_validate_lorenz(
-#'   welfare = pip_gd$L,
-#'   weight = pip_gd$P)
+#' # Example 1: Directly using welfare and weight vectors
+#' pipgd_select_lorenz(welfare = pip_gd$L,
+#'                     weight = pip_gd$P)
 #'
-#' params <- pipgd_validate_lorenz(
-#'   params = params,
-#'   complete = TRUE)
-#' pipgd_select_lorenz(params = params)
+#' # Example 2: Specifying mean and poverty line
+#' custom_mean <- mean(pip_gd$L)
+#' custom_povline <- 1.25
+#' pipgd_select_lorenz(welfare = pip_gd$L,
+#'                     weight = pip_gd$P,
+#'                     mean = custom_mean,
+#'                     povline = custom_povline)
+#' rm(custom_mean, custom_povline)
 #'
-#' # Example 2: Using Lorenz parameters from pipgd_validate_lorenz
-#' params <- pipgd_validate_lorenz(
-#'   welfare = pip_gd$L,
-#'   weight = pip_gd$P,
-#'   complete = TRUE)
-#' pipgd_select_lorenz(params = params)
+#' # Example 5: Detailed output with complete = TRUE
+#' pipgd_select_lorenz(welfare = pip_gd$L,
+#'                     weight = pip_gd$P,
+#'                     complete = TRUE)
 #'
-#' # Example 3: Using original vectors
-#'
-#' pipgd_select_lorenz(
-#'   welfare = pip_gd$L,
-#'   weight = pip_gd$P)
 pipgd_select_lorenz <-
   function(params     = NULL,
            welfare    = NULL,
@@ -299,23 +278,23 @@ pipgd_select_lorenz <-
 #'
 #' @examples
 #' # Example 1: Generating a Lorenz Curve with default settings
-#' lorenz_curve_default <- pipgd_lorenz_curve(welfare = pip_gd$L,
-#'                                            weight = pip_gd$P)
+#' pipgd_lorenz_curve(welfare = pip_gd$L,
+#'                    weight = pip_gd$P)
 #'
 #' # Example 2: Specifying the number of bins for the Lorenz Curve
-#' lorenz_curve_bins <- pipgd_lorenz_curve(welfare = pip_gd$L,
-#'                                         weight = pip_gd$P,
-#'                                         n_bins = 50)
+#' pipgd_lorenz_curve(welfare = pip_gd$L,
+#'                    weight = pip_gd$P,
+#'                    n_bins = 50)
 #'
 #' # Example 3: Using pre-calculated parameters
-#' params <- pipgd_validate_lorenz(welfare = pip_gd$L,
-#'                                 weight = pip_gd$P)
-#'
-#' lorenz_curve_params <- pipgd_lorenz_curve(params = params)
+#' params <- pipgd_params(welfare = pip_gd$L,
+#'                        weight = pip_gd$P)
+#' pipgd_lorenz_curve(params = params)
 #'
 #' # Example 4: Generating Lorenz Curve with a specific Lorenz model
-#' lorenz_curve_lq <- pipgd_lorenz_curve(params = params, lorenz = "lq")
-#' lorenz_curve_lb <- pipgd_lorenz_curve(params = params, lorenz = "lb")
+#' pipgd_lorenz_curve(params = params,
+#'                    lorenz = "lb")
+#' rm(params)
 #'
 pipgd_lorenz_curve <- function(
     params     = NULL,
@@ -419,6 +398,22 @@ pipgd_lorenz_curve <- function(
   )
 
 }
+
+
+# # Example 1:
+# # !!!! This example is not working
+# # Using Lorenz parameters from pipgd_validate_lorenz
+#
+#  res <-
+# pipgd_params(welfare = pip_gd$L,
+#              weight = pip_gd$P) |>
+#   pipgd_validate_lorenz() |>
+#   pipgd_select_lorenz()
+#
+# # Using welfare and population vectors
+# res2 <- pipgd_select_lorenz(welfare = pip_gd$L,
+#                             weight = pip_gd$P)
+# identical(res, res2)
 
 
 

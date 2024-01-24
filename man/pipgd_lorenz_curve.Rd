@@ -56,22 +56,22 @@ selected.
 }
 \examples{
 # Example 1: Generating a Lorenz Curve with default settings
-lorenz_curve_default <- pipgd_lorenz_curve(welfare = pip_gd$L,
-                                           weight = pip_gd$P)
+pipgd_lorenz_curve(welfare = pip_gd$L,
+                   weight = pip_gd$P)
 
 # Example 2: Specifying the number of bins for the Lorenz Curve
-lorenz_curve_bins <- pipgd_lorenz_curve(welfare = pip_gd$L,
-                                        weight = pip_gd$P,
-                                        n_bins = 50)
+pipgd_lorenz_curve(welfare = pip_gd$L,
+                   weight = pip_gd$P,
+                   n_bins = 50)
 
 # Example 3: Using pre-calculated parameters
-params <- pipgd_validate_lorenz(welfare = pip_gd$L,
-                                weight = pip_gd$P)
-
-lorenz_curve_params <- pipgd_lorenz_curve(params = params)
+params <- pipgd_params(welfare = pip_gd$L,
+                       weight = pip_gd$P)
+pipgd_lorenz_curve(params = params)
 
 # Example 4: Generating Lorenz Curve with a specific Lorenz model
-lorenz_curve_lq <- pipgd_lorenz_curve(params = params, lorenz = "lq")
-lorenz_curve_lb <- pipgd_lorenz_curve(params = params, lorenz = "lb")
+pipgd_lorenz_curve(params = params,
+                   lorenz = "lb")
+rm(params)
 
 }

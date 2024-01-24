@@ -32,6 +32,7 @@
 #'   welfare = pip_gd$L,
 #'   weight = pip_gd$P)
 #' str(res)
+#' rm(res)
 #'
 #' # Example 2: Get Lorenz parameters with Specific Mean
 #' actual_mean <- 90
@@ -40,6 +41,7 @@
 #'   weight = pip_gd$P,
 #'   mean = actual_mean)
 #' str(res)
+#' rm(res)
 #'
 #' # Example 3: Get Lorenz parameters with Specific Population Count
 #' actual_pop <- 1000
@@ -48,6 +50,8 @@
 #'   weight = pip_gd$P,
 #'   population = actual_pop)
 #' str(res)
+#' rm(res)
+#'
 pipgd_params <- function(welfare,
                          weight,
                          mean = NULL,

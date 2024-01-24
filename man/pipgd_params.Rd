@@ -30,6 +30,7 @@ res <- pipgd_params(
   welfare = pip_gd$L,
   weight = pip_gd$P)
 str(res)
+rm(res)
 
 # Example 2: Get Lorenz parameters with Specific Mean
 actual_mean <- 90
@@ -38,6 +39,7 @@ res <- pipgd_params(
   weight = pip_gd$P,
   mean = actual_mean)
 str(res)
+rm(res)
 
 # Example 3: Get Lorenz parameters with Specific Population Count
 actual_pop <- 1000
@@ -46,6 +48,8 @@ res <- pipgd_params(
   weight = pip_gd$P,
   population = actual_pop)
 str(res)
+rm(res)
+
 }
 \references{
 Datt, G. 1998. "\href{https://ageconsearch.umn.edu/record/94862/}{Computational Tools For Poverty Measurement And Analysis}". FCND

@@ -44,41 +44,23 @@ accessible at \verb{$gd_params$lq$validity$is_normal} for the Lorenz beta and
 Check validity of Lorenz Curve
 }
 \examples{
-# Example 1:
-# !!!! This example is not working
-# Using Lorenz parameters from pipgd_validate_lorenz
-
- res <-
-pipgd_params(welfare = pip_gd$L,
-             weight = pip_gd$P) |>
-  pipgd_validate_lorenz() |>
-  pipgd_select_lorenz()
-
-# Using welfare and population vectors
-res2 <- pipgd_select_lorenz(welfare = pip_gd$L,
-                            weight = pip_gd$P)
-identical(res, res2)
-
-
-# Example 2: Validate Lorenz Curves using pre-calculated params
+# Example 1: Validate Lorenz Curves using pre-calculated params
 params <- pipgd_params(welfare = pip_gd$L, weight = pip_gd$P)
-validated_lorenz <- pipgd_validate_lorenz(params = params)
+pipgd_validate_lorenz(params = params)
 
-# Example 3: Directly using welfare and weight vectors
-validated_lorenz_direct <- pipgd_validate_lorenz(welfare = pip_gd$L,
-                                                 weight = pip_gd$P)
+# Example 2: Directly using welfare and weight vectors
+pipgd_validate_lorenz(welfare = pip_gd$L,
+                      weight = pip_gd$P)
 
-# Example 4: Specifying mean and poverty line
-mean_welfare <- mean(pip_gd$X)  # Calculate mean welfare from your data
-poverty_line <- 50  # Example poverty line value
-validated_lorenz_custom <- pipgd_validate_lorenz(welfare = pip_gd$L,
-                                                 weight = pip_gd$P,
-                                                 mean = mean_welfare,
-                                                 povline = poverty_line)
+# Example 3: Specifying mean and poverty line
+pipgd_validate_lorenz(welfare = pip_gd$L,
+                      weight = pip_gd$P,
+                      mean = mean(pip_gd$X),
+                      povline = 50)
 
-# Example 5: Using a custom population share
-pop_share_custom <- 0.5  # For example, the middle of the distribution
-validated_lorenz_popshare <- pipgd_validate_lorenz(welfare = pip_gd$L,
-                                                   weight = pip_gd$P,
-                                                   popshare = pop_share_custom)
+# Example 4: Using a custom population share
+pipgd_validate_lorenz(welfare = pip_gd$L,
+                      weight = pip_gd$P,
+                      popshare = 0.5)
+
 }

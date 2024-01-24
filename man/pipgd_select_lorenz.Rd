@@ -36,33 +36,29 @@ population instead of poverty line}
 previously used \code{get_gd} functions. Default is \code{FALSE}}
 }
 \value{
-list of values with best lorenz fit for distributional Stats
+Returns a list of values with the best lorenz fit given the
+distributional Stats.
 }
 \description{
 Get selected Lorenz curve for distributional stats
 }
 \examples{
-# Example 1: Using Lorenz parameters from get_gd_lorenz_params
-withr::local_options(pipster.return_complete  = TRUE)
-params <- pipgd_validate_lorenz(
-  welfare = pip_gd$L,
-  weight = pip_gd$P)
+# Example 1: Directly using welfare and weight vectors
+pipgd_select_lorenz(welfare = pip_gd$L,
+                    weight = pip_gd$P)
 
-params <- pipgd_validate_lorenz(
-  params = params,
-  complete = TRUE)
-pipgd_select_lorenz(params = params)
+# Example 2: Specifying mean and poverty line
+custom_mean <- mean(pip_gd$L)
+custom_povline <- 1.25
+pipgd_select_lorenz(welfare = pip_gd$L,
+                    weight = pip_gd$P,
+                    mean = custom_mean,
+                    povline = custom_povline)
+rm(custom_mean, custom_povline)
 
-# Example 2: Using Lorenz parameters from pipgd_validate_lorenz
-params <- pipgd_validate_lorenz(
-  welfare = pip_gd$L,
-  weight = pip_gd$P,
-  complete = TRUE)
-pipgd_select_lorenz(params = params)
+# Example 5: Detailed output with complete = TRUE
+pipgd_select_lorenz(welfare = pip_gd$L,
+                    weight = pip_gd$P,
+                    complete = TRUE)
 
-# Example 3: Using original vectors
-
-pipgd_select_lorenz(
-  welfare = pip_gd$L,
-  weight = pip_gd$P)
 }
