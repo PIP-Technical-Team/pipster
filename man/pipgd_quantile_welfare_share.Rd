@@ -49,31 +49,32 @@ the proportion of welfare that only the specified quantile holds.
 }
 \examples{
 # Example 1: Basic usage with default parameters
-quantile_welfare_share_default <- pipgd_quantile_welfare_share(welfare = pip_gd$L,
-                                                              weight = pip_gd$P,
-                                                              complete = FALSE)
+pipgd_quantile_welfare_share(welfare = pip_gd$L,
+                             weight = pip_gd$P,
+                             complete = FALSE)
 
 # Example 2: Specifying a custom quantile (e.g. 5)
-quantile_welfare_share_custom_quantiles <- pipgd_quantile_welfare_share(welfare = pip_gd$L,
-                                                                        weight = pip_gd$P,
-                                                                        complete = FALSE,
-                                                                        n = 5)
+pipgd_quantile_welfare_share(welfare = pip_gd$L,
+                             weight = pip_gd$P,
+                             complete = FALSE,
+                             n = 5)
 
 # Example 3: Using a custom population share vector
 custom_popshare_vector <- seq(from = 1/13, to = 1, length.out = 13)
-quantile_welfare_share_custom_popshare <- pipgd_quantile_welfare_share(welfare = pip_gd$L,
-                                                                       weight = pip_gd$P,
-                                                                       complete = FALSE,
-                                                                       popshare = custom_popshare_vector)
+pipgd_quantile_welfare_share(welfare = pip_gd$L,
+                             weight = pip_gd$P,
+                             complete = FALSE,
+                             popshare = custom_popshare_vector)
 
 # Example 4: Using a different Lorenz curve (e.g., Lorenz Beta)
-quantile_welfare_share_lorenz_beta <- pipgd_quantile_welfare_share(welfare = pip_gd$L,
-                                                                   weight = pip_gd$P,
-                                                                   complete = FALSE,
-                                                                   lorenz = "lb")
+pipgd_quantile_welfare_share(welfare = pip_gd$L,
+                             weight = pip_gd$P,
+                             complete = FALSE,
+                             lorenz = "lb")
 
 # Example 5: Detailed output with complete = TRUE
-quantile_welfare_share_detailed <- pipgd_quantile_welfare_share(welfare = pip_gd$L,
-                                                                weight = pip_gd$P,
-                                                                complete = TRUE)
+pipgd_quantile_welfare_share(welfare = pip_gd$L,
+                             weight = pip_gd$P,
+                             complete = TRUE)
+
 }

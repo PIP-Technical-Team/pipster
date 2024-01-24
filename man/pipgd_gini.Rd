@@ -51,27 +51,28 @@ Gini is computed using either the beta or quadratic Lorenz
 functions.
 }
 \examples{
-# Basic Calculation of Gini Coefficient
-basic_gini <- pipgd_gini(welfare = pip_gd$L,
-                         weight = pip_gd$P)
+# Example 1: Basic Calculation of Gini Coefficient
+pipgd_gini(welfare = pip_gd$L,
+           weight = pip_gd$P)
 
-# Gini Coefficient with a Specific Lorenz Curve
-gini_with_lorenz <- pipgd_gini(welfare = pip_gd$L,
-                               weight = pip_gd$P,
-                               lorenz = "lb")
+# Example 2: Gini Coefficient with a Specific Lorenz Curve (e.g. Lorenz beta)
+pipgd_gini(welfare = pip_gd$L,
+           weight = pip_gd$P,
+           lorenz = "lb")
 
-# Detailed Output of Gini Calculation
-detailed_gini <- pipgd_gini(welfare = pip_gd$L,
-                            weight = pip_gd$P,
-                            complete = TRUE)
+# Example 3: Detailed Output of Gini Calculation
+pipgd_gini(welfare = pip_gd$L,
+           weight = pip_gd$P,
+           complete = TRUE)
 
-# Gini Coefficient with Adjusted Mean
-adjusted_mean_gini <- pipgd_gini(welfare = pip_gd$L,
-                                 weight = pip_gd$P,
-                                 times_mean = 1.5)
+# Example 4: Gini Coefficient with Adjusted Mean
+pipgd_gini(welfare = pip_gd$L,
+           weight = pip_gd$P,
+           times_mean = 1.5)
 
-# Focusing on a Subset Below Poverty Line at 50
-poverty_line_gini <- pipgd_gini(welfare = pip_gd$L,
-                                weight = pip_gd$P,
-                                povline = 50)
+# Example 5: Focusing on a Subset Below Poverty Line at 50
+pipgd_gini(welfare = pip_gd$L,
+           weight = pip_gd$P,
+           povline = 50)
+
 }

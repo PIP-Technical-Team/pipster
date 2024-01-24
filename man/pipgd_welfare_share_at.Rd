@@ -48,33 +48,33 @@ share of welfare in each.
 }
 \examples{
 # Example 1: Basic usage with default parameters
-welfare_share_default <- pipgd_welfare_share_at(welfare = pip_gd$L,
-                                                weight = pip_gd$P,
-                                                complete = FALSE)
+pipgd_welfare_share_at(welfare = pip_gd$L,
+                       weight = pip_gd$P,
+                       complete = FALSE)
 
 # Example 2: Specifying a custom number of quantiles (n = 5)
-welfare_share_custom_quantiles <- pipgd_welfare_share_at(welfare = pip_gd$L,
-                                                         weight = pip_gd$P,
-                                                         complete = FALSE,
-                                                         n = 5)
+pipgd_welfare_share_at(welfare = pip_gd$L,
+                       weight = pip_gd$P,
+                       complete = FALSE,
+                       n = 5)
 
 # Example 3: Using a custom population share vector
 custom_popshare_vector <- seq(from = 1/13, to = 1, length.out = 13)
-welfare_share_custom_popshare <- pipgd_welfare_share_at(welfare = pip_gd$L,
-                                                        weight = pip_gd$P,
-                                                        complete = FALSE,
-                                                        popshare = custom_popshare_vector)
-
+pipgd_welfare_share_at(welfare = pip_gd$L,
+                       weight = pip_gd$P,
+                       complete = FALSE,
+                       popshare = custom_popshare_vector)
+rm(custom_popshare_vector)
 
 # Example 4: Using a specified Lorenz curve (e.g., Lorenz Beta)
-welfare_share_lorenz_beta <- pipgd_welfare_share_at(welfare = pip_gd$L,
-                                                    weight = pip_gd$P,
-                                                    complete = FALSE,
-                                                    lorenz = "lb")
-
+pipgd_welfare_share_at(welfare = pip_gd$L,
+                       weight = pip_gd$P,
+                       complete = FALSE,
+                       lorenz = "lb")
 
 # Example 5: Detailed output with complete = TRUE
-welfare_share_detailed <- pipgd_welfare_share_at(welfare = pip_gd$L,
-                                                 weight = pip_gd$P,
-                                                 complete = TRUE)
+pipgd_welfare_share_at(welfare = pip_gd$L,
+                       weight = pip_gd$P,
+                       complete = TRUE)
+
 }

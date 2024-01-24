@@ -51,28 +51,30 @@ MLD (Mean Logarithimic Deviation) is computed using either the beta or
 quadratic Lorenz functions.
 }
 \examples{
-# Basic MLD Calculation
-basic_mld <- pipgd_mld(welfare = pip_gd$L,
-                       weight = pip_gd$P)
+# Example 1: Basic MLD Calculation
+pipgd_mld(welfare = pip_gd$L,
+          weight = pip_gd$P)
 
-# MLD with a Specific Lorenz Curve
-mld_lorenz_beta <- pipgd_mld(welfare = pip_gd$L,
-                             weight = pip_gd$P,
-                             lorenz = "lb")
+# Example 2: MLD with a Specific Lorenz Curve
+pipgd_mld(welfare = pip_gd$L,
+          weight = pip_gd$P,
+          lorenz = "lb")
 
-# Detailed Output of MLD Calculation
-detailed_mld <- pipgd_mld(welfare = pip_gd$L,
-                          weight = pip_gd$P,
-                          complete = TRUE)
+# Example 3: Detailed Output of MLD Calculation
+pipgd_mld(welfare = pip_gd$L,
+          weight = pip_gd$P,
+          complete = TRUE)
 
-# Adjusting for a Specific Mean
+# Example 4: Adjusting for a Specific Mean
 actual_mean <- 90  # Replace with the actual mean of your data
-adjusted_mean_mld <- pipgd_mld(welfare = pip_gd$L,
-                               weight = pip_gd$P,
-                               mean = actual_mean)
+pipgd_mld(welfare = pip_gd$L,
+          weight = pip_gd$P,
+          mean = actual_mean)
+rm(actual_mean)
 
-# MLD Focusing on Specific Poverty Line
-poverty_line_mld <- pipgd_mld(welfare = pip_gd$L,
-                             weight = pip_gd$P,
-                             povline = 50)
+# Example 5: MLD Focusing on Specific Poverty Line
+pipgd_mld(welfare = pip_gd$L,
+          weight = pip_gd$P,
+          povline = 50)
+
 }

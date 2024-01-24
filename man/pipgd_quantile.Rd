@@ -66,31 +66,29 @@ that fits best for all distributional measures.
 }
 \examples{
 # Example 1: Basic usage with default parameters
-quantile_default <- pipgd_quantile(welfare = pip_gd$L,
-                                   weight  = pip_gd$P)
+pipgd_quantile(welfare = pip_gd$L,
+               weight  = pip_gd$P)
 
 # Example 2: Specifying a custom number of quantiles
-quantile_custom <- pipgd_quantile(welfare = pip_gd$L,
-                                  weight  = pip_gd$P,
-                                  n       = 5)
+pipgd_quantile(welfare = pip_gd$L,
+               weight  = pip_gd$P,
+               n       = 5)
 
 # Example 3: Using a custom population share vector
-custom_popshare_vector <- c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6,
-0.7, 0.8, 0.9, 0.95)
-quantile_custom_shares <- pipgd_quantile(welfare = pip_gd$L,
-                                         weight  = pip_gd$P,
-                                         popshare = custom_popshare_vector)
+custom_popshare_vector <- c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95)
+pipgd_quantile(welfare = pip_gd$L,
+               weight  = pip_gd$P,
+               popshare = custom_popshare_vector)
+rm(custom_popshare_vector)
 
 # Example 4: Specifying a different Lorenz curve ('lb', Lorenz beta)
-quantile_lorenz_beta <- pipgd_quantile(welfare = pip_gd$L,
-                                       weight  = pip_gd$P,
-                                       lorenz  = "lb")
-
+pipgd_quantile(welfare = pip_gd$L,
+               weight  = pip_gd$P,
+               lorenz  = "lb")
 
 # Example 5: Detailed output with complete = TRUE and different mean factor
-quantile_detailed <- pipgd_quantile(welfare = pip_gd$L,
-                                    weight  = pip_gd$P,
-                                    mean = 1.5,
-                                    complete = TRUE)
-
+pipgd_quantile(welfare = pip_gd$L,
+               weight  = pip_gd$P,
+               mean = 1.5,
+               complete = TRUE)
 }
