@@ -298,16 +298,11 @@ test_that("pipgd_pov_severity_nv() -pov_severity works", {
   mean = 1
   times_mean = 1
   # Test pov_severity is returned from wbpip:::gd_compute_pov_severity_lb (when lorenz='lb')
-  pipgd_pov_severity_nv(welfare = welfare, weight = weight, lorenz = "lb")$pov_stats$pov_severity |>
-    expect_equal(
-      wbpip:::gd_compute_pov_severity_lb(mean = 1,
-      povline    = 1,
-       headcount = params_pov_gap$pov_stats$headcount,
-       pov_gap   = params_pov_gap$pov_stats$pov_gap,
-       A         = params_pov_gap$gd_params$lb$reg_results$coef[["A"]],
-       B         = params_pov_gap$gd_params$lb$reg_results$coef[["B"]],
-       C         = params_pov_gap$gd_params$lb$reg_results$coef[["C"]])
-    )
+  res <- pipgd_pov_severity_nv(welfare = welfare, weight = weight, lorenz = "lb")$pov_stats$pov_severity 
+  res_benchmark <- 0.0902182821029137
+
+  res |>
+    expect_equal(res_benchmark)
 
   # Test pov_severity is returned from wbpip::wbpip:::gd_compute_pov_severity_lb (when lorenz='lq')
   # NOTE: pipgd_pov_severity_nv is not working when lorenz = "lq",
@@ -531,30 +526,14 @@ test_that("pipgd_watts_nv watts output is as expected", {
   mean <- 1
   times_mean <- 1
 
-  res_with_lb$pov_stats$watts |>
-    expect_equal(
-      wbpip:::gd_compute_watts_lb(
-       mean      = mean,
-       povline   = 1,
-       headcount = params$pov_stats$headcount,
-       A         = params$gd_params$lb$reg_results$coef[["A"]],
-       B         = params$gd_params$lb$reg_results$coef[["B"]],
-       C         = params$gd_params$lb$reg_results$coef[["C"]],
-       dd        = 0.005)
-    )
+  res_lb_benchmark <- list(pov_stats = list(watts = 0.277580116426276, lorenz = "lb"))
+  res_lq_benchmark <- list(pov_stats = list(watts = 0.6021364835117, lorenz = "lq"))
 
-  res_with_lq$pov_stats$watts |>
-    expect_equal(
-      wbpip:::gd_compute_watts_lq(
-       mu        = mean,
-       povline   = 1,
-       headcount = params$pov_stats$headcount,
-       A         = params$gd_params$lb$reg_results$coef[["A"]],
-       B         = params$gd_params$lb$reg_results$coef[["B"]],
-       C         = params$gd_params$lb$reg_results$coef[["C"]],
-       dd        = 0.01)
-    )
-
+  res_with_lb |>
+    expect_equal(res_lb_benchmark)
+  
+  res_with_lq |>
+    expect_equal(res_lq_benchmark)
 })
 
 test_that("pipgd_watts inputs works as expected", {

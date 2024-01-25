@@ -287,10 +287,7 @@ test_that("pipgd_quantile outputs work as expected", {
     lorenz = "lb"
 
     res <- pipgd_quantile(welfare = welfare, weight = weight,  popshare = popshare, lorenz = lorenz)
-    qt <- mean*wbpip:::derive_lb(x = popshare, 
-                    params$gd_params[["lb"]]$reg_results$coef[["A"]],
-                    params$gd_params[["lb"]]$reg_results$coef[["B"]],
-                    params$gd_params[["lb"]]$reg_results$coef[["C"]])
+    qt <- mean*c(0.566807360141038, 0.757982268357493, 0.979182129032173, 1.31135609274135, Inf)
     
     res$dist_stats$quantile |>
         expect_equal(qt)
@@ -298,10 +295,7 @@ test_that("pipgd_quantile outputs work as expected", {
     # Check quantile output when lorenz = "lq"
     lorenz = "lq"
     res <- pipgd_quantile(welfare = welfare, weight = weight,  popshare = popshare, lorenz = lorenz)
-    qt <- mean*wbpip:::derive_lq(x = popshare, 
-                    params$gd_params[["lq"]]$reg_results$coef[["A"]],
-                    params$gd_params[["lq"]]$reg_results$coef[["B"]],
-                    params$gd_params[["lq"]]$reg_results$coef[["C"]])
+    qt <- mean*c(0.569781112621993, 0.761773436866965, 0.965764425951865, 1.28614768170655, 5.82699528574873)
     
     res$dist_stats$quantile |>
         expect_equal(qt)
@@ -396,25 +390,12 @@ test_that("pipgd_gini works as expected", {
     res_lb <- pipgd_gini(welfare = welfare, weight = weight, lorenz = 'lb')
     res_lq <- pipgd_gini(welfare = welfare, weight = weight, lorenz = 'lq')
 
-    gini_wbpip_lb <- wbpip:::gd_compute_gini_lb(
-        A         = params$gd_params$lb$reg_results$coef[["A"]],
-        B         = params$gd_params$lb$reg_results$coef[["B"]],
-        C         = params$gd_params$lb$reg_results$coef[["C"]],
-        nbins     = 499
-      )
+    gini_wbpip_lb <- 0.289403872256448
 
     res_lb$dist_stats$gini |>
         expect_equal(gini_wbpip_lb)
     
-    gini_wbpip_lq <- wbpip:::gd_compute_gini_lq(
-        A         = params$gd_params$lq$reg_results$coef[["A"]],
-        B         = params$gd_params$lq$reg_results$coef[["B"]],
-        C         = params$gd_params$lq$reg_results$coef[["C"]],
-        e         = params$gd_params$lq$key_values$e,
-        m         = params$gd_params$lq$key_values$m,
-        n         = params$gd_params$lq$key_values$n,
-        r         = params$gd_params$lq$key_values$r
-      )
+    gini_wbpip_lq <- 0.289017119340459
     
     res_lq$dist_stats$gini |>
         expect_equal(gini_wbpip_lq)
@@ -506,17 +487,9 @@ test_that("pipgd_mld outputs work as expected", {
 
 test_that("pipgd_mld calculates mld as expected", {
 
-    mld_wbpip_lb <- wbpip:::gd_compute_mld_lb(
-        A         = params$gd_params$lb$reg_results$coef[["A"]],
-        B         = params$gd_params$lb$reg_results$coef[["B"]],
-        C         = params$gd_params$lb$reg_results$coef[["C"]],
-        dd        = 0.01)
+    mld_wbpip_lb <- 0.14055954382846
 
-    mld_wbpip_lq <- wbpip:::gd_compute_mld_lq(
-        A         = params$gd_params$lq$reg_results$coef[["A"]],
-        B         = params$gd_params$lq$reg_results$coef[["B"]],
-        C         = params$gd_params$lq$reg_results$coef[["C"]],
-        dd        = 0.01)
+    mld_wbpip_lq <- 0.137680871901806
 
     res_lq <- pipgd_mld(welfare = welfare, weight = weight, lorenz = "lq")
     res_lb <- pipgd_mld(welfare = welfare, weight = weight, lorenz = "lb")
