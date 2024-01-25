@@ -29,7 +29,8 @@ pipmd_polarization(
 output}
 }
 \value{
-numeric: Wolfson polarization index, see \code{format} argument.
+Returns a \code{data.table} and \code{data.frame} object with two variables:
+\code{indicator} and \code{value}. Check \code{format} argument to change the output format.
 }
 \description{
 Compute the Wolfson polarization index for microdata.
@@ -39,6 +40,31 @@ Given a vector of income or consumption values and their respective weights
 \code{pipmd_polarization()} computes the Wolfson polarization index.
 }
 \examples{
+# Example 1: Basic polarization calculation with default settings
 pipmd_polarization(welfare = pip_md_s$welfare,
-           weight = pip_md_s$weight)
+                   weight = pip_md_s$weight)
+
+# Example 2: Specifying Gini coefficient, mean, and median
+custom_gini <- pipmd_gini(welfare = pip_md_s$welfare,
+                          weight = pip_md_s$weight,
+                          format = "atomic")
+custom_mean <- mean(pip_md_s$welfare)
+custom_median <- median(pip_md_s$welfare)
+pipmd_polarization(welfare = pip_md_s$welfare,
+                   weight = pip_md_s$weight,
+                   gini = custom_gini,
+                   mean = custom_mean,
+                   median = custom_median,
+                   format = "list")
+rm(custom_gini, custom_mean, custom_median)
+
+# Example 3: Returning polarization index in data.table format
+pipmd_polarization(welfare = pip_md_s$welfare,
+                   weight = pip_md_s$weight,
+                   format = "dt")
+
+# Example 4: Using equal weights (weight vector is NULL)
+pipmd_polarization(welfare = pip_md_s$welfare,
+                   format = "atomic")
+
 }

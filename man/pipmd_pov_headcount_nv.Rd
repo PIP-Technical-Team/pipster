@@ -20,7 +20,7 @@ is used to give equal weight to each observation.}
 
 \item{povline}{numeric: Poverty line in international dollars, same units as welfare.}
 
-\item{mean}{numeric scalar of distribution mean. Default is}
+\item{mean}{numeric scalar of distribution mean. Default is 1.}
 
 \item{times_mean}{numeric factor that multiplies the mean to create a relative poverty line. Default is 1}
 }

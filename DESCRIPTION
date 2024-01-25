@@ -11,7 +11,7 @@ Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
 Suggests: 
     testthat (>= 3.0.0),
     tibble,
@@ -19,7 +19,7 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     cli,
-    collapse (>= 2.0.9)
+    collapse (>= 2.0.9),
     data.table,
     wbpip (>= 0.1.0.9009)
 Depends: 
