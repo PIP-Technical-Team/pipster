@@ -44,11 +44,13 @@ pipmd_pov_headcount_nv <- function(
       text = "No weight vector specified, each observation assigned equal weight"
     )
   }
-  if (is.null(povline) && is.numeric(povline)) {
+  if (is.null(povline) || !is.numeric(povline)) {
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } else if (povline < min(welfare) && povline > max(welfare)) {
+  } 
+  
+  if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
     )
@@ -141,7 +143,6 @@ pipmd_pov_headcount <- function(
   # Return ---------------------------------------------------------------------
   return(out)
 
-
 }
 
 
@@ -192,16 +193,17 @@ pipmd_pov_gap_nv <- function(
       text = "No weight vector specified, each observation assigned equal weight"
     )
   }
-  if (is.null(povline) && is.numeric(povline)) {
+  if (is.null(povline) || !is.numeric(povline)) {
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } else if (povline < min(welfare) && povline > max(welfare)) {
+  } 
+  
+  if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
     )
   }
-
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
@@ -339,11 +341,13 @@ pipmd_pov_severity_nv <- function(
       text = "No weight vector specified, each observation assigned equal weight"
     )
   }
-  if (is.null(povline) && is.numeric(povline)) {
+  if (is.null(povline) || !is.numeric(povline)) {
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } else if (povline < min(welfare) && povline > max(welfare)) {
+  } 
+  
+  if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
     )
@@ -482,11 +486,13 @@ pipmd_watts_nv <- function(
       text = "No weight vector specified, each observation assigned equal weight"
     )
   }
-  if (is.null(povline) && is.numeric(povline)) {
+  if (is.null(povline) || !is.numeric(povline)) {
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } else if (povline < min(welfare) && povline > max(welfare)) {
+  } 
+  
+  if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
     )
