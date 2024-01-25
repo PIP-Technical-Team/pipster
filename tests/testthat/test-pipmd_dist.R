@@ -353,7 +353,7 @@ test_that("pipmd_polarization -outputs", {
       w     = weight,
       probs = 0.5)
   
-  mean <- weighted.mean(
+  mean <- collapse::fmean(
       x = welfare,
       w = weight)
   
@@ -437,7 +437,7 @@ test_that("pipmd_mld -arguments", {
 # Outputs ---------------------------------------------------------------
 test_that("pipmd_mld -outputs", {
 
-  mean <- weighted.mean(
+  mean <- collapse::fmean(
       x = welfare,
       w = weight)
 
