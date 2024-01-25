@@ -45,9 +45,14 @@ test_that("pipmd_quantile -outputs", {
   res_dt <- pipmd_quantile(welfare = welfare, weight = weight, n = n, format = "dt") 
 
   # Benchmarks
-  res_bm_list
-  res_bm_atomic
-  res_bm_dt
+  res_bm_list <- list("16.6%" = 1.15720864490713, "33.3%" = 1.71560515751511, 
+                      "50%" = 2.35138374470022, "66.6%" = 3.48346293082367, 
+                      "83.3%" = 5.27090655645221, "99.9%" = 18.019516550669)
+  res_bm_atomic <- c("16.6%" = 1.15720864490713, "33.3%" = 1.71560515751511, "50%" = 2.35138374470022, 
+                    "66.6%" = 3.48346293082367, "83.3%" = 5.27090655645221, "99.9%" = 18.019516550669)
+  res_bm_dt <- structure(list(quantile = c("q_16.6%", "q_33.3%", "q_50%", "q_66.6%", "q_83.3%", "q_99.9%"), 
+                              values = c(1.15720864490713, 1.71560515751511, 2.35138374470022, 3.48346293082367, 5.27090655645221, 18.019516550669)), 
+                              row.names = c(NA, -6L), class = c("data.table", "data.frame"))
 
   # Check computations 
   res_list |>
@@ -125,9 +130,13 @@ test_that("pipmd_welfare_share_at -outputs", {
   res_atomic <- pipmd_welfare_share_at(welfare = welfare, weight = weight, n = n, format = "atomic") 
   res_dt <- pipmd_welfare_share_at(welfare = welfare, weight = weight, n = n, format = "dt") 
 
-  res_bm_list
-  res_bm_atomic
-  res_bm_dt
+  res_bm_list <- list("16.6%" = 0.179898119766951, "33.3%" = 0.334554080564441, "50%" = 0.498891556443476, 
+                      "66.6%" = 0.671063477546949, "83.3%" = 0.833064761190862, "99.9%" = 1)
+  res_bm_atomic <- c("16.6%" = 0.179898119766951, "33.3%" = 0.334554080564441, "50%" = 0.498891556443476, 
+                      "66.6%" = 0.671063477546949, "83.3%" = 0.833064761190862, "99.9%" = 1)
+  res_bm_dt <- structure(list(quantile = c("q_16.6%", "q_33.3%", "q_50%", "q_66.6%", "q_83.3%", "q_99.9%"), 
+                              share_at = c(0.179898119766951, 0.334554080564441, 0.498891556443476, 0.671063477546949, 0.833064761190862, 1)), 
+                              row.names = c(NA, -6L), class = c("data.table", "data.frame"))
 
   # Check computations 
   res_list |>
@@ -205,9 +214,14 @@ test_that("pipmd_quantile_welfare_share -outputs", {
   res_atomic <- pipmd_quantile_welfare_share(welfare = welfare, weight = weight, n = n, format = "atomic") 
   res_dt <- pipmd_quantile_welfare_share(welfare = welfare, weight = weight, n = n, format = "dt") 
 
-  res_bm_list
-  res_bm_atomic
-  res_bm_dt
+  res_bm_list <- list("16.6666666666667%" = 0.041993366907175, "33.3333333333333%" = 0.0724995422851018, "50%" = 0.11959445511606, "66.6666666666667%" = 0.169235324964795, 
+                      "83.3333333333333%" = 0.217187544524222, "100%" = 0.379489766202646)
+  res_bm_atomic <- structure(c("16.6666666666667%" = 0.041993366907175, "33.3333333333333%" = 0.0724995422851018, "50%" = 0.11959445511606, "66.6666666666667%" = 0.169235324964795, "83.3333333333333%" = 0.217187544524222, "100%" = 0.379489766202646), 
+                            dim = 6L, 
+                            dimnames = list(c("16.6666666666667%", "33.3333333333333%", "50%", "66.6666666666667%", "83.3333333333333%", "100%")))
+  res_bm_dt <- structure(list(quantile = c("q_16.6666666666667%", "q_33.3333333333333%", "q_50%", "q_66.6666666666667%", "q_83.3333333333333%", "q_100%"), 
+                              share_at = c(0.041993366907175, 0.0724995422851018, 0.11959445511606, 0.169235324964795, 0.217187544524222, 0.379489766202646)), 
+                              row.names = c(NA, -6L), class = c("data.table", "data.frame"))
 
   # Check computations 
   res_list |>
@@ -272,9 +286,10 @@ test_that("pipmd_gini -outputs", {
   res_atomic <- pipmd_gini(welfare = welfare, weight = weight, format = "atomic")
   res_dt <- pipmd_gini(welfare = welfare, weight = weight, format = "dt")
 
-  res_bm_list
-  res_bm_atomic
-  res_bm_dt
+  res_bm_list <- list(gini = 0.41905333648877)
+  res_bm_atomic <- c(gini = 0.41905333648877)
+  res_bm_dt <- structure(list(indicator = "gini", value = 0.41905333648877), 
+                              row.names = c(NA, -1L), class = c("data.table", "data.frame"))
 
   # Check computations 
   res_list |>
@@ -361,9 +376,10 @@ test_that("pipmd_polarization -outputs", {
   res_atomic <- pipmd_polarization(welfare = welfare, weight = weight, format = "atomic")
   res_dt <- pipmd_polarization(welfare = welfare, weight = weight, format = "dt")
 
-  res_bm_list
-  res_bm_atomic
-  res_bm_dt
+  res_bm_list <- list(polarization = 0.430265823704573)
+  res_bm_atomic <- c(polarization = 0.430265823704573)
+  res_bm_dt <- structure(list(indicator = "polarization", value = 0.430265823704573), 
+                        row.names = c(NA, -1L), class = c("data.table", "data.frame"))
 
   # Check computations 
   res_list |>
@@ -437,9 +453,10 @@ test_that("pipmd_mld -outputs", {
   res_atomic <- pipmd_mld(welfare = welfare, weight = weight, format = "atomic")
   res_dt <- pipmd_mld(welfare = welfare, weight = weight, format = "dt")
 
-  res_bm_list
-  res_bm_atomic
-  res_bm_dt
+  res_bm_list <- list(mld = 0.301620140444736)
+  res_bm_atomic <- c(mld = 0.301620140444736)
+  res_bm_dt <-  structure(list(indicator = "mld", value = structure(0.301620140444736, label = "welfare(income of consumption)")), 
+                          row.names = c(NA, -1L), class = c("data.table", "data.frame"))
 
   # Check computations 
   res_list |>
