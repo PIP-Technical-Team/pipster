@@ -21,8 +21,10 @@ Imports:
     cli,
     collapse,
     data.table,
-    wbpip (>= 0.1.0.9002)
+    wbpip (>= 0.1.0.9011)
 Depends: 
     R (>= 2.10)
 LazyData: true
 URL: https://pip-technical-team.github.io/pipster/
+Remotes:  
+    github::PIP-Technical-Team/wbpip@refactor_consistency
