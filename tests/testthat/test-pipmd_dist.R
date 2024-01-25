@@ -16,7 +16,7 @@ test_that("pipmd_quantile -arguments", {
   pipmd_quantile(welfare = welfare_test, weight = weight) |>
     expect_error("no elements in welfare can be NAs")
   
-  pipmd_qunatile(welfare = NULL, weight = weight) |>
+  pipmd_quantile(welfare = NULL, weight = weight) |>
     expect_error("welfare cannot be NULL")
   
   pipmd_quantile(welfare = welfare, weight = weight_test) |>
@@ -44,21 +44,20 @@ test_that("pipmd_quantile -outputs", {
   res_atomic <- pipmd_quantile(welfare = welfare, weight = weight, n = n, format = "atomic") 
   res_dt <- pipmd_quantile(welfare = welfare, weight = weight, n = n, format = "dt") 
 
+  # Benchmarks
+  res_bm_list
+  res_bm_atomic
+  res_bm_dt
+
   # Check computations 
-  res_list[[1]] |>
-    expect_equal(
-      wbpip::md_quantile_values(
-        welfare    = welfare,
-        weight     = weight,
-        n          = n,
-        format     = "list")[[1]]
-        )
+  res_list |>
+    expect_equal(res_bm_list)
   
-  res_atomic[[1]] |>
-    expect_equal(res_list[[1]])
+  res_atomic |>
+    expect_equal(res_bm_atomic)
   
-  res_dt$values[1] |>
-    expect_equal(res_list[[1]])
+  res_dt |>
+    expect_equal(res_bm_dt)
   
   # Check output class
   class(res_list) |>
@@ -126,21 +125,19 @@ test_that("pipmd_welfare_share_at -outputs", {
   res_atomic <- pipmd_welfare_share_at(welfare = welfare, weight = weight, n = n, format = "atomic") 
   res_dt <- pipmd_welfare_share_at(welfare = welfare, weight = weight, n = n, format = "dt") 
 
+  res_bm_list
+  res_bm_atomic
+  res_bm_dt
+
   # Check computations 
-  res_list[[1]] |>
-    expect_equal(
-      wbpip::md_welfare_share_at(
-        welfare    = welfare,
-        weight     = weight,
-        n          = n,
-        format     = "list")[[1]]
-        )
+  res_list |>
+    expect_equal(res_bm_list)
   
-  res_atomic[[1]] |>
-    expect_equal(res_list[[1]])
+  res_atomic |>
+    expect_equal(res_bm_atomic)
   
-  res_dt$share_at[1] |>
-    expect_equal(res_list[[1]])
+  res_dt |>
+    expect_equal(res_bm_dt)
   
   # Check output class
   class(res_list) |>
@@ -208,21 +205,19 @@ test_that("pipmd_quantile_welfare_share -outputs", {
   res_atomic <- pipmd_quantile_welfare_share(welfare = welfare, weight = weight, n = n, format = "atomic") 
   res_dt <- pipmd_quantile_welfare_share(welfare = welfare, weight = weight, n = n, format = "dt") 
 
+  res_bm_list
+  res_bm_atomic
+  res_bm_dt
+
   # Check computations 
-  res_list[[1]] |>
-    expect_equal(
-      wbpip::md_quantile_welfare_share(
-        welfare    = welfare,
-        weight     = weight,
-        n          = n,
-        format     = "list")[[1]]
-        )
+  res_list |>
+    expect_equal(res_bm_list)
   
-  res_atomic[[1]] |>
-    expect_equal(res_list[[1]])
+  res_atomic |>
+    expect_equal(res_bm_atomic)
   
-  res_dt$share_at[1] |>
-    expect_equal(res_list[[1]])
+  res_dt |>
+    expect_equal(res_bm_dt)
   
   # Check output class
   class(res_list) |>
@@ -274,28 +269,28 @@ test_that("pipmd_gini -arguments", {
 # Outputs ---------------------------------------------------------------
 test_that("pipmd_gini -outputs", {
   res_list <- pipmd_gini(welfare = welfare, weight = weight, format = "list")
-  res_atom <- pipmd_gini(welfare = welfare, weight = weight, format = "atomic")
+  res_atomic <- pipmd_gini(welfare = welfare, weight = weight, format = "atomic")
   res_dt <- pipmd_gini(welfare = welfare, weight = weight, format = "dt")
 
+  res_bm_list
+  res_bm_atomic
+  res_bm_dt
+
   # Check computations 
-  res_list[[1]] |>
-    expect_equal(
-      wbpip::md_compute_gini(
-        welfare = welfare,
-        weight  = weight)
-        )
+  res_list |>
+    expect_equal(res_bm_list)
   
-  res_atom[[1]] |>
-    expect_equal(res_list[[1]])
+  res_atomic |>
+    expect_equal(res_bm_atomic)
   
-  res_dt$value[1] |>
-    expect_equal(res_list[[1]])
+  res_dt |>
+    expect_equal(res_bm_dt)
   
   # Check output class
   class(res_list) |>
     expect_equal("list")
   
-  class(res_atom) |>
+  class(res_atomic) |>
     expect_equal("numeric")
   
   #class(res_dt) |>
@@ -314,10 +309,10 @@ test_that("pipmd_gini -outputs", {
   nrow(res_dt) |>
     expect_equal(length(res_list))
   
-  names(res_atom) |>
+  names(res_atomic) |>
     expect_equal(names(res_list))
   
-  length(res_atom) |>
+  length(res_atomic) |>
     expect_equal(length(res_list))
 
 })
@@ -363,31 +358,28 @@ test_that("pipmd_polarization -outputs", {
       format  = "atomic")
   
   res_list <- pipmd_polarization(welfare = welfare, weight = weight, format = "list")
-  res_atom <- pipmd_polarization(welfare = welfare, weight = weight, format = "atomic")
+  res_atomic <- pipmd_polarization(welfare = welfare, weight = weight, format = "atomic")
   res_dt <- pipmd_polarization(welfare = welfare, weight = weight, format = "dt")
 
+  res_bm_list
+  res_bm_atomic
+  res_bm_dt
+
   # Check computations 
-  res_list[[1]] |>
-    expect_equal(
-      wbpip::md_compute_polarization(
-        welfare = welfare,
-        weight  = weight,
-        gini    = gini,
-        mean    = mean,
-        median  = median)[[1]]
-        )
+  res_list |>
+    expect_equal(res_bm_list)
   
-  res_atom[[1]] |>
-    expect_equal(res_list[[1]])
+  res_atomic |>
+    expect_equal(res_bm_atomic)
   
-  res_dt$value[1] |>
-    expect_equal(res_list[[1]])
+  res_dt |>
+    expect_equal(res_bm_dt)
   
   # Check output class
   class(res_list) |>
     expect_equal("list")
   
-  class(res_atom) |>
+  class(res_atomic) |>
     expect_equal("numeric")
   
   #class(res_dt) |>
@@ -406,10 +398,10 @@ test_that("pipmd_polarization -outputs", {
   nrow(res_dt) |>
     expect_equal(length(res_list))
   
-  names(res_atom) |>
+  names(res_atomic) |>
     expect_equal(names(res_list))
   
-  length(res_atom) |>
+  length(res_atomic) |>
     expect_equal(length(res_list))
 })
 
@@ -442,29 +434,28 @@ test_that("pipmd_mld -outputs", {
       w = weight)
 
   res_list <- pipmd_mld(welfare = welfare, weight = weight, format = "list")
-  res_atom <- pipmd_mld(welfare = welfare, weight = weight, format = "atomic")
+  res_atomic <- pipmd_mld(welfare = welfare, weight = weight, format = "atomic")
   res_dt <- pipmd_mld(welfare = welfare, weight = weight, format = "dt")
 
+  res_bm_list
+  res_bm_atomic
+  res_bm_dt
+
   # Check computations 
-  res_list[[1]] |>
-    expect_equal(
-      wbpip::md_compute_mld(
-        welfare = welfare,
-        weight  = weight,
-        mean    = mean)[[1]]
-        )
+  res_list |>
+    expect_equal(res_bm_list)
   
-  res_atom[[1]] |>
-    expect_equal(res_list[[1]])
+  res_atomic |>
+    expect_equal(res_bm_atomic)
   
-  res_dt$value[1] |>
-    expect_equal(res_list[[1]])
+  res_dt |>
+    expect_equal(res_bm_dt)
   
   # Check output class
   class(res_list) |>
     expect_equal("list")
   
-  class(res_atom) |>
+  class(res_atomic) |>
     expect_equal("numeric")
   
   #class(res_dt) |>
@@ -483,10 +474,10 @@ test_that("pipmd_mld -outputs", {
   nrow(res_dt) |>
     expect_equal(length(res_list))
   
-  names(res_atom) |>
+  names(res_atomic) |>
     expect_equal(names(res_list))
   
-  length(res_atom) |>
+  length(res_atomic) |>
     expect_equal(length(res_list))
 
 })

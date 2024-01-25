@@ -40,6 +40,7 @@ test_that("pipmd_pov_headcount_nv arguments work as expected", {
 # Computations ---------------------------------------------------------------
 test_that("pipmd_pov_headcount_nv outputs work as expected", {
   res <- pipmd_pov_headcount_nv(welfare = welfare_s, weight = weight_s)
+  res_benchmark <- 
 
   class(res) |>
     expect_equal("list")
@@ -50,11 +51,8 @@ test_that("pipmd_pov_headcount_nv outputs work as expected", {
   names(res) |>
     expect_equal("pov_headcount")
 
-  res$pov_headcount |>
-    expect_equal(wbpip::md_compute_poverty_stats(
-    welfare      = welfare_s,
-    weight       = weight_s,
-    povline_lcu  = 1)$headcount)
+  res |>
+    expect_equal(res_benchmark)
 
 })
 
@@ -105,6 +103,7 @@ test_that("pipmd_pov_headcount work as expected -when format is list", {
 
   # Outputs
   res <-   pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = povline, format = format)
+  res_benchmark 
 
   class(res) |>
     expect_equal("list")
@@ -114,6 +113,9 @@ test_that("pipmd_pov_headcount work as expected -when format is list", {
 
   length(res) |>
     expect_equal(length(povline))
+  
+  res |>
+    expect_equal(res_benchmark)
 
 })
 
@@ -161,7 +163,8 @@ test_that("pipmd_pov_headcount work as expected -when format is dt", {
 
   # Outputs
   res <-   pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = povline, format = format)
-
+  res_benchmark <-
+  
   #class(res) |>
   #  expect_equal("data.table")
 
@@ -170,6 +173,9 @@ test_that("pipmd_pov_headcount work as expected -when format is dt", {
 
   nrow(res) |>
     expect_equal(length(povline))
+  
+  res |>
+    expect_equal(res_benchmark)
 
 })
 
@@ -217,7 +223,8 @@ test_that("pipmd_pov_headcount work as expected -when format is atomic", {
 
   # Outputs
   res <-   pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = povline, format = format)
-
+  res_benchmark <- 
+  
   class(res) |>
     expect_equal("numeric")
 
@@ -226,6 +233,9 @@ test_that("pipmd_pov_headcount work as expected -when format is atomic", {
 
   length(res) |>
     expect_equal(length(povline))
+  
+  res |>
+    expect_equal(res_benchmark)
 
 })
 
@@ -267,6 +277,7 @@ test_that("pipmd_pov_gap_nv arguments work as expected", {
 # Outputs --------------------------------------------------------
 test_that("pipmd_pov_gap_nv outputs work as expected", {
   res <- pipmd_pov_gap_nv(welfare = welfare_s, weight = weight_s)
+  res_benchmark <-
 
   class(res) |>
     expect_equal("list")
@@ -274,12 +285,8 @@ test_that("pipmd_pov_gap_nv outputs work as expected", {
   names(res) |>
     expect_equal("pov_gap")
 
-  res$pov_gap |>
-    expect_equal(wbpip:::md_compute_poverty_stats(
-    welfare      = welfare_s,
-    weight       = weight_s,
-    povline_lcu  = 1
-  )$poverty_gap)
+  res |>
+    expect_equal(res_benchmark)
 
 })
 
@@ -334,6 +341,10 @@ test_that("pipmd_pov_gap work as expected", {
   res_dt <- pipmd_pov_gap(welfare = welfare_s, weight = weight_s, povline = povline, format="dt")
   res_atom <- pipmd_pov_gap(welfare = welfare_s, weight = weight_s, povline = povline, format="atomic")
 
+  res_bm_list
+  res_bm_atomic
+  res_bm_dt
+
   # When format is "list"
   class(res_list) |>
     expect_equal("list")
@@ -367,6 +378,15 @@ test_that("pipmd_pov_gap work as expected", {
 
   length(res_atom) |>
     expect_equal(length(povline))
+
+  res_list |>
+    expect_equal(res_bm_list)
+  
+  res_atom |>
+    expect_equal(res_bm_atomic)
+  
+  res_dt |>
+    expect_equal(res_bm_dt)
 
 })
 
@@ -408,6 +428,7 @@ test_that("pipmd_pov_severity_nv arguments work as expected", {
 # Output ------------------------------------------------------------------
 test_that("pipmd_pov_severity_nv outputs work as expected", {
   res <- pipmd_pov_severity_nv(welfare = welfare_s, weight = weight_s)
+  res_benchmark <-
 
   class(res) |>
     expect_equal("list")
@@ -418,11 +439,8 @@ test_that("pipmd_pov_severity_nv outputs work as expected", {
   names(res) |>
     expect_equal("pov_severity")
 
-  res$pov_severity |>
-    expect_equal(wbpip::md_compute_poverty_stats(
-    welfare      = welfare_s,
-    weight       = weight_s,
-    povline_lcu  = 1)$poverty_severity)
+  res |>
+    expect_equal(res_benchmark)
 
 })
 
@@ -477,6 +495,10 @@ test_that("pipmd_pov_severity work as expected", {
   res_dt <- pipmd_pov_severity(welfare = welfare_s, weight = weight_s, povline = povline, format="dt")
   res_atom <- pipmd_pov_severity(welfare = welfare_s, weight = weight_s, povline = povline, format="atomic")
 
+  res_bm_list
+  res_bm_atomic
+  res_bm_dt
+
   # When format is "list"
   class(res_list) |>
     expect_equal("list")
@@ -512,6 +534,15 @@ test_that("pipmd_pov_severity work as expected", {
 
   length(res_atom) |>
     expect_equal(length(povline))
+  
+  res_list |>
+    expect_equal(res_bm_list)
+  
+  res_atom |>
+    expect_equal(res_bm_atomic)
+  
+  res_dt |>
+    expect_equal(res_bm_dt)
 
 })
 
@@ -553,6 +584,7 @@ test_that("pipmd_watts_nv arguments work as expected", {
 # Outputs -------------------------------------------------------------------------------------------
 test_that("pipmd_watts_nv outputs work as expected", {
   res <- pipmd_watts_nv(welfare = welfare_s, weight = weight_s)
+  res_benchmark <-
 
   class(res) |>
     expect_equal("list")
@@ -563,11 +595,8 @@ test_that("pipmd_watts_nv outputs work as expected", {
   names(res) |>
     expect_equal("watts")
 
-  res$watts |>
-    expect_equal(wbpip::md_compute_poverty_stats(
-    welfare      = welfare_s,
-    weight       = weight_s,
-    povline_lcu  = 1)$watts)
+  res |>
+    expect_equal(res_benchmark)
 
 })
 
@@ -578,6 +607,20 @@ test_that("pipmd_pov_severity work as expected", {
   res_list <- pipmd_pov_severity(welfare = welfare_s, weight = weight_s, povline = povline, format="list")
   res_dt <- pipmd_pov_severity(welfare = welfare_s, weight = weight_s, povline = povline, format="dt")
   res_atom <- pipmd_pov_severity(welfare = welfare_s, weight = weight_s, povline = povline, format="atomic")
+
+  res_bm_list
+  res_bm_atomic
+  res_bm_dt
+
+  res_list |>
+    expect_equal(res_bm_list)
+  
+  res_atom |>
+    expect_equal(res_bm_atomic)
+  
+  res_dt |>
+    expect_equal(res_bm_dt)
+
 
   # When format is "list"
   class(res_list) |>
