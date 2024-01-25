@@ -40,7 +40,7 @@ test_that("pipmd_pov_headcount_nv arguments work as expected", {
 # Computations ---------------------------------------------------------------
 test_that("pipmd_pov_headcount_nv outputs work as expected", {
   res <- pipmd_pov_headcount_nv(welfare = welfare_s, weight = weight_s)
-  res_benchmark <- 
+  res_benchmark <- list(pov_headcount = 0.126034968864758)
 
   class(res) |>
     expect_equal("list")
@@ -102,8 +102,10 @@ test_that("pipmd_pov_headcount work as expected -when format is list", {
     expect_error()
 
   # Outputs
-  res <-   pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = povline, format = format)
-  res_benchmark 
+  res <- pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = povline, format = format)
+  res_benchmark <- list(pl0.5 = list(pov_headcount = 0.0192906691433047), 
+                        pl1 = list(pov_headcount = 0.126034968864758), 
+                        pl2 = list(pov_headcount = 0.423769472762453))
 
   class(res) |>
     expect_equal("list")
@@ -162,11 +164,13 @@ test_that("pipmd_pov_headcount work as expected -when format is dt", {
     expect_error()
 
   # Outputs
-  res <-   pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = povline, format = format)
-  res_benchmark <-
+  res <- pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = povline, format = format)
+  res_benchmark <- structure(list(povline = c(0.5, 1, 2), 
+                                  pov_headcount = c(0.0192906691433047, 0.126034968864758, 0.423769472762453)), 
+                                  row.names = c(NA, -3L), class = c("data.table", "data.frame"))
   
-  #class(res) |>
-  #  expect_equal("data.table")
+  class(res) |>
+    expect_equal(c("data.table", "data.frame"))
 
   names(res) |>
     expect_equal(c("povline", "pov_headcount"))
@@ -222,8 +226,8 @@ test_that("pipmd_pov_headcount work as expected -when format is atomic", {
     expect_error()
 
   # Outputs
-  res <-   pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = povline, format = format)
-  res_benchmark <- 
+  res <- pipmd_pov_headcount(welfare = welfare_s, weight = weight_s, povline = povline, format = format)
+  res_benchmark <- c(pl0.5 = 0.0192906691433047, pl1 = 0.126034968864758, pl2 = 0.423769472762453)
   
   class(res) |>
     expect_equal("numeric")
@@ -277,7 +281,7 @@ test_that("pipmd_pov_gap_nv arguments work as expected", {
 # Outputs --------------------------------------------------------
 test_that("pipmd_pov_gap_nv outputs work as expected", {
   res <- pipmd_pov_gap_nv(welfare = welfare_s, weight = weight_s)
-  res_benchmark <-
+  res_benchmark <- list(pov_gap = 0.0376375358962338)
 
   class(res) |>
     expect_equal("list")
@@ -341,9 +345,13 @@ test_that("pipmd_pov_gap work as expected", {
   res_dt <- pipmd_pov_gap(welfare = welfare_s, weight = weight_s, povline = povline, format="dt")
   res_atom <- pipmd_pov_gap(welfare = welfare_s, weight = weight_s, povline = povline, format="atomic")
 
-  res_bm_list
-  res_bm_atomic
-  res_bm_dt
+  res_bm_list <- list(pl0.5 = list(pov_gap = 0.00252705288414119), 
+                      pl1 = list(pov_gap = 0.0376375358962338), 
+                      pl2 = list(pov_gap = 0.154012543240549))
+  res_bm_atomic <- c(pl0.5 = 0.00252705288414119, pl1 = 0.0376375358962338, pl2 = 0.154012543240549)
+  res_bm_dt <- structure(list(povline = c(0.5, 1, 2), 
+                              pov_gap = c(0.00252705288414119, 0.0376375358962338, 0.154012543240549)), 
+                              row.names = c(NA, -3L), class = c("data.table", "data.frame"))
 
   # When format is "list"
   class(res_list) |>
@@ -428,7 +436,7 @@ test_that("pipmd_pov_severity_nv arguments work as expected", {
 # Output ------------------------------------------------------------------
 test_that("pipmd_pov_severity_nv outputs work as expected", {
   res <- pipmd_pov_severity_nv(welfare = welfare_s, weight = weight_s)
-  res_benchmark <-
+  res_benchmark <- list(pov_severity = 0.0141310112148631)
 
   class(res) |>
     expect_equal("list")
@@ -495,9 +503,12 @@ test_that("pipmd_pov_severity work as expected", {
   res_dt <- pipmd_pov_severity(welfare = welfare_s, weight = weight_s, povline = povline, format="dt")
   res_atom <- pipmd_pov_severity(welfare = welfare_s, weight = weight_s, povline = povline, format="atomic")
 
-  res_bm_list
-  res_bm_atomic
-  res_bm_dt
+  res_bm_list <- list(pl0.5 = list(pov_severity = 0.000561012489886177), 
+                      pl1 = list(pov_severity = 0.0141310112148631), pl2 = list(pov_severity = 0.0773230776014347))
+  res_bm_atomic <- c(pl0.5 = 0.000561012489886177, pl1 = 0.0141310112148631, pl2 = 0.0773230776014347)
+  res_bm_dt <- structure(list(povline = c(0.5, 1, 2), 
+                              pov_severity = c(0.000561012489886177, 0.0141310112148631, 0.0773230776014347)), 
+                              row.names = c(NA, -3L), class = c("data.table", "data.frame"))
 
   # When format is "list"
   class(res_list) |>
@@ -584,7 +595,7 @@ test_that("pipmd_watts_nv arguments work as expected", {
 # Outputs -------------------------------------------------------------------------------------------
 test_that("pipmd_watts_nv outputs work as expected", {
   res <- pipmd_watts_nv(welfare = welfare_s, weight = weight_s)
-  res_benchmark <-
+  res_benchmark <- list(watts = 0.048153814961799)
 
   class(res) |>
     expect_equal("list")
@@ -608,9 +619,13 @@ test_that("pipmd_pov_severity work as expected", {
   res_dt <- pipmd_pov_severity(welfare = welfare_s, weight = weight_s, povline = povline, format="dt")
   res_atom <- pipmd_pov_severity(welfare = welfare_s, weight = weight_s, povline = povline, format="atomic")
 
-  res_bm_list
-  res_bm_atomic
-  res_bm_dt
+  res_bm_list <- list(pl0.5 = list(pov_severity = 0.000561012489886177), 
+                      pl1 = list(pov_severity = 0.0141310112148631), 
+                      pl2 = list(pov_severity = 0.0773230776014347))
+  res_bm_atomic <- c(pl0.5 = 0.000561012489886177, pl1 = 0.0141310112148631, pl2 = 0.0773230776014347)
+  res_bm_dt <- structure(list(povline = c(0.5, 1, 2), 
+                              pov_severity = c(0.000561012489886177, 0.0141310112148631, 0.0773230776014347)), 
+                              row.names = c(NA, -3L), class = c("data.table", "data.frame"))
 
   res_list |>
     expect_equal(res_bm_list)
