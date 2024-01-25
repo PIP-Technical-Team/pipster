@@ -358,7 +358,8 @@ pipgd_pov_severity_nv <- function(
     #   Computations -----------------------------------------------------------
 
     if (!is.null(pov_gap)) {
-      if (is.null(pov_gap$pov_stats$pov_gap)) {
+      if (pov_gap != pipgd_pov_gap_nv(welfare = welfare, weight = weight)$pov_stats$pov_gap) {
+      # previous v.: if (is.null(pov_gap$pov_stats$pov_gap)) {
         stop("argument `pov_gap` should be the output of `pipster:::pipgd_pov_gap_nv`, else leave `pov_gap = NULL`")
       } else {
         params <- pov_gap
@@ -610,7 +611,7 @@ pipgd_watts_nv <- function(
 
   if (lorenz == "lb") {
     wr <-
-      wbpip::gd_compute_watts_lb(
+      wbpip:::gd_compute_watts_lb(
         mean      = mean,
         povline   = povline,
         headcount = params$pov_stats$headcount,
@@ -621,7 +622,7 @@ pipgd_watts_nv <- function(
       )
   } else if (lorenz == "lq") {
     wr <-
-      wbpip::gd_compute_watts_lq(
+      wbpip:::gd_compute_watts_lq(
         mu        = mean,
         povline   = povline,
         headcount = params$pov_stats$headcount,
@@ -727,7 +728,7 @@ pipgd_watts <- function(
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   pipgd_pov_watts_v <- Vectorize(
-    FUN            = pipgd_pov_watts_nv,
+    FUN            = pipgd_watts_nv,
     vectorize.args = "povline",
     SIMPLIFY       = FALSE
   )

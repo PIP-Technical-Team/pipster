@@ -50,7 +50,7 @@ pipgd_params(welfare = pip_gd$L,
   pipgd_select_lorenz()
 
 # Using welfare and population vecotrs
-res2 <- pipgd_select_lorenz(welfare = pip_gd$L,
+res2 <- pipgd_validate_lorenz(welfare = pip_gd$L,
                             weight = pip_gd$P)
 identical(res, res2)
 }

@@ -24,7 +24,7 @@
 #'   pipgd_select_lorenz()
 #'
 #' # Using welfare and population vecotrs
-#' res2 <- pipgd_select_lorenz(welfare = pip_gd$L,
+#' res2 <- pipgd_validate_lorenz(welfare = pip_gd$L,
 #'                             weight = pip_gd$P)
 #' identical(res, res2)
 pipgd_validate_lorenz <-
@@ -53,7 +53,7 @@ pipgd_validate_lorenz <-
                            weight  = weight)
   } else if (is.null(params$gd_params$lq$reg_results$coef)) {
     stop(
-      "Either `welfare` and `weights` should be specified or `params`  should be output from `pipster::pipgd_params()`"
+      "Either `welfare` and `weights` should be specified or `params` should be output from `pipster::pipgd_params()`"
     )
   }
 
@@ -332,9 +332,9 @@ pipgd_lorenz_curve <- function(
 
     lc <- wbpip:::value_at_lb(
       x = x_vec,
-      A = foo$gd_params$lb$reg_results$coef[["A"]],
-      B = foo$gd_params$lb$reg_results$coef[["B"]],
-      C = foo$gd_params$lb$reg_results$coef[["C"]]
+      A = params$gd_params$lb$reg_results$coef[["A"]],
+      B = params$gd_params$lb$reg_results$coef[["B"]],
+      C = params$gd_params$lb$reg_results$coef[["C"]]
     )
 
   } else if (lorenz == "lq") {
@@ -344,9 +344,9 @@ pipgd_lorenz_curve <- function(
       FUN = function(x1){
         wbpip:::value_at_lq(
           x = x1,
-          A = foo$gd_params$lq$reg_results$coef[["A"]],
-          B = foo$gd_params$lq$reg_results$coef[["B"]],
-          C = foo$gd_params$lq$reg_results$coef[["C"]]
+          A = params$gd_params$lq$reg_results$coef[["A"]],
+          B = params$gd_params$lq$reg_results$coef[["B"]],
+          C = params$gd_params$lq$reg_results$coef[["C"]]
         )
 
       }
