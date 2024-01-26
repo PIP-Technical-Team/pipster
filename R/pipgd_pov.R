@@ -33,16 +33,19 @@ pipgd_pov_headcount_nv <-
   #   ____________________________________________________
   #   Computations                              ####
   if (!is.null(welfare)) {
+    popshare = popshare
     params <- pipgd_select_lorenz(welfare  = welfare,
                                   weight   = weight,
                                   complete = TRUE,
-                                  mean     = mean,
-                                  povline  = povline)
+                                  #mean     = mean,
+                                  popshare = popshare)
+                                  #,povline  = povline)
   } else {
     params <- pipgd_select_lorenz(welfare  =  params$data$welfare,
                                   weight   =  params$data$weight,
                                   complete = TRUE,
                                   mean     = mean,
+                                  popshare = popshare,
                                   povline  = povline)
   }
 
@@ -141,6 +144,7 @@ pipgd_pov_headcount <-
                                 weight     = weight,
                                 params     = params,
                                 povline    = povline,
+                                popshare = popshare,
                                 complete   = complete,
                                 lorenz     = lorenz,
                                 mean       = mean,
@@ -186,18 +190,22 @@ pipgd_pov_gap_nv <- function(params     = NULL,
   #   ____________________________________________________
   #   Computations                              ####
 
-
+  popshare = popshare
+  povline = ifelse(is.null(popshare),
+                    mean*times_mean, NA_real_)
+  
   if (!is.null(welfare)) {
+    
     params <- pipgd_pov_headcount_nv(welfare  = welfare,
                                      weight   = weight,
                                      complete = TRUE,
-                                     mean     = mean,
-                                     povline  = povline)
+                                     popshare = popshare,
+                                     povline = povline)
   } else {
     params <- pipgd_pov_headcount_nv(welfare  =  params$data$welfare,
                                      weight   =  params$data$weight,
                                      complete = TRUE,
-                                     mean     = mean,
+                                     popshare = popshare,
                                      povline  = povline)
   }
 
@@ -363,6 +371,7 @@ pipgd_pov_severity_nv <- function(
 
     # __________________________________________________________________________
     #   Computations -----------------------------------------------------------
+    popshare = popshare 
 
     if (!is.null(pov_gap)) {
       pov_gap = pov_gap
@@ -380,6 +389,7 @@ pipgd_pov_severity_nv <- function(
           weight   = weight,
           complete = TRUE,
           mean     = mean,
+          popshare = popshare,
           povline  = povline
         )} 
       
@@ -389,6 +399,7 @@ pipgd_pov_severity_nv <- function(
           weight   =  params$data$weight,
           complete = TRUE,
           mean     = mean,
+          popshare = popshare,
           povline  = povline
         )
       }
@@ -592,14 +603,18 @@ pipgd_watts_nv <- function(
   # __________________________________________________________________________
   #   Computations -----------------------------------------------------------
 
+    popshare = popshare
+    povline = ifelse(is.null(popshare),
+                        mean*times_mean,
+                        NA_real_)
 
     if (!is.null(welfare)) {
+  
       params <- pipgd_pov_headcount_nv(
         welfare  = welfare,
         weight   = weight,
         complete = TRUE,
-        mean     = mean,
-        povline  = povline
+        popshare = popshare
       )
     } else {
       params <- pipgd_pov_headcount_nv(
@@ -607,6 +622,7 @@ pipgd_watts_nv <- function(
         weight   =  params$data$weight,
         complete = TRUE,
         mean     = mean,
+        popshare = popshare,
         povline  = povline
       )
     }
@@ -621,7 +637,7 @@ pipgd_watts_nv <- function(
   }
 
   # __________________________________________________________________________
-  #   Calculate Severity -----------------------------------------------------
+  #   Calculate Watts -----------------------------------------------------
 
   if (lorenz == "lb") {
     wr <-
