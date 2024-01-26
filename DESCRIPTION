@@ -13,6 +13,8 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0),
     tibble,
     withr
@@ -26,5 +28,6 @@ Depends:
     R (>= 2.10)
 LazyData: true
 URL: https://pip-technical-team.github.io/pipster/
-Remotes:  
+Remotes: 
     github::PIP-Technical-Team/wbpip@refactor_consistency
+VignetteBuilder: knitr

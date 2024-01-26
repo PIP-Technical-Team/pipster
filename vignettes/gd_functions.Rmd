@@ -1,0 +1,25 @@
+---
+title: "gd_functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{gd_functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(pipster)
+```
+
+# Group Data
+
+## Getting started with pipster::pipgd\_\* functions
+
+A draft.
