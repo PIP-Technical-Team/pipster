@@ -192,7 +192,7 @@ pipgd_quantile_welfare_share <-
 
     # get shares ------------------------
     shr <- pipgd_welfare_share_at(params = params,
-                                  complete = FALSE, 
+                                  complete = FALSE,
                                   n = n)
     shr <- c(shr$dist_stats$welfare_share_at[1],
              diff(shr$dist_stats$welfare_share_at))
@@ -323,13 +323,6 @@ pipgd_quantile <-
 }
 
 
-
-
-
-#-------------------------------------------------
-# GINI -------------------------------------------
-#-------------------------------------------------
-
 #' Compute Gini coefficient
 #'
 #' Gini is computed using either the beta or quadratic Lorenz
@@ -391,25 +384,31 @@ pipgd_gini <- function(
     params <- pipgd_select_lorenz(
       welfare  = welfare,
       weight   = weight,
-      complete = TRUE,
-      #mean     = mean,
-      #povline  = ifelse(is.null(popshare),
-      #                mean*times_mean,
-      #                NA_real_)
+      complete = TRUE
     )
-  } 
+  }
 
   #   _________________________________________________________________
   #   Select Lorenz
   #   _________________________________________________________________
   if (is.null(lorenz)) {
-    lorenz <- params$selected_lorenz$for_dist
-  } 
-  
-  if (!lorenz %in% c("lq", "lb")){
-    lorenz <-  pipgd_select_lorenz(welfare = welfare, weight = weight, 
-                                   complete = TRUE)$selected_lorenz$for_dist
+
+    if (is.null(params$selected_lorenz$for_dist)) {
+      params <- pipgd_select_lorenz(params)
     }
+
+    lorenz <- params$selected_lorenz$for_dist
+
+  } else {
+
+    if (!lorenz %in% c("lq", "lb")) {
+      cli::cli_abort("argument {.arg lorenz} must be either
+                     {.val lq} or {.val lb}, not {.val {lorenz}}")
+    }
+
+  }
+
+
 
   #   _________________________________________________________________
   #   Gini
@@ -446,18 +445,9 @@ pipgd_gini <- function(
   params$dist_stats$gini  <- gini
   params$dist_stats$lorenz <- lorenz
 
-  return(
-    params
-  )
-
+  params
 }
 
-
-
-
-#-------------------------------------------------
-# MLD -------------------------------------------
-#-------------------------------------------------
 
 #' Compute MLD
 #'
