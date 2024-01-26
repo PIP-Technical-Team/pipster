@@ -374,12 +374,6 @@ pipgd_gini <- function(
   params     = NULL,
   welfare    = NULL,
   weight     = NULL,
-  mean       = 1,
-  times_mean = 1,
-  popshare   = NULL,
-  povline    = ifelse(is.null(popshare),
-                      mean*times_mean,
-                      NA_real_),
   complete   = getOption("pipster.return_complete"),
   lorenz     = NULL
 ){
@@ -398,31 +392,24 @@ pipgd_gini <- function(
       welfare  = welfare,
       weight   = weight,
       complete = TRUE,
-      mean     = mean,
-      povline  = ifelse(is.null(popshare),
-                      mean*times_mean,
-                      NA_real_)
+      #mean     = mean,
+      #povline  = ifelse(is.null(popshare),
+      #                mean*times_mean,
+      #                NA_real_)
     )
-  } else {
-    params <- pipgd_select_lorenz(
-      welfare  =  params$data$welfare,
-      weight   =  params$data$weight,
-      complete = TRUE,
-      mean     = mean,
-      povline  = ifelse(is.null(popshare),
-                      mean*times_mean,
-                      NA_real_)
-    )
-  }
+  } 
 
   #   _________________________________________________________________
   #   Select Lorenz
   #   _________________________________________________________________
   if (is.null(lorenz)) {
     lorenz <- params$selected_lorenz$for_dist
-  } else {
-    match.arg(lorenz, c("lq", "lb"))
-  }
+  } 
+  
+  if (!lorenz %in% c("lq", "lb")){
+    lorenz <-  pipgd_select_lorenz(welfare = welfare, weight = weight, 
+                                   complete = TRUE)$selected_lorenz$for_dist
+    }
 
   #   _________________________________________________________________
   #   Gini
