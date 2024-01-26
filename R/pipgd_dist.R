@@ -495,12 +495,6 @@ pipgd_mld <- function(
     params     = NULL,
     welfare    = NULL,
     weight     = NULL,
-    mean       = 1,
-    times_mean = 1,
-    popshare   = NULL,
-    povline    = ifelse(is.null(popshare),
-                        mean*times_mean,
-                        NA_real_),
     complete   = getOption("pipster.return_complete"),
     lorenz     = NULL
 ){
@@ -518,17 +512,7 @@ pipgd_mld <- function(
     params <- pipgd_select_lorenz(
       welfare  = welfare,
       weight   = weight,
-      complete = TRUE,
-      mean     = mean,
-      povline  = povline
-    )
-  } else {
-    params <- pipgd_select_lorenz(
-      welfare  =  params$data$welfare,
-      weight   =  params$data$weight,
-      complete = TRUE,
-      mean     = mean,
-      povline  = povline
+      complete = TRUE
     )
   }
 
@@ -536,14 +520,23 @@ pipgd_mld <- function(
   #   Select Lorenz
   #   _________________________________________________________________
   if (is.null(lorenz)) {
+
+    if (is.null(params$selected_lorenz$for_dist)) {
+      params <- pipgd_select_lorenz(params)
+    }
+
     lorenz <- params$selected_lorenz$for_dist
+
   } else {
-    match.arg(lorenz, c("lq", "lb"))
+
+    if (!lorenz %in% c("lq", "lb")) {
+      cli::cli_abort("argument {.arg lorenz} must be either
+                     {.val lq} or {.val lb}, not {.val {lorenz}}")
+    }
+
   }
 
-  #   _________________________________________________________________
-  #   Gini
-  #   _________________________________________________________________
+  # Compute mld
   if (lorenz == "lb") {
     mld <-
       wbpip::gd_compute_mld_lb(
