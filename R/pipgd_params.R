@@ -167,6 +167,12 @@ check_pipgd_params <- function(lp) {
     }
   }
 
+  if ("popshare" %in% nlp) {
+    if (any(lp$popshare <= 0)) {
+      cli::cli_abort("All values in {.arg popshare} most be positve")
+    }
+  }
+
 
   # "Either `params` or `welfare` and `population` should be spefied" =
   #   (is.null(params) && !is.null(welfare) && !is.null(population)) ||
