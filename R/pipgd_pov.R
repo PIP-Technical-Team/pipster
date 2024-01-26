@@ -365,22 +365,25 @@ pipgd_pov_severity_nv <- function(
     #   Computations -----------------------------------------------------------
 
     if (!is.null(pov_gap)) {
+      pov_gap = pov_gap
       if (!pov_gap == pipgd_pov_gap_nv(welfare = welfare, weight = weight)$pov_stats$pov_gap) {
-      # previous v.: if (is.null(pov_gap$pov_stats$pov_gap)) {
+      #if (is.null(pipgd_pov_gap_nv(welfare = welfare, weight = weight)$pov_stats$pov_gap)) {
         stop("argument `pov_gap` should be the output of `pipster:::pipgd_pov_gap_nv`, else leave `pov_gap = NULL`")
       } else {
         params <- pov_gap
       }
-    } else{
-      if (!is.null(welfare)) {
+    } 
+    
+    if (!is.null(welfare)) {
         params <- pipgd_pov_gap_nv(
           welfare  = welfare,
           weight   = weight,
           complete = TRUE,
           mean     = mean,
           povline  = povline
-        )
-      } else {
+        )} 
+      
+      else {
         params <- pipgd_pov_gap_nv(
           welfare  =  params$data$welfare,
           weight   =  params$data$weight,
@@ -389,8 +392,7 @@ pipgd_pov_severity_nv <- function(
           povline  = povline
         )
       }
-    }
-
+    
     # __________________________________________________________________________
     #   Select Lorenz ----------------------------------------------------------
     if (is.null(lorenz)) {
@@ -541,6 +543,7 @@ pipgd_pov_severity <- function(
   # Format ---------------------------------------------------------------------
   out <- return_format(
     ld       = list_povsev,
+    povline = povline,
     var      = "pov_severity",
     format   = format,
     complete = complete
@@ -751,6 +754,7 @@ pipgd_watts <- function(
   out <- return_format(
     ld       = list_watts,
     var      = "watts",
+    povline = povline,
     format   = format,
     complete = complete
   )
