@@ -242,9 +242,10 @@ test_that("pipgd_pov_severity_nv() -lorenz works", {
 
 test_that("pipgd_pov_severity_nv() -pov_gap works", {
   # pov gap must be either NULL or the result of pipster:::pipgd_pov_gap_nv
-  #pov_gap <- pipgd_pov_gap_nv(params=params)$pov_stats$pov_gap
-  #pipgd_pov_severity_nv(welfare = welfare, weight = weight, pov_gap = 0.2052332) |>
-  # expect_equal(pipgd_pov_severity_nv(welfare = welfare, weight = weight, pov_gap = pov_gap))
+  pov_gap <- 0.205233231505016
+  pipgd_pov_severity_nv(welfare = welfare, weight = weight, pov_gap = pov_gap) |>
+    expect_no_error()
+  
 })
 
 test_that("pipgd_pov_severity_nv() -complete works", {
@@ -609,7 +610,7 @@ test_that("pipgd_watts -outputs",{
     expect_equal("pov_stats")
 
   names(res_list$pl0.5$pov_stats) |>
-    expect_equal(c("pov_severity", "lorenz"))
+    expect_equal(c("watts", "lorenz"))
 
   # Check that vectorization works
   res_watts_nv <- pipgd_watts_nv(welfare = welfare, weight = weight, povline = 0.5)$pov_stats$watts

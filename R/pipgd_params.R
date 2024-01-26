@@ -169,7 +169,13 @@ check_pipgd_params <- function(lp) {
 
   if ("popshare" %in% nlp) {
     if (any(lp$popshare <= 0)) {
-      cli::cli_abort("All values in {.arg popshare} most be positve")
+      cli::cli_abort("All values in {.arg popshare} must be positve")
+    }
+  }
+
+  if ("popshare" %in% nlp) {
+    if (any(lp$popshare > 1)) {
+      cli::cli_abort("No values in {.arg popshare} can be >1")
     }
   }
 

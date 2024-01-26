@@ -365,7 +365,7 @@ pipgd_pov_severity_nv <- function(
     #   Computations -----------------------------------------------------------
 
     if (!is.null(pov_gap)) {
-      if (pov_gap != pipgd_pov_gap_nv(welfare = welfare, weight = weight)$pov_stats$pov_gap) {
+      if (!pov_gap == pipgd_pov_gap_nv(welfare = welfare, weight = weight)$pov_stats$pov_gap) {
       # previous v.: if (is.null(pov_gap$pov_stats$pov_gap)) {
         stop("argument `pov_gap` should be the output of `pipster:::pipgd_pov_gap_nv`, else leave `pov_gap = NULL`")
       } else {

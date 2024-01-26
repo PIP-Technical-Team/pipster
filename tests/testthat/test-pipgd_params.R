@@ -72,11 +72,6 @@ test_that("pipgd_params output", {
 # check_pipgd_params function ####
 
 test_that("check_pipgd_params aborts on invalid params", {
-
-  # Input ----------------------------
-  #lp <- "not a list"
-  #expect_error(check_pipgd_params(lp), "Lp input must be a list")
-
   # Params ---------------------------
   lp <- pipgd_params(welfare = pip_gd$L, weight = pip_gd $P)$params
   nlp <- names(lp)
@@ -85,8 +80,7 @@ test_that("check_pipgd_params aborts on invalid params", {
   if ("params" %in% nlp) {
     if (!is.null(lp$params) && inherits(lp$params, "pipgd_params")) {
       expect_silent(check_pipgd_params(lp))
-    }
-  }
+    }}
 
   # Welfare and params ----------------
   if ( all(c("params", "welfare") %in% nlp)) {
@@ -111,9 +105,7 @@ test_that("check_pipgd_params aborts on invalid params", {
     if (!is.null(lp$lorenz) && !lp$lorenz %in% c("lq", "lb")) {
 
       expect_stop("{.field lorenz} must be either 'lq' or 'lb', or
-                {.code NULL} to let the algorithm select")
-    }
-  }
-  
+                {.code NULL} to let the algorithm select")}
+                }
 })
 

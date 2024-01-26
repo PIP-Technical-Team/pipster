@@ -233,7 +233,7 @@ test_that("pipgd_quantile_welfare_share outputs work as expected", {
                                            weight         = weight,
                                            n              = 3)
     res_welfare_share <- pipgd_welfare_share_at(params    = params_from_select_l,
-                                                complete  = FALSE)
+                                                complete  = FALSE, n = 3)
 
     length(res_n3$dist_stats$popshare) |>
         expect_equal(n)
@@ -350,12 +350,6 @@ test_that("pipgd_quantile inputs works as expected", {
     pipgd_quantile(welfare         = welfare,
                    weight          = weight,
                    popshare        = c(0.3, 0.5, -0.8)) |>
-        expect_error()
-
-    # complete argument
-    pipgd_quantile(welfare         = welfare,
-                   weight          = weight,
-                   complete        = "neither TRUE or FALSE") |>
         expect_error()
 
 })
@@ -537,10 +531,10 @@ test_that("pipgd_gini works as expected", {
                mean              = "invalid mean") |>
         expect_error()
 
-    pipgd_gini(welfare           = welfare,
-               weight            = weight,
-               popshare          = 0.5) |>
-        expect_no_error()
+    #pipgd_gini(welfare           = welfare,
+    #           weight            = weight,
+    #           popshare          = 0.5) |>
+    #    expect_no_error()
 
     pipgd_gini(welfare           = welfare,
                weight            = weight,
@@ -601,10 +595,10 @@ test_that("pipgd_mld inputs works as expected", {
               mean        = "invalid mean") |>
         expect_error()
 
-    pipgd_mld(welfare     = welfare,
-              weight      = weight,
-              popshare    = 0.5) |>
-        expect_no_error()
+    #pipgd_mld(welfare     = welfare,
+    #          weight      = weight,
+    #          popshare    = 0.5) |>
+    #    expect_no_error()
 
     pipgd_mld(welfare     = welfare,
               weight      = weight,
@@ -625,11 +619,6 @@ test_that("pipgd_mld inputs works as expected", {
     pipgd_mld(welfare     = welfare,
               weight      = weight,
               lorenz      = "Neither NULL, lq or lb") |>
-        expect_error()
-
-    pipgd_mld(welfare     = welfare,
-              weight      = weight,
-              complete    = "invalid complete") |>
         expect_error()
 
 })

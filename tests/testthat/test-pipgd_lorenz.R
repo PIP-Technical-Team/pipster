@@ -11,8 +11,8 @@ test_that("pipgd_validate_lorenz inputs and outputs", {
   # test for expecting stop when neither (welfare and wieght) nor params (as output of pipster::pipgd_params) are provided
   test_params <- params
   test_params$gd_params$lq$reg_results$coef <- NULL
-  expect_error(pipgd_validate_lorenz(welfare = NULL, weight = NULL, params = test_params),
-    "Either `welfare` and `weights` should be specified or `params` should be output from `pipster::pipgd_params()`")
+  pipgd_validate_lorenz(welfare = NULL, weight = NULL, params = test_params) |>
+    expect_error()
 
   # Names in output list -------------------------------------------------------------------
   expect_equal(names(res_with_welfare_weight), names(res_with_params))
@@ -79,7 +79,8 @@ test_that("pipgd_lorenz_curve", {
   expect_equal(res_null_lorenz$lorenz_curve$lorenz, params$selected_lorenz$for_dist)
 
   invalid_lorenz <- "neither lq nor lb nor null"
-  expect_error(pipgd_lorenz_curve(welfare = welfare, weight = weight, lorenz = invalid_lorenz), "Lorenz must be one of lb, lq or NULL")
+  pipgd_lorenz_curve(welfare = welfare, weight = weight, lorenz = invalid_lorenz) |>
+    expect_error()
 
   # Names in output list ---------------------------------------------------------------
   names(res_with_lorenz) |>

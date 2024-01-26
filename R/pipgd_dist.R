@@ -192,7 +192,8 @@ pipgd_quantile_welfare_share <-
 
     # get shares ------------------------
     shr <- pipgd_welfare_share_at(params = params,
-                                  complete = FALSE)
+                                  complete = FALSE, 
+                                  n = n)
     shr <- c(shr$dist_stats$welfare_share_at[1],
              diff(shr$dist_stats$welfare_share_at))
 
@@ -300,7 +301,6 @@ pipgd_quantile <-
       match.arg(lorenz, c("lq", "lb"))
     }
 
-
     qfun <- paste0("wbpip:::derive_", lorenz) |>
       parse(text = _)
     # value_at_vc <- Vectorize(eval(qfun),
@@ -399,7 +399,9 @@ pipgd_gini <- function(
       weight   = weight,
       complete = TRUE,
       mean     = mean,
-      povline  = povline
+      povline  = ifelse(is.null(popshare),
+                      mean*times_mean,
+                      NA_real_)
     )
   } else {
     params <- pipgd_select_lorenz(
@@ -407,7 +409,9 @@ pipgd_gini <- function(
       weight   =  params$data$weight,
       complete = TRUE,
       mean     = mean,
-      povline  = povline
+      povline  = ifelse(is.null(popshare),
+                      mean*times_mean,
+                      NA_real_)
     )
   }
 
