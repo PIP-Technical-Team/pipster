@@ -44,7 +44,7 @@
 #'                        weight = pip_gd$P,
 #'                        complete = FALSE,
 #'                        popshare = custom_popshare_vector)
-#' rm(custom_popshare_vector)
+#'
 #'
 #' # Example 4: Using a specified Lorenz curve (e.g., Lorenz Beta)
 #' pipgd_welfare_share_at(welfare = pip_gd$L,
@@ -257,7 +257,7 @@ pipgd_quantile_welfare_share <-
 #' pipgd_quantile(welfare = pip_gd$L,
 #'                weight  = pip_gd$P,
 #'                popshare = custom_popshare_vector)
-#' rm(custom_popshare_vector)
+#'
 #'
 #' # Example 4: Specifying a different Lorenz curve ('lb', Lorenz beta)
 #' pipgd_quantile(welfare = pip_gd$L,
@@ -503,7 +503,7 @@ pipgd_gini <- function(
 #' pipgd_mld(welfare = pip_gd$L,
 #'           weight = pip_gd$P,
 #'           mean = actual_mean)
-#' rm(actual_mean)
+#'
 #'
 #' # Example 5: MLD Focusing on Specific Poverty Line
 #' pipgd_mld(welfare = pip_gd$L,
