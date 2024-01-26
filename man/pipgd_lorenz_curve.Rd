@@ -44,9 +44,13 @@ Lorenz Quadratic or "lb" for Lorenz Beta}
 lorenz curve}
 }
 \value{
-Returns a list: contains i) numeric lorenz curve, ii) corresponding
-points on x-axis, iii) whether lq or lb parameterization, and
-iv) if \code{complete=TRUE}, also returns all params.
+Returns a list which contains:
+\itemize{
+\item numeric lorenz curve,
+\item corresponding points on x-axis,
+\item whether lq or lb parameterization, and
+\item if \code{complete=TRUE}, also returns all params.
+}
 }
 \description{
 Returns the Lorenz curve. User provides the cumulative welfare and
@@ -65,13 +69,14 @@ pipgd_lorenz_curve(welfare = pip_gd$L,
                    n_bins = 50)
 
 # Example 3: Using pre-calculated parameters
-params <- pipgd_params(welfare = pip_gd$L,
-                       weight = pip_gd$P)
-pipgd_lorenz_curve(params = params)
+validated_parameters <- pipgd_validate_lorenz(welfare = pip_gd$L,
+                                              weight = pip_gd$P)
+pipgd_lorenz_curve(params = validated_parameters)
 
-# Example 4: Generating Lorenz Curve with a specific Lorenz model
-pipgd_lorenz_curve(params = params,
+
+# Example 4: Generating Lorenz Curve with a specific Lorenz model(e.g. Lorenz beta)
+pipgd_lorenz_curve(params = validated_parameters,
                    lorenz = "lb")
-rm(params)
+
 
 }

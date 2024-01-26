@@ -44,11 +44,11 @@ accessible at \verb{$gd_params$lq$validity$is_normal} for the Lorenz beta and
 Check validity of Lorenz Curve
 }
 \examples{
-# Example 1: Validate Lorenz Curves using pre-calculated params
-params <- pipgd_params(welfare = pip_gd$L, weight = pip_gd$P)
-pipgd_validate_lorenz(params = params)
+# Example 1: Validate Lorenz Curves using pre-calculated parameters.
+parameters <- pipgd_params(welfare = pip_gd$L, weight = pip_gd$P)
+pipgd_validate_lorenz(params = parameters)
 
-# Example 2: Directly using welfare and weight vectors
+# Example 2: Directly using welfare and weight vectors.
 pipgd_validate_lorenz(welfare = pip_gd$L,
                       weight = pip_gd$P)
 

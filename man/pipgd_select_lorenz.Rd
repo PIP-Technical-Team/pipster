@@ -43,20 +43,32 @@ distributional Stats.
 Get selected Lorenz curve for distributional stats
 }
 \examples{
-# Example 1: Directly using welfare and weight vectors
+# Example 1: Directly using welfare and weight vectors.
 pipgd_select_lorenz(welfare = pip_gd$L,
                     weight = pip_gd$P)
 
-# Example 2: Specifying mean and poverty line
-custom_mean <- mean(pip_gd$L)
-custom_povline <- 1.25
+# Example 2: Specifying mean and poverty line.
+custom_mean <- sum(pip_gd$W * pip_gd$X) / sum(pip_gd$W)
 pipgd_select_lorenz(welfare = pip_gd$L,
                     weight = pip_gd$P,
                     mean = custom_mean,
-                    povline = custom_povline)
-rm(custom_mean, custom_povline)
+                    povline = 1.25)
 
-# Example 5: Detailed output with complete = TRUE
+
+# Example 3.1: Using parameters from pipgd_validate_lorenz()
+validated_parameters <- pipgd_validate_lorenz(welfare = pip_gd$L,
+                                              weight = pip_gd$P,
+                                              complete = TRUE)
+pipgd_select_lorenz(params = validated_parameters)
+
+
+# Example 3.2: Piping from from pipgd_params |> pipgd_validate_lorenz()
+pipgd_params(welfare = pip_gd$L,
+             weight = pip_gd$P) |>
+pipgd_validate_lorenz(complete = TRUE)|>
+pipgd_select_lorenz()
+
+# Example 4: Detailed output with complete = TRUE
 pipgd_select_lorenz(welfare = pip_gd$L,
                     weight = pip_gd$P,
                     complete = TRUE)
