@@ -64,7 +64,7 @@ pipgd_welfare_share_at(welfare = pip_gd$L,
                        weight = pip_gd$P,
                        complete = FALSE,
                        popshare = custom_popshare_vector)
-rm(custom_popshare_vector)
+
 
 # Example 4: Using a specified Lorenz curve (e.g., Lorenz Beta)
 pipgd_welfare_share_at(welfare = pip_gd$L,

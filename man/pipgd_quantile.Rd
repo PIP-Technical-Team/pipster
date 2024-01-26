@@ -79,7 +79,7 @@ custom_popshare_vector <- c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7,
 pipgd_quantile(welfare = pip_gd$L,
                weight  = pip_gd$P,
                popshare = custom_popshare_vector)
-rm(custom_popshare_vector)
+
 
 # Example 4: Specifying a different Lorenz curve ('lb', Lorenz beta)
 pipgd_quantile(welfare = pip_gd$L,

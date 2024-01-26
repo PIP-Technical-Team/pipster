@@ -70,7 +70,7 @@ actual_mean <- 90  # Replace with the actual mean of your data
 pipgd_mld(welfare = pip_gd$L,
           weight = pip_gd$P,
           mean = actual_mean)
-rm(actual_mean)
+
 
 # Example 5: MLD Focusing on Specific Poverty Line
 pipgd_mld(welfare = pip_gd$L,
