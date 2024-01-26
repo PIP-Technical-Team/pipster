@@ -5,7 +5,7 @@
 #' wrapper of the lower-level package `wbpip`
 #'
 #' @section pipster functions: The pipster functions are divided in X groups.
-#'   The first, and most important is a set of functions to estimate especif
+#'   The first, and most important is a set of functions to estimate specific
 #'   indicators using as input the welfare and weights vector of microdata or
 #'   group data.
 #'

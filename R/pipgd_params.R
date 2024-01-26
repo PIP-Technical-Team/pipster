@@ -1,5 +1,4 @@
 #' Get Group Data Parameters
-#' Get Group Data Parameters
 #'
 #' Get Parameters and key values derived from the quadratic and Beta Lorenz
 #' parametrization. `welfare` and `population` must be vectors of a group data
@@ -9,8 +8,10 @@
 #' @param weight numeric vector of cumulative share of the population
 #' @param mean numeric scalar of distribution mean. Default is NULL
 #' @param population numeric scalar with actual size of population. Default is NULL
-#' @export
-#' @return list with Group data parameters parameters
+#'
+#' @return Returns a `pipgd_params` object with Group data parameters accessible
+#' at `$gd_params` and the data used accessible at `$data`.
+#'
 #' @export
 #' @references
 #' Datt, G. 1998. "[Computational Tools For Poverty Measurement And
@@ -26,11 +27,31 @@
 #' *Journal of Econometrics 40* (2): 327-338.
 #'
 #' @examples
-#' # Get Lorenz parameters
+#' # Example 1: Get Lorenz parameters
 #' res <- pipgd_params(
 #'   welfare = pip_gd$L,
 #'   weight = pip_gd$P)
 #' str(res)
+#' rm(res)
+#'
+#' # Example 2: Get Lorenz parameters with Specific Mean
+#' actual_mean <- 90
+#' res <- pipgd_params(
+#'   welfare = pip_gd$L,
+#'   weight = pip_gd$P,
+#'   mean = actual_mean)
+#' str(res)
+#' rm(res)
+#'
+#' # Example 3: Get Lorenz parameters with Specific Population Count
+#' actual_pop <- 1000
+#' res <- pipgd_params(
+#'   welfare = pip_gd$L,
+#'   weight = pip_gd$P,
+#'   population = actual_pop)
+#' str(res)
+#' rm(res)
+#'
 pipgd_params <- function(welfare,
                          weight,
                          mean = NULL,

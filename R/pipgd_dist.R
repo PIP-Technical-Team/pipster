@@ -16,13 +16,47 @@
 #'   = 1/n, to = 1, by = 1/n)`
 #' @param n numeric scalar for the number of quantiles to be used in `popshare`
 #'
-#' @return list with vector of share of welfare by quantiles
+#' @return Returns a nested list containing distribution statistics:
+#' `$dist_stats$pop_share` is a numeric vector containing the share of the
+#' population.
+#' `$dist_stats$welfare_share_at` is a numeric vector showing the
+#' corresponding share of welfare.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
+#' # Example 1: Basic usage with default parameters
 #' pipgd_welfare_share_at(welfare = pip_gd$L,
-#'                         weight = pip_gd$P,
-#'                         complete = FALSE)
+#'                        weight = pip_gd$P,
+#'                        complete = FALSE)
+#'
+#' # Example 2: Specifying a custom number of quantiles (n = 5)
+#' pipgd_welfare_share_at(welfare = pip_gd$L,
+#'                        weight = pip_gd$P,
+#'                        complete = FALSE,
+#'                        n = 5)
+#'
+#' # Example 3: Using a custom population share vector
+#' custom_popshare_vector <- seq(from = 1/13, to = 1, length.out = 13)
+#' pipgd_welfare_share_at(welfare = pip_gd$L,
+#'                        weight = pip_gd$P,
+#'                        complete = FALSE,
+#'                        popshare = custom_popshare_vector)
+#'
+#'
+#' # Example 4: Using a specified Lorenz curve (e.g., Lorenz Beta)
+#' pipgd_welfare_share_at(welfare = pip_gd$L,
+#'                        weight = pip_gd$P,
+#'                        complete = FALSE,
+#'                        lorenz = "lb")
+#'
+#' # Example 5: Detailed output with complete = TRUE
+#' pipgd_welfare_share_at(welfare = pip_gd$L,
+#'                        weight = pip_gd$P,
+#'                        complete = TRUE)
+#'
 pipgd_welfare_share_at <- function(
     params     = NULL,
     welfare    = NULL,
@@ -87,13 +121,46 @@ pipgd_welfare_share_at <- function(
 #'
 #' @inheritParams pipgd_welfare_share_at
 #'
-#' @return list with welfare shares
+#' @return Returns a nested list containing distribution statistics:
+#' `$dist_stats$pop_share` is a numeric vector containing the share of the
+#' population.
+#' `$dist_stats$quantile_welfare_share` is a numeric vector showing the
+#' corresponding share of welfare.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
+#' # Example 1: Basic usage with default parameters
 #' pipgd_quantile_welfare_share(welfare = pip_gd$L,
-#'                         weight = pip_gd$P,
-#'                         complete = FALSE)
+#'                              weight = pip_gd$P,
+#'                              complete = FALSE)
+#'
+#' # Example 2: Specifying a custom quantile (e.g. 5)
+#' pipgd_quantile_welfare_share(welfare = pip_gd$L,
+#'                              weight = pip_gd$P,
+#'                              complete = FALSE,
+#'                              n = 5)
+#'
+#' # Example 3: Using a custom population share vector
+#' custom_popshare_vector <- seq(from = 1/13, to = 1, length.out = 13)
+#' pipgd_quantile_welfare_share(welfare = pip_gd$L,
+#'                              weight = pip_gd$P,
+#'                              complete = FALSE,
+#'                              popshare = custom_popshare_vector)
+#'
+#' # Example 4: Using a different Lorenz curve (e.g., Lorenz Beta)
+#' pipgd_quantile_welfare_share(welfare = pip_gd$L,
+#'                              weight = pip_gd$P,
+#'                              complete = FALSE,
+#'                              lorenz = "lb")
+#'
+#' # Example 5: Detailed output with complete = TRUE
+#' pipgd_quantile_welfare_share(welfare = pip_gd$L,
+#'                              weight = pip_gd$P,
+#'                              complete = TRUE)
+#'
 pipgd_quantile_welfare_share <-
   function(params     = NULL,
            welfare    = NULL,
@@ -144,7 +211,7 @@ pipgd_quantile_welfare_share <-
 #' Get quantile at specified shared of population - grouped data
 #'
 #' `pipgd_quantile` returns the quantile (i.e., monetary value) that corresponds
-#' to share of the population that lives below that threshold.
+#' to the share of the population that lives below that threshold.
 #'
 #' This is basically the inverse of estimating the poverty rate (headcount or
 #' population share) below the poverty line. In this case, you provide the
@@ -152,7 +219,7 @@ pipgd_quantile_welfare_share <-
 #'
 #' The quantiles are calculated as function of the mean of the distribution
 #' times an `x` factor. Basically, the quantile is `x` times the mean. By
-#' default, the mean is equal to 1, which implies that, if no mean value if
+#' default, the mean is equal to 1, which implies that, if no mean value is
 #' provided, the return value is equal to `x`.
 #'
 #' **NOTE:** the outcome from `pipgd_quantile` is not necessarily the inverse
@@ -164,12 +231,45 @@ pipgd_quantile_welfare_share <-
 #'
 #' @inheritParams pipgd_welfare_share_at
 #' @inheritParams pipgd_select_lorenz
-#' @return vector of quantiles
+#'
+#' @return Returns a nested list containing distribution statistics:
+#' `$dist_stats$pop_share` is a numeric vector containing the share of the
+#' population.
+#' `$dist_stats$quantile` is a numeric vector showing the
+#' corresponding quantile.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
+#' # Example 1: Basic usage with default parameters
 #' pipgd_quantile(welfare = pip_gd$L,
 #'                weight  = pip_gd$P)
+#'
+#' # Example 2: Specifying a custom number of quantiles
+#' pipgd_quantile(welfare = pip_gd$L,
+#'                weight  = pip_gd$P,
+#'                n       = 5)
+#'
+#' # Example 3: Using a custom population share vector
+#' custom_popshare_vector <- c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95)
+#' pipgd_quantile(welfare = pip_gd$L,
+#'                weight  = pip_gd$P,
+#'                popshare = custom_popshare_vector)
+#'
+#'
+#' # Example 4: Specifying a different Lorenz curve ('lb', Lorenz beta)
+#' pipgd_quantile(welfare = pip_gd$L,
+#'                weight  = pip_gd$P,
+#'                lorenz  = "lb")
+#'
+#' # Example 5: Detailed output with complete = TRUE and different mean factor
+#' pipgd_quantile(welfare = pip_gd$L,
+#'                weight  = pip_gd$P,
+#'                mean = 1.5,
+#'                complete = TRUE)
+
 pipgd_quantile <-
   function(params     = NULL,
            welfare    = NULL,
@@ -237,13 +337,39 @@ pipgd_quantile <-
 #'
 #' @inheritParams pipgd_pov_headcount_nv
 #'
-#' @return list: contains numeric Gini and, if `complete=TRUE`,
-#' also returns all params.
+#' @return Returns a nested list containing distribution statistics:
+#' `$dist_stats$gini` is a numeric vector containing the gini coefficient.
+#' `$dist_stats$lorenz` is a numeric vector showing the lorenz curve used.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
+#' # Example 1: Basic Calculation of Gini Coefficient
 #' pipgd_gini(welfare = pip_gd$L,
-#'            weight  = pip_gd$P)
+#'            weight = pip_gd$P)
+#'
+#' # Example 2: Gini Coefficient with a Specific Lorenz Curve (e.g. Lorenz beta)
+#' pipgd_gini(welfare = pip_gd$L,
+#'            weight = pip_gd$P,
+#'            lorenz = "lb")
+#'
+#' # Example 3: Detailed Output of Gini Calculation
+#' pipgd_gini(welfare = pip_gd$L,
+#'            weight = pip_gd$P,
+#'            complete = TRUE)
+#'
+#' # Example 4: Gini Coefficient with Adjusted Mean
+#' pipgd_gini(welfare = pip_gd$L,
+#'            weight = pip_gd$P,
+#'            times_mean = 1.5)
+#'
+#' # Example 5: Focusing on a Subset Below Poverty Line at 50
+#' pipgd_gini(welfare = pip_gd$L,
+#'            weight = pip_gd$P,
+#'            povline = 50)
+#'
 pipgd_gini <- function(
   params     = NULL,
   welfare    = NULL,
@@ -344,18 +470,46 @@ pipgd_gini <- function(
 
 #' Compute MLD
 #'
-#' MLD is computed using either the beta or quadratic Lorenz
-#' functions.
+#' MLD (Mean Logarithimic Deviation) is computed using either the beta or
+#' quadratic Lorenz functions.
 #'
 #' @inheritParams pipgd_gini
 #'
-#' @return list: contains numeric MLD and, if `complete=TRUE`,
-#' also returns all params.
+#' @return Returns a nested list containing distribution statistics:
+#' `$dist_stats$mld` is a numeric vector containing the mld calculation.
+#' `$dist_stats$lorenz` is a numeric vector showing the lorenz curve used.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
+#' # Example 1: Basic MLD Calculation
 #' pipgd_mld(welfare = pip_gd$L,
-#'           weight  = pip_gd$P)
+#'           weight = pip_gd$P)
+#'
+#' # Example 2: MLD with a Specific Lorenz Curve
+#' pipgd_mld(welfare = pip_gd$L,
+#'           weight = pip_gd$P,
+#'           lorenz = "lb")
+#'
+#' # Example 3: Detailed Output of MLD Calculation
+#' pipgd_mld(welfare = pip_gd$L,
+#'           weight = pip_gd$P,
+#'           complete = TRUE)
+#'
+#' # Example 4: Adjusting for a Specific Mean
+#' actual_mean <- 90  # Replace with the actual mean of your data
+#' pipgd_mld(welfare = pip_gd$L,
+#'           weight = pip_gd$P,
+#'           mean = actual_mean)
+#'
+#'
+#' # Example 5: MLD Focusing on Specific Poverty Line
+#' pipgd_mld(welfare = pip_gd$L,
+#'           weight = pip_gd$P,
+#'           povline = 50)
+#'
 pipgd_mld <- function(
     params     = NULL,
     welfare    = NULL,
@@ -411,7 +565,7 @@ pipgd_mld <- function(
   #   _________________________________________________________________
   if (lorenz == "lb") {
     mld <-
-      wbpip:::gd_compute_mld_lb(
+      wbpip::gd_compute_mld_lb(
         A         = params$gd_params$lb$reg_results$coef[["A"]],
         B         = params$gd_params$lb$reg_results$coef[["B"]],
         C         = params$gd_params$lb$reg_results$coef[["C"]],
@@ -438,9 +592,8 @@ pipgd_mld <- function(
   params$dist_stats$mld    <- mld
   params$dist_stats$lorenz <- lorenz
 
-  return(
-    params
-  )
+  params
+
 
 }
 

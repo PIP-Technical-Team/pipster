@@ -62,7 +62,7 @@ pipgd_pov_headcount_nv <-
   }
 
   params$pov_stats$headcount <- headcount
-  params$pov_stats$lorenz <- lorenz
+  params$pov_stats$lorenz    <- lorenz
   return(params)
 }
 
@@ -72,45 +72,48 @@ pipgd_pov_headcount_nv <-
 #' @inheritParams pipgd_pov_headcount_nv
 #' @inheritParams return_format
 #'
-#' @return list of numeric vector. Check `format` argument
+#' @return Returns a `data.table` and `data.frame` object with three variables:
+#' `povline`, `headcount`, and `lorenz`.  Check `format` argument to change
+#' the output format.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
-#' pipgd_pov_headcount(
-#' welfare = pip_gd$L,
-#' weight  = pip_gd$P,
-#' mean = 109.90,
-#' povline = 89,
-#' complete = FALSE)
-#' # Return data.table
-#' pipgd_pov_headcount(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' complete = FALSE)
+#' # Example 1: Basic usage with specified mean and poverty line
+#' pipgd_pov_headcount(welfare = pip_gd$L,
+#'                     weight  = pip_gd$P,
+#'                     mean    = 109.90,
+#'                     povline = 89,
+#'                     complete = FALSE)
 #'
-#' # Return list
-#' pipgd_pov_headcount(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list")
+#' # Example 2: Multiple poverty lines, returning data.table
+#' pipgd_pov_headcount(welfare = pip_gd$L,
+#'                     weight  = pip_gd$P,
+#'                     povline = c(0.5, 1, 2, 3),
+#'                     complete = FALSE)
 #'
-#' # Return list complete
-#' pipgd_pov_headcount(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list",
-#' complete = TRUE)
+#' # Example 3: Multiple poverty lines, returning list format
+#' pipgd_pov_headcount(welfare = pip_gd$L,
+#'                     weight  = pip_gd$P,
+#'                     povline = c(0.5, 1, 2, 3),
+#'                     format  = "list")
 #'
-#' # Return data.table
-#' pipgd_pov_headcount(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "atomic",
-#' complete = FALSE)
+#' # Example 4: Multiple poverty lines, returning detailed list format
+#' pipgd_pov_headcount(welfare = pip_gd$L,
+#'                     weight  = pip_gd$P,
+#'                     povline = c(0.5, 1, 2, 3),
+#'                     format  = "list",
+#'                     complete = TRUE)
+#'
+#' # Example 5: Multiple poverty lines, returning atomic format
+#' pipgd_pov_headcount(welfare = pip_gd$L,
+#'                     weight  = pip_gd$P,
+#'                     povline = c(0.5, 1, 2, 3),
+#'                     format  = "atomic",
+#'                     complete = FALSE)
+#'
 pipgd_pov_headcount <-
   function(params     = NULL,
            welfare    = NULL,
@@ -187,9 +190,9 @@ pipgd_pov_gap_nv <- function(params     = NULL,
   if (!is.null(welfare)) {
     params <- pipgd_pov_headcount_nv(welfare  = welfare,
                                      weight   = weight,
-                                    complete = TRUE,
-                                    mean     = mean,
-                                    povline  = povline)
+                                     complete = TRUE,
+                                     mean     = mean,
+                                     povline  = povline)
   } else {
     params <- pipgd_pov_headcount_nv(welfare  =  params$data$welfare,
                                      weight   =  params$data$weight,
@@ -211,11 +214,11 @@ pipgd_pov_gap_nv <- function(params     = NULL,
 
   pov_gap <-
     eval(fun_to_vc)(mean      = mean,
-                   povline   = povline,
-                   headcount = params$pov_stats$headcount,
-                   A         = params$gd_params[[lorenz]]$reg_results$coef[["A"]],
-                   B         = params$gd_params[[lorenz]]$reg_results$coef[["B"]],
-                   C         = params$gd_params[[lorenz]]$reg_results$coef[["C"]])
+                    povline   = povline,
+                    headcount = params$pov_stats$headcount,
+                    A         = params$gd_params[[lorenz]]$reg_results$coef[["A"]],
+                    B         = params$gd_params[[lorenz]]$reg_results$coef[["B"]],
+                    C         = params$gd_params[[lorenz]]$reg_results$coef[["C"]])
   attributes(pov_gap) <- NULL
 
   #   ____________________________________________________
@@ -233,45 +236,49 @@ pipgd_pov_gap_nv <- function(params     = NULL,
 #' Estimate poverty gap (FGT1)
 #'
 #' @inheritParams pipgd_pov_headcount
-#' @return list of poverty gaps. See `format` parameter
+#'
+#' @return Returns a `data.table` and `data.frame` object with three variables:
+#' `povline`, `pov_gap`, and `lorenz`.  Check `format` argument to change
+#' the output format.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
-#' pipgd_pov_gap(
-#' welfare = pip_gd$L,
-#' weight  = pip_gd$P,
-#' mean = 109.90,
-#' povline = 89,
-#' complete = FALSE)
-#' # Return data.table
-#' pipgd_pov_gap(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' complete = FALSE)
+#' # Example 1: Basic usage with specified mean and poverty line
+#' pipgd_pov_gap(welfare = pip_gd$L,
+#'               weight  = pip_gd$P,
+#'               mean    = 109.90,
+#'               povline = 89,
+#'               complete = FALSE)
 #'
-#' # Return list
-#' pipgd_pov_gap(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list")
+#' # Example 2: Multiple poverty lines, returning data.table
+#' pipgd_pov_gap(welfare = pip_gd$L,
+#'               weight  = pip_gd$P,
+#'               povline = c(0.5, 1, 2, 3),
+#'               complete = FALSE)
 #'
-#' # Return list complete
-#' pipgd_pov_gap(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list",
-#' complete = TRUE)
+#' # Example 3: Multiple poverty lines, returning list format
+#' pipgd_pov_gap(welfare = pip_gd$L,
+#'               weight  = pip_gd$P,
+#'               povline = c(0.5, 1, 2, 3),
+#'               format  = "list")
 #'
-#' # Return data.table
-#' pipgd_pov_gap(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "atomic",
-#' complete = FALSE)
+#' # Example 4: Multiple poverty lines, returning detailed list format
+#' pipgd_pov_gap(welfare = pip_gd$L,
+#'               weight  = pip_gd$P,
+#'               povline = c(0.5, 1, 2, 3),
+#'               format  = "list",
+#'               complete = TRUE)
+#'
+#' # Example 5: Multiple poverty lines, returning atomic format
+#' pipgd_pov_gap(welfare = pip_gd$L,
+#'               weight  = pip_gd$P,
+#'               povline = c(0.5, 1, 2, 3),
+#'               format  = "atomic",
+#'               complete = FALSE)
+#'
 pipgd_pov_gap <- function(params     = NULL,
                           welfare    = NULL,
                           weight     = NULL,
@@ -435,9 +442,8 @@ pipgd_pov_severity_nv <- function(
     params$pov_stats$pov_severity <- pov_severity
     params$pov_stats$lorenz       <- lorenz
 
-    return(
-      params
-    )
+    params
+
 
 }
 
@@ -449,45 +455,48 @@ pipgd_pov_severity_nv <- function(
 #' single numeric vector, whose names are corresponding selected Lorenz for
 #' each value.  Default is "dt"
 #'
-#' @return list: contains numeric poverty severity. See `complete` and `format`
+#' @return Returns a `data.table` and `data.frame` object with two variables:
+#' `pov_severity` and `lorenz`.  Check `format` argument to change
+#' the output format.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
-#' pipgd_pov_severity(
-#' welfare = pip_gd$L,
-#' weight  = pip_gd$P,
-#' mean = 109.90,
-#' povline = 89,
-#' complete = FALSE)
-#' # Return data.table
-#' pipgd_pov_severity(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' complete = FALSE)
+#' # Example 1: Basic usage with specified mean and poverty line
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    mean    = 109.90,
+#'                    povline = 89,
+#'                    complete = FALSE)
 #'
-#' # Return list
-#' pipgd_pov_severity(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list")
+#' # Example 2: Multiple poverty lines, returning data.table
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    povline = c(0.5, 1, 2, 3),
+#'                    complete = FALSE)
 #'
-#' # Return list complete
-#' pipgd_pov_severity(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list",
-#' complete = TRUE)
+#' # Example 3: Multiple poverty lines, returning list format
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    povline = c(0.5, 1, 2, 3),
+#'                    format  = "list")
 #'
-#' # Return data.table
-#' pipgd_pov_severity(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "atomic",
-#' complete = FALSE)
+#' # Example 4: Multiple poverty lines, returning detailed list format
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    povline = c(0.5, 1, 2, 3),
+#'                    format  = "list",
+#'                    complete = TRUE)
+#'
+#' # Example 5: Multiple poverty lines, returning atomic format
+#' pipgd_pov_severity(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    povline = c(0.5, 1, 2, 3),
+#'                    format  = "atomic",
+#'                    complete = FALSE)
+#'
 pipgd_pov_severity <- function(
     params     = NULL,
     welfare    = NULL,
@@ -531,14 +540,15 @@ pipgd_pov_severity <- function(
   # ____________________________________________________________________________
   # Format ---------------------------------------------------------------------
   out <- return_format(
-    ld     = list_povsev,
-    var    = "pov_severity",
-    format = format
+    ld       = list_povsev,
+    var      = "pov_severity",
+    format   = format,
+    complete = complete
   )
 
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------
-  return(out)
+  out
 
 }
 
@@ -556,6 +566,7 @@ pipgd_pov_severity <- function(
 #'
 #' @return list: contains numeric Watts ratio and, if `complete=TRUE`,
 #' also returns all params.
+#'
 #' @keywords internal
 pipgd_watts_nv <- function(
     params       = NULL,
@@ -644,9 +655,8 @@ pipgd_watts_nv <- function(
   params$pov_stats$watts  <- wr
   params$pov_stats$lorenz <- lorenz
 
-  return(
-    params
-  )
+  params
+
 
 }
 
@@ -655,7 +665,7 @@ pipgd_watts_nv <- function(
 
 #' Estimate Watts poverty index
 #'
-#' Computes Watts Index from either beta or quadratic Lorenz fit
+#' Computes Watts Index from either beta or quadratic Lorenz fit.
 #' The first distribution-sensitive poverty measure was proposed in 1968 by Watts.
 #' It is defined as the mean across the population of the proportionate poverty
 #' gaps, as measured by the log of the ratio of the poverty line to income,
@@ -667,45 +677,37 @@ pipgd_watts_nv <- function(
 #' single numeric vector, whose names are corresponding selected Lorenz for
 #' each value.  Default is "dt"
 #'
-#' @return list: contains numeric poverty severity. See `complete` and `format`
+#' @return Returns a `data.table` and `data.frame` object with two variables:
+#' `watts` and `lorenz`.  Check `format` argument to change
+#' the output format.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
 #' @export
 #'
 #' @examples
-#' pipgd_pov_watts(
-#' welfare = pip_gd$L,
-#' weight  = pip_gd$P,
-#' mean = 109.90,
-#' povline = 89,
-#' complete = FALSE)
-#' # Return data.table
-#' pipgd_pov_watts(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' complete = FALSE)
+#' # Example 1: Basic usage with the pip_gd dataset and default poverty line
+#' pipgd_watts(welfare = pip_gd$L,
+#'             weight  = pip_gd$P)
 #'
-#' # Return list
-#' pipgd_pov_watts(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list")
+#' # Example 2: Specifying a different poverty line and output as a list
+#' pipgd_watts(welfare = pip_gd$L,
+#'             weight  = pip_gd$P,
+#'             povline = 1.9,
+#'             format  = "list")
 #'
-#' # Return list complete
-#' pipgd_pov_watts(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "list",
-#' complete = TRUE)
 #'
-#' # Return data.table
-#' pipgd_pov_watts(
-#' welfare = pip_gd$L,
-#' weight = pip_gd$P,
-#' povline = c(.5, 1, 2, 3),
-#' format = "atomic",
-#' complete = FALSE)
+#' # Example 3: Detailed output with complete = TRUE
+#' pipgd_watts(welfare = pip_gd$L,
+#'             weight  = pip_gd$P,
+#'             complete = TRUE)
+#'
+#' # Example 4: Custom mean and times_mean with data.table format
+#' pipgd_watts(welfare = pip_gd$L,
+#'             weight  = pip_gd$P,
+#'             mean    = 109.9,
+#'             times_mean = 1.5)
+#'
 pipgd_watts <- function(
     params     = NULL,
     welfare    = NULL,
@@ -727,12 +729,12 @@ pipgd_watts <- function(
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
-  pipgd_pov_watts_v <- Vectorize(
+  pipgd_watts_v <- Vectorize(
     FUN            = pipgd_watts_nv,
     vectorize.args = "povline",
     SIMPLIFY       = FALSE
   )
-  list_watts <- pipgd_pov_watts_v(
+  list_watts <- pipgd_watts_v(
     params     = params,
     welfare    = welfare,
     weight     = weight,
@@ -747,15 +749,45 @@ pipgd_watts <- function(
   # ____________________________________________________________________________
   # Format ---------------------------------------------------------------------
   out <- return_format(
-    ld     = list_watts,
-    var    = "watts",
-    format = format
+    ld       = list_watts,
+    var      = "watts",
+    format   = format,
+    complete = complete
   )
 
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------
-  return(out)
+  out
 
 }
-
-
+#
+#
+# pipgd_pov_headcount_v <- Vectorize(pipgd_pov_headcount_nv,
+#                                    vectorize.args = "povline",
+#                                    SIMPLIFY = FALSE)
+#
+#
+# ld <- pipgd_pov_headcount_v(welfare    = welfare,
+#                             weight     = weight,
+#                             params     = params,
+#                             povline    = povline,
+#                             complete   = complete,
+#                             lorenz     = lorenz,
+#                             mean       = mean,
+#                             times_mean = times_mean)
+#
+# #   ____________________________________________________
+# #   Return                                           ####
+#
+# out <- return_format(ld,
+#                      var = "headcount",
+#                      povline = povline,
+#                      complete = complete,
+#                      format = format)
+#pip
+# out <- return_format(
+#   ld       = list_povsev,
+#   var      = "pov_severity",
+#   format   = format,
+#   complete = complete
+# )
