@@ -17,22 +17,25 @@
 #' @export
 #'
 #' @examples
-#' # Example 1: Basic usage with md data
+#' # Example 1: Basic usage with md data.
 #' as_pip(dt = pip_md,
 #'        welfare_var = "welfare",
-#'        weight_var = "weight")
+#'        weight_var = "weight") |>
+#' class()
 #'
 #' # Example 2: Including imputation_id_var
 #' as_pip(dt = pip_id,
 #'        welfare_var = "welfare",
 #'        weight_var = "weight",
-#'        imputation_id_var = "imputation_id")
+#'        imputation_id_var = "imputation_id") |>
+#' class()
 #'
 #' # Example 3: Basic usage with gd data and explicit pip_type
 #' as_pip(dt = pip_gd,
 #'        welfare_var = "X",
 #'        weight_var = "W",
-#'        pip_type = "gd")
+#'        pip_type = "gd_1") |>
+#' class()
 #'
 as_pip <- function(
     dt,
