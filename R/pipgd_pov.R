@@ -635,11 +635,6 @@ pipgd_watts_nv <- function(
   # __________________________________________________________________________
   #   Computations -----------------------------------------------------------
 
-    popshare = popshare
-    povline = ifelse(is.null(popshare),
-                        mean*times_mean,
-                        NA_real_)
-
     if (!is.null(welfare)) {
   
       params <- pipgd_pov_headcount_nv(
@@ -657,6 +652,16 @@ pipgd_watts_nv <- function(
         popshare = popshare,
         povline  = povline
       )
+    }
+
+    # Compute povline when popshare is supplied
+     if (is.na(povline)) {
+      welfare = params$data$welfare
+      weight = params$data$weight
+      povline = collapse::fquantile(x     = welfare, 
+                                  probs   = popshare, 
+                                  w       = weight) |>
+                                  unname()
     }
 
   
@@ -778,6 +783,13 @@ pipgd_watts <- function(
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
 
+   if (!is.null(popshare)) {
+    povline = collapse::fquantile(x     = welfare, 
+                                  probs = popshare, 
+                                  w     = weight) |>
+                                  unname()
+  }
+
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   pipgd_watts_v <- Vectorize(
@@ -791,7 +803,7 @@ pipgd_watts <- function(
     weight     = weight,
     mean       = mean,
     times_mean = times_mean,
-    popshare   = popshare,
+    popshare   = NULL,
     povline    = povline,
     lorenz     = lorenz,
     complete   = complete
