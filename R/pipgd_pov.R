@@ -189,11 +189,8 @@ pipgd_pov_gap_nv <- function(params     = NULL,
 
   #   ____________________________________________________
   #   Computations                              ####
-
-  popshare = popshare
-  povline = ifelse(is.null(popshare),
-                    mean*times_mean, NA_real_)
   
+  # Compute params when welfare is (is not) supplied
   if (!is.null(welfare)) {
     
     params <- pipgd_pov_headcount_nv(welfare  = welfare,
@@ -209,6 +206,16 @@ pipgd_pov_gap_nv <- function(params     = NULL,
                                      povline  = povline)
   }
 
+  # Compute povline when popshare is supplied 
+  if (is.na(povline)) {
+    welfare = params$data$welfare
+    weight = params$data$weight
+    povline = collapse::fquantile(x     = welfare, 
+                                  probs = popshare, 
+                                  w     = weight) |>
+                                  unname()
+  }
+
   # force selection of lorenz
   if (is.null(lorenz)) {
     lorenz <- params$selected_lorenz$for_pov
@@ -216,6 +223,7 @@ pipgd_pov_gap_nv <- function(params     = NULL,
     match.arg(lorenz, c("lq", "lb"))
   }
 
+  # Call wbpip:: function
   fun_to_vc <-
     paste0("wbpip:::gd_compute_pov_gap_", lorenz) |>
     parse(text = _)
@@ -304,6 +312,13 @@ pipgd_pov_gap <- function(params     = NULL,
 
   #   ____________________________________________________
   #   Computations                                     ####
+  if (!is.null(popshare)) {
+    #popshare = popshare
+    povline = collapse::fquantile(x     = welfare, 
+                                  probs = popshare, 
+                                  w     = weight) |>
+                                  unname()
+  }
   pipgd_pov_gap_v <- Vectorize(pipgd_pov_gap_nv,
                                vectorize.args = "povline",
                                SIMPLIFY = FALSE)
@@ -312,6 +327,7 @@ pipgd_pov_gap <- function(params     = NULL,
   ld <- pipgd_pov_gap_v(welfare    = welfare,
                         weight     = weight,
                         params     = params,
+                        popshare   = NULL,
                         povline    = povline,
                         complete   = complete,
                         lorenz     = lorenz,
