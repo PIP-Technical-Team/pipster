@@ -312,6 +312,8 @@ pipgd_pov_gap <- function(params     = NULL,
 
   #   ____________________________________________________
   #   Computations                                     ####
+
+  # Compute the povline (or the vector of poverty lines) when popshare is supplied 
   if (!is.null(popshare)) {
     #popshare = popshare
     povline = collapse::fquantile(x     = welfare, 
@@ -327,6 +329,7 @@ pipgd_pov_gap <- function(params     = NULL,
   ld <- pipgd_pov_gap_v(welfare    = welfare,
                         weight     = weight,
                         params     = params,
+                        # set popshare as NULL to not trigger the check_gd_params error 
                         popshare   = NULL,
                         povline    = povline,
                         complete   = complete,
@@ -387,12 +390,9 @@ pipgd_pov_severity_nv <- function(
 
     # __________________________________________________________________________
     #   Computations -----------------------------------------------------------
-    popshare = popshare 
-
+  
     if (!is.null(pov_gap)) {
-      pov_gap = pov_gap
       if (!pov_gap == pipgd_pov_gap_nv(welfare = welfare, weight = weight)$pov_stats$pov_gap) {
-      #if (is.null(pipgd_pov_gap_nv(welfare = welfare, weight = weight)$pov_stats$pov_gap)) {
         stop("argument `pov_gap` should be the output of `pipster:::pipgd_pov_gap_nv`, else leave `pov_gap = NULL`")
       } else {
         params <- pov_gap
@@ -420,6 +420,15 @@ pipgd_pov_severity_nv <- function(
         )
       }
     
+     if (is.na(povline)) {
+      welfare = params$data$welfare
+      weight = params$data$weight
+      povline = collapse::fquantile(x     = welfare, 
+                                  probs   = popshare, 
+                                  w       = weight) |>
+                                  unname()
+    }
+
     # __________________________________________________________________________
     #   Select Lorenz ----------------------------------------------------------
     if (is.null(lorenz)) {
@@ -433,8 +442,7 @@ pipgd_pov_severity_nv <- function(
     if (lorenz == "lb") {
       pov_severity <-
         wbpip:::gd_compute_pov_severity_lb(
-          mean      = mean,
-          povline   = povline,
+          u      = mean,
           headcount = params$pov_stats$headcount,
           pov_gap   = params$pov_stats$pov_gap,
           A         = params$gd_params$lb$reg_results$coef[["A"]],
@@ -546,6 +554,14 @@ pipgd_pov_severity <- function(
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
 
+  # Compute the povline (or the vector of poverty lines) when popshare is supplied 
+  if (!is.null(popshare)) {
+    povline = collapse::fquantile(x     = welfare, 
+                                  probs = popshare, 
+                                  w     = weight) |>
+                                  unname()
+  }
+
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   pipgd_pov_severity_v <- Vectorize(
@@ -559,7 +575,7 @@ pipgd_pov_severity <- function(
     weight     = weight,
     mean       = mean,
     times_mean = times_mean,
-    popshare   = popshare,
+    popshare   = NULL,
     povline    = povline,
     lorenz     = lorenz,
     pov_gap    = pov_gap,
