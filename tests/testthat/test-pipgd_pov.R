@@ -637,16 +637,6 @@ test_that("pipgd_pov_severity inputs works as expected", {
                      mean      = NULL) |>
     expect_error()
 
-  # Test popshare argument works as expected
-  expect_equal(
-    pipgd_pov_severity(welfare  = welfare,
-                       weight   = weight,
-                       popshare = 0.3)$povline,
-    fquantile(x     = welfare,
-              w     = weight,
-              probs = 0.3) |>
-      unname())
-
   # Test pov_gap argument works as expected
   # NOTE:
   expect_error(

@@ -64,7 +64,8 @@ pipgd_pov_headcount_nv <-
 
   params$pov_stats$headcount <- headcount
   params$pov_stats$lorenz    <- lorenz
-  return(params)
+
+  params
 }
 
 
@@ -125,7 +126,7 @@ pipgd_pov_headcount <-
            povline    = ifelse(is.null(popshare),
                                mean*times_mean,
                                NA_real_),
-           format = c("dt", "list", "atomic"),
+           format     = c("dt", "list", "atomic"),
            lorenz     = NULL,
            complete   = getOption("pipster.return_complete")) {
 
@@ -135,7 +136,7 @@ pipgd_pov_headcount <-
     #   Computations                                     ####
     pipgd_pov_headcount_v <- Vectorize(pipgd_pov_headcount_nv,
                                        vectorize.args = "povline",
-                                       SIMPLIFY = FALSE)
+                                       SIMPLIFY       = FALSE)
 
 
     ld <- pipgd_pov_headcount_v(welfare    = welfare,
@@ -204,21 +205,35 @@ pipgd_pov_gap_nv <- function(params     = NULL,
 
   #   ____________________________________________________
   # Ensure `povline` exists
-  if (is.na(povline)) {
-    povline <- fquantile(x     = params$data$welfare,
-                         probs = params$data$weight,
-                         w     = weight) |>
-      unname()
+  if (!is.null(popshare)) {
+    povline_lq <- mean * wbpip::derive_lq(popshare,
+                                          params$gd_params$lq$reg_results$coef[["A"]],
+                                          params$gd_params$lq$reg_results$coef[["B"]],
+                                          params$gd_params$lq$reg_results$coef[["C"]])
+
+    povline_lb <- mean * wbpip::derive_lb(popshare,
+                                          params$gd_params$lb$reg_results$coef[["A"]],
+                                          params$gd_params$lb$reg_results$coef[["B"]],
+                                          params$gd_params$lb$reg_results$coef[["C"]])
+
+  } else {
+    povline_lb <- povline_lq <- povline
+
   }
 
-  #_______________________________________________________
-  # force selection of lorenz
+  # __________________________________________________________________________
+  #   Select Lorenz ----------------------------------------------------------
   if (is.null(lorenz)) {
     lorenz <- params$selected_lorenz$for_pov
   } else {
     match.arg(lorenz, c("lq", "lb"))
   }
 
+  if (lorenz == "lq") {
+    povline <- povline_lq
+  } else if (lorenz == "lb") {
+    povline <- povline_lb
+  }
   #_______________________________________________________
   # Call wbpip:: function
   fun_to_vc <-
@@ -311,8 +326,7 @@ pipgd_pov_gap <- function(params     = NULL,
   #   Computations                                     ####
   pipgd_pov_gap_v <- Vectorize(pipgd_pov_gap_nv,
                                vectorize.args = "povline",
-                               SIMPLIFY = FALSE)
-
+                               SIMPLIFY       = FALSE)
 
   ld <- pipgd_pov_gap_v(welfare    = welfare,
                         weight     = weight,
@@ -410,12 +424,22 @@ pipgd_pov_severity_nv <- function(
         )
       }
 
+    #___________________________________________________________________________
     # Ensure `povline` exists
-    if (is.na(povline)) {
-      povline <- fquantile(x     = params$data$welfare,
-                           probs = params$data$weight,
-                           w     = weight) |>
-        unname()
+    if (!is.null(popshare)) {
+      povline_lq <- mean * wbpip::derive_lq(popshare,
+                                            params$gd_params$lq$reg_results$coef[["A"]],
+                                            params$gd_params$lq$reg_results$coef[["B"]],
+                                            params$gd_params$lq$reg_results$coef[["C"]])
+
+      povline_lb <- mean * wbpip::derive_lb(popshare,
+                                            params$gd_params$lb$reg_results$coef[["A"]],
+                                            params$gd_params$lb$reg_results$coef[["B"]],
+                                            params$gd_params$lb$reg_results$coef[["C"]])
+
+    } else {
+      povline_lb <- povline_lq <- povline
+
     }
 
     # __________________________________________________________________________
@@ -434,7 +458,7 @@ pipgd_pov_severity_nv <- function(
           u         = mean,
           headcount = params$pov_stats$headcount,
           pov_gap   = params$pov_stats$pov_gap,
-          povline   = povline,
+          povline   = povline_lb,
           A         = params$gd_params$lb$reg_results$coef[["A"]],
           B         = params$gd_params$lb$reg_results$coef[["B"]],
           C         = params$gd_params$lb$reg_results$coef[["C"]]
@@ -443,7 +467,7 @@ pipgd_pov_severity_nv <- function(
       pov_severity <-
         wbpip::gd_compute_pov_severity_lq(
           mean      = mean,
-          povline   = povline,
+          povline   = povline_lq,
           headcount = params$pov_stats$headcount,
           pov_gap   = params$pov_stats$pov_gap,
           A         = params$gd_params$lq$reg_results$coef[["A"]],
@@ -544,20 +568,12 @@ pipgd_pov_severity <- function(
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
 
-  #Compute the povline (or the vector of poverty lines) when popshare is supplied
-  if (!is.null(popshare)) {
-    if (!is.null(welfare)) {
-      povline <- fquantile(x     = welfare,
-                           probs = popshare,
-                           w     = weight) |>
-        unname()
-    } else {
-      povline <- fquantile(x     = params$data$welfare,
-                           probs = popshare,
-                           w     = params$data$weight) |>
-        unname()
-    }
-    popshare <- NULL
+  # __________________________________________________________________________
+  #   Select Lorenz ----------------------------------------------------------
+  if (is.null(lorenz)) {
+    lorenz <- params$selected_lorenz$for_pov
+  } else {
+    match.arg(lorenz, c("lq", "lb"))
   }
 
   # ____________________________________________________________________________
@@ -584,7 +600,7 @@ pipgd_pov_severity <- function(
   # Format ---------------------------------------------------------------------
   out <- return_format(
     ld       = list_povsev,
-    povline = povline,
+    povline  = povline,
     var      = "pov_severity",
     format   = format,
     complete = complete
@@ -656,16 +672,23 @@ pipgd_watts_nv <- function(
       )
     }
 
-    # Compute povline when popshare is supplied
-     if (is.na(povline)) {
-      welfare = params$data$welfare
-      weight  = params$data$weight
-      povline = fquantile(x       = welfare,
-                          probs   = popshare,
-                          w       = weight) |>
-        unname()
-    }
+  #___________________________________________________________________________
+  # Ensure `povline` exists
+  if (!is.null(popshare)) {
+    povline_lq <- mean * wbpip::derive_lq(popshare,
+                                          params$gd_params$lq$reg_results$coef[["A"]],
+                                          params$gd_params$lq$reg_results$coef[["B"]],
+                                          params$gd_params$lq$reg_results$coef[["C"]])
 
+    povline_lb <- mean * wbpip::derive_lb(popshare,
+                                          params$gd_params$lb$reg_results$coef[["A"]],
+                                          params$gd_params$lb$reg_results$coef[["B"]],
+                                          params$gd_params$lb$reg_results$coef[["C"]])
+
+  } else {
+    povline_lb <- povline_lq <- povline
+
+  }
 
   # __________________________________________________________________________
   #   Select Lorenz ----------------------------------------------------------
@@ -677,12 +700,11 @@ pipgd_watts_nv <- function(
 
   # __________________________________________________________________________
   #   Calculate Watts -----------------------------------------------------
-
   if (lorenz == "lb") {
     wr <-
       wbpip::gd_compute_watts_lb(
         mean      = mean,
-        povline   = povline,
+        povline   = povline_lb,
         headcount = params$pov_stats$headcount,
         A         = params$gd_params$lb$reg_results$coef[["A"]],
         B         = params$gd_params$lb$reg_results$coef[["B"]],
@@ -693,7 +715,7 @@ pipgd_watts_nv <- function(
     wr <-
       wbpip::gd_compute_watts_lq(
         mu        = mean,
-        povline   = povline,
+        povline   = povline_lq,
         headcount = params$pov_stats$headcount,
         A         = params$gd_params$lb$reg_results$coef[["A"]],
         B         = params$gd_params$lb$reg_results$coef[["B"]],
@@ -785,13 +807,6 @@ pipgd_watts <- function(
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
 
-   if (!is.null(popshare)) {
-    povline = fquantile(x     = welfare,
-                        probs = popshare,
-                        w     = weight) |>
-      unname()
-  }
-
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   pipgd_watts_v <- Vectorize(
@@ -805,7 +820,7 @@ pipgd_watts <- function(
     weight     = weight,
     mean       = mean,
     times_mean = times_mean,
-    popshare   = NULL,
+    popshare   = popshare,
     povline    = povline,
     lorenz     = lorenz,
     complete   = complete
