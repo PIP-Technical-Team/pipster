@@ -208,8 +208,8 @@ pipgd_select_lorenz <-
   #   ____________________________________________________________________________
   #   Computations                                                            ####
   if (!is.null(welfare)) {
-    params <- pipgd_validate_lorenz(welfare = welfare,
-                                    weight = weight,
+    params <- pipgd_validate_lorenz(welfare    = welfare,
+                                    weight     = weight,
                                     complete   = TRUE,
                                     mean       = mean,
                                     times_mean = times_mean,

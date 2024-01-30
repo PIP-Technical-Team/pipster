@@ -29,17 +29,17 @@ pipgd_pov_headcount_nv <-
   pl <- as.list(environment())
   check_pipgd_params(pl)
 
-
   #   ____________________________________________________
   #   Computations                              ####
   if (!is.null(welfare)) {
-    popshare = popshare
-    params <- pipgd_select_lorenz(welfare  = welfare,
-                                  weight   = weight,
-                                  complete = TRUE,
-                                  #mean     = mean,
-                                  popshare = popshare)
-                                  #,povline  = povline)
+    # if (is.null())
+    popshare <-  popshare
+    params   <- pipgd_select_lorenz(welfare    = welfare,
+                                    weight     = weight,
+                                    complete   = TRUE,
+                                    mean       = mean,
+                                    popshare   = popshare,#)
+                                    povline    = povline)
   } else {
     params <- pipgd_select_lorenz(welfare  =  params$data$welfare,
                                   weight   =  params$data$weight,
@@ -189,10 +189,10 @@ pipgd_pov_gap_nv <- function(params     = NULL,
 
   #   ____________________________________________________
   #   Computations                              ####
-  
+
   # Compute params when welfare is (is not) supplied
   if (!is.null(welfare)) {
-    
+
     params <- pipgd_pov_headcount_nv(welfare  = welfare,
                                      weight   = weight,
                                      complete = TRUE,
@@ -206,12 +206,12 @@ pipgd_pov_gap_nv <- function(params     = NULL,
                                      povline  = povline)
   }
 
-  # Compute povline when popshare is supplied 
+  # Compute povline when popshare is supplied
   if (is.na(povline)) {
     welfare = params$data$welfare
     weight = params$data$weight
-    povline = collapse::fquantile(x     = welfare, 
-                                  probs = popshare, 
+    povline = collapse::fquantile(x     = welfare,
+                                  probs = popshare,
                                   w     = weight) |>
                                   unname()
   }
@@ -313,11 +313,11 @@ pipgd_pov_gap <- function(params     = NULL,
   #   ____________________________________________________
   #   Computations                                     ####
 
-  # Compute the povline (or the vector of poverty lines) when popshare is supplied 
+  # Compute the povline (or the vector of poverty lines) when popshare is supplied
   if (!is.null(popshare)) {
     #popshare = popshare
-    povline = collapse::fquantile(x     = welfare, 
-                                  probs = popshare, 
+    povline = collapse::fquantile(x     = welfare,
+                                  probs = popshare,
                                   w     = weight) |>
                                   unname()
   }
@@ -329,7 +329,7 @@ pipgd_pov_gap <- function(params     = NULL,
   ld <- pipgd_pov_gap_v(welfare    = welfare,
                         weight     = weight,
                         params     = params,
-                        # set popshare as NULL to not trigger the check_gd_params error 
+                        # set popshare as NULL to not trigger the check_gd_params error
                         popshare   = NULL,
                         povline    = povline,
                         complete   = complete,
@@ -390,15 +390,16 @@ pipgd_pov_severity_nv <- function(
 
     # __________________________________________________________________________
     #   Computations -----------------------------------------------------------
-  
+
     if (!is.null(pov_gap)) {
-      if (!pov_gap == pipgd_pov_gap_nv(welfare = welfare, weight = weight)$pov_stats$pov_gap) {
+      if (!c("pov_gap", "lorenz") %in% pov_gap$pov_stats |> names) {
+        #!pov_gap == pipgd_pov_gap_nv(welfare = welfare, weight = weight)$pov_stats$pov_gap) {
         stop("argument `pov_gap` should be the output of `pipster:::pipgd_pov_gap_nv`, else leave `pov_gap = NULL`")
       } else {
         params <- pov_gap
       }
-    } 
-    
+    }
+
     if (!is.null(welfare)) {
         params <- pipgd_pov_gap_nv(
           welfare  = welfare,
@@ -407,8 +408,8 @@ pipgd_pov_severity_nv <- function(
           mean     = mean,
           popshare = popshare,
           povline  = povline
-        )} 
-      
+        )}
+
       else {
         params <- pipgd_pov_gap_nv(
           welfare  =  params$data$welfare,
@@ -419,12 +420,12 @@ pipgd_pov_severity_nv <- function(
           povline  = povline
         )
       }
-    
+
      if (is.na(povline)) {
       welfare = params$data$welfare
       weight = params$data$weight
-      povline = collapse::fquantile(x     = welfare, 
-                                  probs   = popshare, 
+      povline = collapse::fquantile(x     = welfare,
+                                  probs   = popshare,
                                   w       = weight) |>
                                   unname()
     }
@@ -554,10 +555,10 @@ pipgd_pov_severity <- function(
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
 
-  # Compute the povline (or the vector of poverty lines) when popshare is supplied 
+  # Compute the povline (or the vector of poverty lines) when popshare is supplied
   if (!is.null(popshare)) {
-    povline = collapse::fquantile(x     = welfare, 
-                                  probs = popshare, 
+    povline = collapse::fquantile(x     = welfare,
+                                  probs = popshare,
                                   w     = weight) |>
                                   unname()
   }
@@ -636,7 +637,7 @@ pipgd_watts_nv <- function(
   #   Computations -----------------------------------------------------------
 
     if (!is.null(welfare)) {
-  
+
       params <- pipgd_pov_headcount_nv(
         welfare  = welfare,
         weight   = weight,
@@ -658,13 +659,13 @@ pipgd_watts_nv <- function(
      if (is.na(povline)) {
       welfare = params$data$welfare
       weight = params$data$weight
-      povline = collapse::fquantile(x     = welfare, 
-                                  probs   = popshare, 
+      povline = collapse::fquantile(x     = welfare,
+                                  probs   = popshare,
                                   w       = weight) |>
                                   unname()
     }
 
-  
+
   # __________________________________________________________________________
   #   Select Lorenz ----------------------------------------------------------
   if (is.null(lorenz)) {
@@ -678,7 +679,7 @@ pipgd_watts_nv <- function(
 
   if (lorenz == "lb") {
     wr <-
-      wbpip:::gd_compute_watts_lb(
+      wbpip::gd_compute_watts_lb(
         mean      = mean,
         povline   = povline,
         headcount = params$pov_stats$headcount,
@@ -689,7 +690,7 @@ pipgd_watts_nv <- function(
       )
   } else if (lorenz == "lq") {
     wr <-
-      wbpip:::gd_compute_watts_lq(
+      wbpip::gd_compute_watts_lq(
         mu        = mean,
         povline   = povline,
         headcount = params$pov_stats$headcount,
@@ -784,8 +785,8 @@ pipgd_watts <- function(
   format <- match.arg(format)
 
    if (!is.null(popshare)) {
-    povline = collapse::fquantile(x     = welfare, 
-                                  probs = popshare, 
+    povline = collapse::fquantile(x     = welfare,
+                                  probs = popshare,
                                   w     = weight) |>
                                   unname()
   }
