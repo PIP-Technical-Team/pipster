@@ -16,7 +16,6 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(pipster)
-#library(DT)
 ```
 
 ## Overview
@@ -56,7 +55,92 @@ pip_gd |>
   print()
 ```
 
-## Case 1: Welfare Distribution
+## Case 1: Simple Welfare Analysis and Lorenz Curve
+### 1.1 Welfare share at a given population share
+One simple use case is calculating the welfare share of a specific share of the population, which can be achieved using `pipgd_welfare_share_at()`:
+```{r popshare}
+# Calculate the welfare share at a given population share
+selected_popshare <- 0.5
+welfare_share_50 <- pipgd_welfare_share_at(welfare = pip_gd$L,
+                                           weight = pip_gd$P,
+                                           popshare = selected_popshare,
+                                           complete = FALSE)
+```
+
+When `complete = FALSE`, the output is a list. The results can be accessed like so:
+```{r popshare-results}
+# Format the string with the given values
+formatted_message <- sprintf("%.0f%% of the population owns %.0f%% of welfare.",
+                             selected_popshare * 100,
+                             welfare_share_50$dist_stats$welfare_share_at[[1]] * 100)
+
+print(formatted_message)
+```
+### 1.2 Quantile share vs cumulative share
+`pipster` has a selection of functions to calculate welfare shares. When `n` is declared, `pipgd_quantile_welfare_share()` will calculate the share of welfare owned by a specific share of the population, while `pipgd_welfare_share_at()` will return the cumulative share:
+
+```{r quantile-vs-cumulative}
+quantile_welfare_share <- pipgd_quantile_welfare_share(welfare = pip_gd$L,
+                                                       weight = pip_gd$P,
+                                                       n = 5,
+                                                       complete = FALSE)
+quantile_welfare_share_at <- pipgd_welfare_share_at(welfare = pip_gd$L,
+                                                    weight = pip_gd$P,
+                                                    n = 5,
+                                                    complete = FALSE)
+
+# Combine into a dataframe for practicality
+df_combined <- data.frame(
+  popshare = quantile_welfare_share$dist_stats$popshare,
+  quantile_share = quantile_welfare_share$dist_stats$quantile_welfare_share,
+  cumulative_share = quantile_welfare_share_at$dist_stats$welfare_share_at
+)
+
+# View the combined dataframe
+print(df_combined)
+
+```
+### 1.3 Estimate and Plot the Lorenz Curve
+`pister` can also be used to estimate a Lorenz curve for a dataset of grouped data. One hypothetical workflow:
+
+  1. First, generate the parameters using `pipgd_params()`
+  2. Validate the parameters using `pipgd_validate_lorenz()`
+  3. Generate the Lorenz curve using the validated parameters with `pipgd_lorenz_curve()`
+
+```{r lorenz-validate}
+# Validate Lorenz curve.
+parameters <- pipgd_params(welfare = pip_gd$L,
+                           weight = pip_gd$P)
+validated_lorenz <- pipgd_validate_lorenz(params = parameters)
+
+# Select the best Lorenz curve and check which method has been used.
+selected_lorenz <- pipgd_select_lorenz(params = validated_lorenz)
+lorenz_used_for_dist <- selected_lorenz$selected_lorenz$for_dist
+lorenz_used_for_pov <- selected_lorenz$selected_lorenz$for_pov
+
+formatted_message <- sprintf("%s used for distribution statistics and %s used for poverty metrics.",
+                             lorenz_used_for_dist,
+                             lorenz_used_for_pov)
+
+print(formatted_message)
+```
+
+
+```{r lorenz-plot}
+# Plot the Lorenz Curve
+lorenz_curve_data <- pipgd_lorenz_curve(params = validated_lorenz)
+plot(lorenz_curve_data$lorenz_curve$points,
+     lorenz_curve_data$lorenz_curve$output,
+     type = 'l', col = 'blue',
+     xlab = 'Cumulative Share of Population',
+     ylab = 'Cumulative Share of Welfare',
+     main = 'Lorenz Curve',
+     xlim = c(0, 1), ylim = c(0, 1),
+     xaxs = "i", yaxs = "i")
+
+# Add the line of equality
+abline(0, 1, col = 'red', lty = 2)
+```
 
 
 ## Case 2:
