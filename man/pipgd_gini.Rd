@@ -26,7 +26,7 @@ pipgd_gini(
 \item{mean}{numeric scalar of distribution mean. Default is 1}
 
 \item{times_mean}{numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1}
+relative poverty line. Default is 1}
 
 \item{popshare}{numeric: range (0,1). Share of population. Provide share of
 population instead of poverty line}
@@ -40,14 +40,39 @@ previously used \code{get_gd} functions. Default is \code{FALSE}}
 Lorenz Quadratic or "lb" for Lorenz Beta}
 }
 \value{
-list: contains numeric MLD and, if \code{complete=TRUE},
-also returns all params.
+Returns a nested list containing distribution statistics:
+\verb{$dist_stats$gini} is a numeric vector containing the gini coefficient.
+\verb{$dist_stats$lorenz} is a numeric vector showing the lorenz curve used.
+If \code{complete = TRUE}, it returns a \code{pipgd_params} object with additional
+details and intermediate calculations.
 }
 \description{
 Gini is computed using either the beta or quadratic Lorenz
 functions.
 }
 \examples{
+# Example 1: Basic Calculation of Gini Coefficient
 pipgd_gini(welfare = pip_gd$L,
-           weight  = pip_gd$P)
+           weight = pip_gd$P)
+
+# Example 2: Gini Coefficient with a Specific Lorenz Curve (e.g. Lorenz beta)
+pipgd_gini(welfare = pip_gd$L,
+           weight = pip_gd$P,
+           lorenz = "lb")
+
+# Example 3: Detailed Output of Gini Calculation
+pipgd_gini(welfare = pip_gd$L,
+           weight = pip_gd$P,
+           complete = TRUE)
+
+# Example 4: Gini Coefficient with Adjusted Mean
+pipgd_gini(welfare = pip_gd$L,
+           weight = pip_gd$P,
+           times_mean = 1.5)
+
+# Example 5: Focusing on a Subset Below Poverty Line at 50
+pipgd_gini(welfare = pip_gd$L,
+           weight = pip_gd$P,
+           povline = 50)
+
 }

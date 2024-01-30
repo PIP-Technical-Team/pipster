@@ -25,7 +25,7 @@ pipgd_validate_lorenz(
 \item{mean}{numeric: welfare mean of distribution.}
 
 \item{times_mean}{numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1}
+relative poverty line. Default is 1}
 
 \item{popshare}{numeric: range (0,1). Share of population. Provide share of
 population instead of poverty line}
@@ -36,21 +36,31 @@ population instead of poverty line}
 previously used \code{get_gd} functions. Default is \code{FALSE}}
 }
 \value{
-list of distributional validity of each Lorenz model
+Returns a nested list of distributional validity of each Lorenz model
+accessible at \verb{$gd_params$lq$validity$is_normal} for the Lorenz beta and
+\verb{$gd_params$lq$validity$is_normal} for the Lorenz quadratic.
 }
 \description{
 Check validity of Lorenz Curve
 }
 \examples{
-# Using Lorenz parameters from pipgd_validate_lorenz
- res <-
-pipgd_params(welfare = pip_gd$L,
-             weight = pip_gd$P) |>
-  pipgd_validate_lorenz() |>
-  pipgd_select_lorenz()
+# Example 1: Validate Lorenz Curves using pre-calculated parameters.
+parameters <- pipgd_params(welfare = pip_gd$L, weight = pip_gd$P)
+pipgd_validate_lorenz(params = parameters)
 
-# Using welfare and population vecotrs
-res2 <- pipgd_select_lorenz(welfare = pip_gd$L,
-                            weight = pip_gd$P)
-identical(res, res2)
+# Example 2: Directly using welfare and weight vectors.
+pipgd_validate_lorenz(welfare = pip_gd$L,
+                      weight = pip_gd$P)
+
+# Example 3: Specifying mean and poverty line
+pipgd_validate_lorenz(welfare = pip_gd$L,
+                      weight = pip_gd$P,
+                      mean = mean(pip_gd$X),
+                      povline = 50)
+
+# Example 4: Using a custom population share
+pipgd_validate_lorenz(welfare = pip_gd$L,
+                      weight = pip_gd$P,
+                      popshare = 0.5)
+
 }
