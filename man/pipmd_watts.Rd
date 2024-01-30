@@ -21,7 +21,7 @@ is used to give equal weight to each observation.}
 
 \item{povline}{numeric: Poverty line in international dollars, same units as welfare.}
 
-\item{mean}{numeric scalar of distribution mean. Default is}
+\item{mean}{numeric scalar of distribution mean. Default is 1.}
 
 \item{times_mean}{numeric factor that multiplies the mean to create a relative poverty line. Default is 1}
 
@@ -29,15 +29,30 @@ is used to give equal weight to each observation.}
 "dt", "list", or "atomic"}
 }
 \value{
-list: contains numeric Watts index. See \code{format}
+A \code{data.table} and \code{data.frame} object of length equal to the povline
+vector with variables \code{povline} and \code{pov_severity}.
+See \code{format} to change the output format.
 }
 \description{
 Calculate Watts index from microdata
 }
 \examples{
-pipmd_pov_watts(
-welfare = pipmd_s$welfare,
-weight  = pipmd_s$weight,
-format  = "list"
-)
+# Example 1: Basic poverty headcount calculation
+pipmd_watts(welfare = pip_md_s$welfare,
+            weight  = pip_md_s$weight,
+            povline = 1.3,
+            format  = "list")
+
+# Example 2: Returning data.table format
+pipmd_watts(welfare = pip_md_s$welfare,
+            weight  = pip_md_s$weight,
+            povline = c(1.3, 1.2),
+            format  = "dt")
+
+# Example 3: Returning atomic format
+pipmd_watts(welfare = pip_md_s$welfare,
+            weight  = pip_md_s$weight,
+            povline = 1.3,
+            format  = "atomic")
+
 }

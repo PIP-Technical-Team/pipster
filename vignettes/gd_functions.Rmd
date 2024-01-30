@@ -1,0 +1,43 @@
+---
+title: "Grouped Data Functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{gd_functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(pipster)
+```
+
+## Overview
+
+This vignette shows an overview of the `pipster` package functions for grouped data. Grouped data are consumption expenditure or income organized in intervals or bins, such as deciles or percentiles. In order to estimate poverty and inequality measures from grouped data, one has to derive a continuous Lorenz curve and use it together with mean welfare to build a full distribution.
+
+`pipster` provides a series of functions to estimate poverty and inequality measures, based on the methodology of [Datt (1998)](http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf):
+
+-   `pipgd_pov_headcount` (FGT0)
+
+-   `pipgd_pov_gap` (FGT1)
+
+-   `pipgd_pov_severity` (FGT2)
+
+It also provides a series of functions to calculate distributional measures and to select and validate the best Lorenz curve for subsequent estimation:
+
+-   `pipgd_welfare_share_at()`
+
+-   `pipgd_quantile_welfare_share()`
+
+-   `pipgd_quantile()`
+
+-   `pipgd_validate_lorenz()`
+
+-   `pipgd_select_lorenz()`

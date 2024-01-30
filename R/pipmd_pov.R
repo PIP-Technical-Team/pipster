@@ -1,5 +1,5 @@
 # This file contains all the functions related to absolute poverty measures
-#  on microdata (md)
+# on microdata (md).
 
 
 
@@ -12,7 +12,7 @@
 #' @param weight 	numeric: A vector of population weights. If NULL, a vector of 1s
 #' is used to give equal weight to each observation.
 #' @param povline numeric: Poverty line in international dollars, same units as welfare.
-#' @param mean numeric scalar of distribution mean. Default is
+#' @param mean numeric scalar of distribution mean. Default is 1.
 #' @param times_mean numeric factor that multiplies the mean to create a relative poverty line. Default is 1
 #'
 #' @return numeric: Poverty headcount ratio
@@ -44,11 +44,13 @@ pipmd_pov_headcount_nv <- function(
       text = "No weight vector specified, each observation assigned equal weight"
     )
   }
-  if (is.null(povline) && is.numeric(povline)) {
+  if (is.null(povline) || !is.numeric(povline)) {
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } else if (povline < min(welfare) && povline > max(welfare)) {
+  } 
+  
+  if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
     )
@@ -77,15 +79,31 @@ pipmd_pov_headcount_nv <- function(
 #' @param format atomic character vector: specifies the format of output, either
 #' "dt", "list", or "atomic"
 #'
-#' @return list: contains numeric poverty headcount. See `format`
+#' @return A `data.table` and `data.frame` object of length equal to the povline
+#' vector with variables `povline` and `pov_headcount`.
+#' See `format` to change the output format.
+#'
 #' @export
 #'
 #' @examples
-#' pipmd_pov_headcount(
-#' welfare = pipmd_s$welfare,
-#' weight  = pipmd_s$weight,
-#' format  = "list"
-#' )
+#' # Example 1: Basic poverty headcount calculation
+#' pipmd_pov_headcount(welfare = pip_md_s$welfare,
+#'                     weight  = pip_md_s$weight,
+#'                     povline = 1.3,
+#'                     format  = "list")
+#'
+#' # Example 2: Returning data.table format, multiple povline.
+#' pipmd_pov_headcount(welfare = pip_md_s$welfare,
+#'                     weight  = pip_md_s$weight,
+#'                     povline = c(1.3, 1.2),
+#'                     format  = "dt")
+#'
+#' # Example 3: Returning atomic format
+#' pipmd_pov_headcount(welfare = pip_md_s$welfare,
+#'                     weight  = pip_md_s$weight,
+#'                     povline = 1.3,
+#'                     format  = "atomic")
+#'
 pipmd_pov_headcount <- function(
     welfare    = NULL,
     weight     = NULL,
@@ -124,7 +142,6 @@ pipmd_pov_headcount <- function(
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------
   out
-
 
 }
 
@@ -176,16 +193,17 @@ pipmd_pov_gap_nv <- function(
       text = "No weight vector specified, each observation assigned equal weight"
     )
   }
-  if (is.null(povline) && is.numeric(povline)) {
+  if (is.null(povline) || !is.numeric(povline)) {
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } else if (povline < min(welfare) && povline > max(welfare)) {
+  } 
+  
+  if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
     )
   }
-
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
@@ -210,15 +228,31 @@ pipmd_pov_gap_nv <- function(
 #' @param format atomic character vector: specifies the format of output, either
 #' "dt", "list", or "atomic"
 #'
-#' @return list: contains numeric poverty gap See `format`
+#' @return A `data.table` and `data.frame` object of length equal to the povline
+#' vector with variables `povline` and `pov_gap`.
+#' See `format` to change the output format.
+#'
 #' @export
 #'
 #' @examples
-#' pipmd_pov_gap(
-#' welfare = pipmd_s$welfare,
-#' weight  = pipmd_s$weight,
-#' format  = "list"
-#' )
+#' # Example 1: Basic poverty gap calculation
+#' pipmd_pov_gap(welfare = pipmd_s$welfare,
+#'               weight  = pipmd_s$weight,
+#'               povline = 1.3,
+#'               format  = "list")
+#'
+#' # Example 2: Returning data.table format, multiple povline.
+#' pipmd_pov_gap(welfare = pipmd_s$welfare,
+#'               weight  = pipmd_s$weight,
+#'               povline = c(1.3, 1.2),
+#'               format  = "dt")
+#'
+#' # Example 3: Returning atomic format
+#' pipmd_pov_gap(welfare = pipmd_s$welfare,
+#'               weight  = pipmd_s$weight,
+#'               povline = 1.3,
+#'               format  = "atomic")
+#'
 pipmd_pov_gap <- function(
     welfare    = NULL,
     weight     = NULL,
@@ -306,11 +340,13 @@ pipmd_pov_severity_nv <- function(
       text = "No weight vector specified, each observation assigned equal weight"
     )
   }
-  if (is.null(povline) && is.numeric(povline)) {
+  if (is.null(povline) || !is.numeric(povline)) {
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } else if (povline < min(welfare) && povline > max(welfare)) {
+  } 
+  
+  if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
     )
@@ -339,15 +375,31 @@ pipmd_pov_severity_nv <- function(
 #' @param format atomic character vector: specifies the format of output, either
 #' "dt", "list", or "atomic"
 #'
-#' @return list: contains numeric poverty severity. See `format`
+#' @return A `data.table` and `data.frame` object of length equal to the povline
+#' vector with variables `povline` and `pov_severity`.
+#' See `format` to change the output format.
+#'
 #' @export
 #'
 #' @examples
-#' pipmd_pov_severity(
-#' welfare = pipmd_s$welfare,
-#' weight  = pipmd_s$weight,
-#' format  = "list"
-#' )
+#' # Example 1: Basic poverty headcount calculation
+#' pipmd_pov_severity(welfare = pip_md_s$welfare,
+#'                    weight  = pip_md_s$weight,
+#'                    povline = 1.3,
+#'                    format  = "list")
+#'
+#' # Example 2: Returning data.table format and multiple povline
+#' pipmd_pov_severity(welfare = pip_md_s$welfare,
+#'                    weight  = pip_md_s$weight,
+#'                    povline = c(1.3, 1.2),
+#'                    format  = "dt")
+#'
+#' # Example 3: Returning atomic format
+#' pipmd_pov_severity(welfare = pip_md_s$welfare,
+#'                    weight  = pip_md_s$weight,
+#'                    povline = 1.3,
+#'                    format  = "atomic")
+#'
 pipmd_pov_severity <- function(
     welfare    = NULL,
     weight     = NULL,
@@ -432,11 +484,13 @@ pipmd_watts_nv <- function(
       text = "No weight vector specified, each observation assigned equal weight"
     )
   }
-  if (is.null(povline) && is.numeric(povline)) {
+  if (is.null(povline) || !is.numeric(povline)) {
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } else if (povline < min(welfare) && povline > max(welfare)) {
+  } 
+  
+  if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
     )
@@ -466,15 +520,31 @@ pipmd_watts_nv <- function(
 #' @param format atomic character vector: specifies the format of output, either
 #' "dt", "list", or "atomic"
 #'
-#' @return list: contains numeric Watts index. See `format`
+#' @return A `data.table` and `data.frame` object of length equal to the povline
+#' vector with variables `povline` and `pov_severity`.
+#' See `format` to change the output format.
+#'
 #' @export
 #'
 #' @examples
-#' pipmd_pov_watts(
-#' welfare = pipmd_s$welfare,
-#' weight  = pipmd_s$weight,
-#' format  = "list"
-#' )
+#' # Example 1: Basic poverty headcount calculation
+#' pipmd_watts(welfare = pip_md_s$welfare,
+#'             weight  = pip_md_s$weight,
+#'             povline = 1.3,
+#'             format  = "list")
+#'
+#' # Example 2: Returning data.table format
+#' pipmd_watts(welfare = pip_md_s$welfare,
+#'             weight  = pip_md_s$weight,
+#'             povline = c(1.3, 1.2),
+#'             format  = "dt")
+#'
+#' # Example 3: Returning atomic format
+#' pipmd_watts(welfare = pip_md_s$welfare,
+#'             weight  = pip_md_s$weight,
+#'             povline = 1.3,
+#'             format  = "atomic")
+#'
 pipmd_watts <- function(
     welfare    = NULL,
     weight     = NULL,

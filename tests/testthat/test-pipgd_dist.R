@@ -3,6 +3,7 @@
 # Test pipgd_welfare_share_at function ####
 
 welfare <- pip_gd$L
+
 weight  <- pip_gd$P
 params  <- pipgd_select_lorenz(welfare  = welfare,
                                weight   = weight,
@@ -75,6 +76,7 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
 
     # Length of output
     n = 5
+
     res_n5 <- pipgd_welfare_share_at(welfare = welfare,
                                      weight  = weight,
                                      n       = n)
@@ -95,8 +97,10 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
     # Names in output list
     names(res1) |>
         expect_equal(names(res2))
+  
     names(res1) |>
         expect_equal("dist_stats")
+  
     names(res1$dist_stats) |>
         expect_equal(c("popshare",
                        "welfare_share_at"))
@@ -107,13 +111,13 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
                        "data",
                        "selected_lorenz",
                        "dist_stats"))
-
+  
     names(res_complete$gd_params) |>
         expect_equal(c("lq", "lb"))
-
+  
     names(res_complete$gd_params$lq) |>
         expect_equal(names(res_complete$gd_params$lb))
-
+  
     names(res_complete$gd_params$lq) |>
         expect_equal(c("reg_results",
                        "key_values",
@@ -145,6 +149,7 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
         expect_equal(NULL)
 
     names(res_complete$data) |>
+
         expect_equal(c("welfare",
                        "weight"))
 
@@ -163,6 +168,7 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
 # Test pipgd_quantile_welfare_share function ####
 # Inputs -------------------------------------------------------------------------
 test_that("pipgd_quantile_welfare_share inputs works as expected", {
+
 
     res1 <- pipgd_quantile_welfare_share(welfare = welfare,
                                          weight  = weight)
@@ -215,6 +221,7 @@ test_that("pipgd_quantile_welfare_share inputs works as expected", {
 test_that("pipgd_quantile_welfare_share outputs work as expected", {
 
     # Check same results when params or (welfare and weights) are provided
+
     res1 <- pipgd_quantile_welfare_share(welfare          = welfare,
                                          weight           = weight)
     res2 <- pipgd_quantile_welfare_share(params           = params)
@@ -225,6 +232,7 @@ test_that("pipgd_quantile_welfare_share outputs work as expected", {
     expect_equal(res1, res2)
 
     # Check welfare shares values in output list for an example value of n
+
     n                                                     = 3
     params_from_select_l <- pipgd_select_lorenz(welfare   = welfare,
                                                 weight    = weight,
@@ -312,7 +320,6 @@ test_that("pipgd_quantile_welfare_share outputs work as expected", {
 # Test pipgd_quantile function ####
 # Inputs -------------------------------------------------------------------------
 test_that("pipgd_quantile inputs works as expected", {
-
     res1 <- pipgd_quantile(welfare = welfare,
                            weight  = weight)
     res2 <- pipgd_quantile(params  = params)
@@ -581,7 +588,6 @@ test_that("pipgd_gini works as expected", {
 # Test pipgd_mld ####
 # Inputs -----------------------------------------------------------------
 test_that("pipgd_mld inputs works as expected", {
-
     pipgd_mld(welfare     = welfare,
               weight      = NULL) |>
         expect_error()
@@ -703,7 +709,6 @@ test_that("pipgd_mld outputs work as expected", {
 })
 
 test_that("pipgd_mld calculates mld as expected", {
-
     mld_wbpip_lb <- 0.14055954382846
 
     mld_wbpip_lq <- 0.137680871901806
