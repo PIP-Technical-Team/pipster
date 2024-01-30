@@ -2,11 +2,12 @@
 % Please edit documentation in R/pipster.R
 \docType{package}
 \name{pipster}
+\alias{-package}
 \alias{pipster}
 \title{pipster: Poverty and Inequality methodology of WB methodology}
 \description{
-A higher-level package to estimate Socioeconomic indicators on poverty and
-inequality using the methodology by the WorlD Bank. This packages is mainly a
+A higher-level package to estimate socioeconomic indicators on poverty and
+inequality using the methodology by the World Bank. This packages is mainly a
 wrapper of the lower-level package \code{wbpip}
 }
 \section{pipster functions}{

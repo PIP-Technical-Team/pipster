@@ -2,7 +2,7 @@
 % Please edit documentation in R/pipgd_dist.R
 \name{pipgd_quantile}
 \alias{pipgd_quantile}
-\title{Get quantile at specified shared of population}
+\title{Get quantile at specified shared of population - grouped data}
 \usage{
 pipgd_quantile(
   params = NULL,
@@ -26,7 +26,7 @@ pipgd_quantile(
 
 \item{popshare}{numeric: vector of share of population. Default is \code{seq(from = 1/n, to = 1, by = 1/n)}}
 
-\item{mean}{numeric: welfare mean of distribution.}
+\item{mean}{numeric scalar of distribution mean. Default is 1}
 
 \item{complete}{logical: If TRUE, returns a list a cumulative returns from
 previously used \code{get_gd} functions. Default is \code{FALSE}}
@@ -39,19 +39,24 @@ vector of quantiles
 }
 \description{
 \code{pipgd_quantile} returns the quantile (i.e., monetary value) that corresponds
-to shared of the population that lives below that threshold.
+to share of the population that lives below that threshold.
 }
 \details{
 This is basically the inverse of estimating the poverty rate (headcount or
 population share) below the poverty line. In this case, you provide the
-headcount and \code{pipgs_quantile} returns the "poverty line".
+headcount and \code{pipgd_quantile} returns the "poverty line".
 
 The quantiles are calculated as function of the mean of the distribution
 times an \code{x} factor. Basically, the quantile is \code{x} times the mean. By
 default, the mean is equal to 1, which implies that, if no mean value if
 provided, the return value is equal to \code{x}.
 
-\strong{NOTE:} the outcome from \code{pipgd_quantile} is not necessarily the inverse of \link{pipgd_pov_headcount}. The reason for this ia that, \link{pipgd_pov_headcount} selects the Lorenz parametrization that fits better that the specified point of the distribution (e.i., the poverty lines). \link{pipgd_quantile}, in contrast, use the same Lorenz parametrization for any point. The lorenz used is the one that fits best for all distributional measures.
+\strong{NOTE:} the outcome from \code{pipgd_quantile} is not necessarily the inverse
+of \link{pipgd_pov_headcount}. The reason for this is that, \link{pipgd_pov_headcount}
+selects the Lorenz parametrization that fits better at that specified point
+of the distribution (i.e., the poverty lines). \link{pipgd_quantile}, in contrast,
+use the same Lorenz parametrization for any point. The lorenz used is the one
+that fits best for all distributional measures.
 }
 \examples{
 pipgd_quantile(welfare = pip_gd$L,

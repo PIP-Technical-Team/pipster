@@ -16,7 +16,7 @@ pipgd_validate_lorenz(
 )
 }
 \arguments{
-\item{params}{list of parameters from \code{pipgd_validate_lorenz()}}
+\item{params}{list of parameters from \code{pipgd_params()}}
 
 \item{welfare}{numeric vector of cumulative share of welfare (income/consumption)}
 
