@@ -82,7 +82,7 @@
 
 <dt>times_mean</dt>
 <dd><p>numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1</p></dd>
+relative poverty line. Default is 1</p></dd>
 
 
 <dt>popshare</dt>
@@ -114,37 +114,40 @@ previously used <code>get_gd</code> functions. Default is <code>FALSE</code></p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>list of poverty gaps. See <code>format</code> parameter</p>
+<p>Returns a <code>data.table</code> and <code>data.frame</code> object with three variables:
+<code>povline</code>, <code>pov_gap</code>, and <code>lorenz</code>.  Check <code>format</code> argument to change
+the output format.
+If <code>complete = TRUE</code>, it returns a <code>pipgd_params</code> object with additional
+details and intermediate calculations.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">pipgd_pov_gap</span><span class="op">(</span></span></span>
-<span class="r-in"><span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
-<span class="r-in"><span>weight  <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
-<span class="r-in"><span>mean <span class="op">=</span> <span class="fl">109.90</span>,</span></span>
-<span class="r-in"><span>povline <span class="op">=</span> <span class="fl">89</span>,</span></span>
-<span class="r-in"><span>complete <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example 1: Basic usage with specified mean and poverty line</span></span></span>
+<span class="r-in"><span><span class="fu">pipgd_pov_gap</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
+<span class="r-in"><span>              weight  <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
+<span class="r-in"><span>              mean    <span class="op">=</span> <span class="fl">109.90</span>,</span></span>
+<span class="r-in"><span>              povline <span class="op">=</span> <span class="fl">89</span>,</span></span>
+<span class="r-in"><span>              complete <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    povline   pov_gap lorenz</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:      89 0.1273534     lb</span>
-<span class="r-in"><span><span class="co"># Return data.table</span></span></span>
-<span class="r-in"><span><span class="fu">pipgd_pov_gap</span><span class="op">(</span></span></span>
-<span class="r-in"><span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
-<span class="r-in"><span>weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
-<span class="r-in"><span>povline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>complete <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example 2: Multiple poverty lines, returning data.table</span></span></span>
+<span class="r-in"><span><span class="fu">pipgd_pov_gap</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
+<span class="r-in"><span>              weight  <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
+<span class="r-in"><span>              povline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              complete <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    povline    pov_gap lorenz</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:     0.5 0.02500299     lb</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:     1.0 0.20523323     lb</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3:     2.0 0.52208004     lb</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4:     3.0 0.67289468     lb</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Return list</span></span></span>
-<span class="r-in"><span><span class="fu">pipgd_pov_gap</span><span class="op">(</span></span></span>
-<span class="r-in"><span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
-<span class="r-in"><span>weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
-<span class="r-in"><span>povline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>format <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Example 3: Multiple poverty lines, returning list format</span></span></span>
+<span class="r-in"><span><span class="fu">pipgd_pov_gap</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
+<span class="r-in"><span>              weight  <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
+<span class="r-in"><span>              povline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              format  <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $pl0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $pl0.5$pov_stats</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $pl0.5$pov_stats$pov_gap</span>
@@ -186,13 +189,12 @@ previously used <code>get_gd</code> functions. Default is <code>FALSE</code></p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Return list complete</span></span></span>
-<span class="r-in"><span><span class="fu">pipgd_pov_gap</span><span class="op">(</span></span></span>
-<span class="r-in"><span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
-<span class="r-in"><span>weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
-<span class="r-in"><span>povline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>format <span class="op">=</span> <span class="st">"list"</span>,</span></span>
-<span class="r-in"><span>complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Example 4: Multiple poverty lines, returning detailed list format</span></span></span>
+<span class="r-in"><span><span class="fu">pipgd_pov_gap</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
+<span class="r-in"><span>              weight  <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
+<span class="r-in"><span>              povline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              format  <span class="op">=</span> <span class="st">"list"</span>,</span></span>
+<span class="r-in"><span>              complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $pl0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq</span>
@@ -770,15 +772,15 @@ previously used <code>get_gd</code> functions. Default is <code>FALSE</code></p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "pipgd_params"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Return data.table</span></span></span>
-<span class="r-in"><span><span class="fu">pipgd_pov_gap</span><span class="op">(</span></span></span>
-<span class="r-in"><span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
-<span class="r-in"><span>weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
-<span class="r-in"><span>povline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>format <span class="op">=</span> <span class="st">"atomic"</span>,</span></span>
-<span class="r-in"><span>complete <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Example 5: Multiple poverty lines, returning atomic format</span></span></span>
+<span class="r-in"><span><span class="fu">pipgd_pov_gap</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
+<span class="r-in"><span>              weight  <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
+<span class="r-in"><span>              povline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              format  <span class="op">=</span> <span class="st">"atomic"</span>,</span></span>
+<span class="r-in"><span>              complete <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         lb         lb         lb         lb </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.02500299 0.20523323 0.52208004 0.67289468 </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

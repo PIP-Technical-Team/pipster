@@ -80,7 +80,7 @@
 
 <dt>times_mean</dt>
 <dd><p>numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1</p></dd>
+relative poverty line. Default is 1</p></dd>
 
 
 <dt>popshare</dt>
@@ -101,25 +101,152 @@ previously used <code>get_gd</code> functions. Default is <code>FALSE</code></p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>list of distributional validity of each Lorenz model</p>
+<p>Returns a nested list of distributional validity of each Lorenz model
+accessible at <code>$gd_params$lq$validity$is_normal</code> for the Lorenz beta and
+<code>$gd_params$lq$validity$is_normal</code> for the Lorenz quadratic.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Using Lorenz parameters from pipgd_validate_lorenz</span></span></span>
-<span class="r-in"><span> <span class="va">res</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="pipgd_params.html">pipgd_params</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
-<span class="r-in"><span>             weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">pipgd_validate_lorenz</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="pipgd_select_lorenz.html">pipgd_select_lorenz</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in check_pipgd_params(pl):</span> argument <span style="color: #00BB00;">params</span> must be of class `pipgd_params`.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> It should be created using `pipgd_params()`</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example 1: Validate Lorenz Curves using pre-calculated parameters.</span></span></span>
+<span class="r-in"><span><span class="va">parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="pipgd_params.html">pipgd_params</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>, weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">pipgd_validate_lorenz</span><span class="op">(</span>params <span class="op">=</span> <span class="va">parameters</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity$is_normal</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity$is_valid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity$headcount</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6284604</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity$is_valid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity$is_normal</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"label")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Normality with a mean of 1 and a poverty line of 1;1 times the mean."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity$headcount</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6161877</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Using welfare and population vecotrs</span></span></span>
-<span class="r-in"><span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu"><a href="pipgd_select_lorenz.html">pipgd_select_lorenz</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
-<span class="r-in"><span>                            weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">res2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'res' not found</span>
+<span class="r-in"><span><span class="co"># Example 2: Directly using welfare and weight vectors.</span></span></span>
+<span class="r-in"><span><span class="fu">pipgd_validate_lorenz</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
+<span class="r-in"><span>                      weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity$is_normal</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity$is_valid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity$headcount</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6284604</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity$is_valid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity$is_normal</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"label")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Normality with a mean of 1 and a poverty line of 1;1 times the mean."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity$headcount</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6161877</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example 3: Specifying mean and poverty line</span></span></span>
+<span class="r-in"><span><span class="fu">pipgd_validate_lorenz</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
+<span class="r-in"><span>                      weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
+<span class="r-in"><span>                      mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">pip_gd</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                      povline <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity$is_normal</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity$is_valid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity$headcount</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.04732287</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity$is_valid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity$is_normal</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"label")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Normality with a mean of 128.481538461538 and a poverty line of 50;0.389160968950942 times the mean."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity$headcount</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.04550107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example 4: Using a custom population share</span></span></span>
+<span class="r-in"><span><span class="fu">pipgd_validate_lorenz</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
+<span class="r-in"><span>                      weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
+<span class="r-in"><span>                      popshare <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity$is_normal</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity$is_valid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lq$validity$headcount</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity$is_valid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity$is_normal</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"label")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Normality with a mean of 1 and a poverty line of 0.861761080993303;0.861761080993303 times the mean."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gd_params$lb$validity$headcount</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

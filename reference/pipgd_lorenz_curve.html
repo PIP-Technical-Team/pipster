@@ -91,7 +91,7 @@ selected.</p>
 
 <dt>times_mean</dt>
 <dd><p>numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1</p></dd>
+relative poverty line. Default is 1</p></dd>
 
 
 <dt>popshare</dt>
@@ -122,16 +122,108 @@ lorenz curve</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>list: contains i) numeric lorenz curve, ii) corresponding points on
-x-axis, iii) whether lq or lb parameterization, and
-iv) if <code>complete=TRUE</code>, also returns all params.</p>
-    </div>
+<p>Returns a list which contains:</p><ul><li><p>numeric lorenz curve,</p></li>
+<li><p>corresponding points on x-axis,</p></li>
+<li><p>whether lq or lb parameterization, and</p></li>
+<li><p>if <code>complete=TRUE</code>, also returns all params.</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">pipgd_lorenz_curve</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
-<span class="r-in"><span>                   weight  <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in FUN(X[[i]], ...):</span> object 'foo' not found</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example 1: Generating a Lorenz Curve with default settings</span></span></span>
+<span class="r-in"><span><span class="fu">pipgd_lorenz_curve</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
+<span class="r-in"><span>                   weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $lorenz_curve</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $lorenz_curve$output</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 0.000000000 0.003286780 0.006735991 0.010341921 0.014099338 0.018003439</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] 0.022049809 0.026234377 0.030553393 0.035003389 0.039581162 0.044283744</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] 0.049108392 0.054052559 0.059113890 0.064290199 0.069579464 0.074979810</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 0.080489502 0.086106939 0.091830640 0.097659242 0.103591492 0.109626241</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 0.115762440 0.121999134 0.128335458 0.134770637 0.141303978 0.147934869</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] 0.154662779 0.161487251 0.168407907 0.175424439 0.182536613 0.189744269</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 0.197047313 0.204445726 0.211939559 0.219528932 0.227214038 0.234995141</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 0.242872579 0.250846764 0.258918183 0.267087401 0.275355065 0.283721901</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 0.292188723 0.300756433 0.309426025 0.318198590 0.327075321 0.336057517</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] 0.345146589 0.354344068 0.363651612 0.373071013 0.382604208 0.392253285</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] 0.402020503 0.411908294 0.421919287 0.432056318 0.442322452 0.452721002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] 0.463255550 0.473929981 0.484748506 0.495715698 0.506836539 0.518116455</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 0.529561380 0.541177812 0.552972888 0.564954470 0.577131250 0.589512865</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] 0.602110052 0.614934816 0.628000656 0.641322826 0.654918667 0.668808034</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 0.683013823 0.697562671 0.712485868 0.727820580 0.743611525 0.759913326</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 0.776793891 0.794339470 0.812662487 0.831914312 0.852307416 0.874157041</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 0.897968756 0.924654900 0.956235231 1.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $lorenz_curve$points</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 0.00000000 0.01010101 0.02020202 0.03030303 0.04040404 0.05050505</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] 0.06060606 0.07070707 0.08080808 0.09090909 0.10101010 0.11111111</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] 0.12121212 0.13131313 0.14141414 0.15151515 0.16161616 0.17171717</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 0.18181818 0.19191919 0.20202020 0.21212121 0.22222222 0.23232323</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 0.24242424 0.25252525 0.26262626 0.27272727 0.28282828 0.29292929</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] 0.30303030 0.31313131 0.32323232 0.33333333 0.34343434 0.35353535</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 0.36363636 0.37373737 0.38383838 0.39393939 0.40404040 0.41414141</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 0.42424242 0.43434343 0.44444444 0.45454545 0.46464646 0.47474747</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 0.48484848 0.49494949 0.50505051 0.51515152 0.52525253 0.53535354</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] 0.54545455 0.55555556 0.56565657 0.57575758 0.58585859 0.59595960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] 0.60606061 0.61616162 0.62626263 0.63636364 0.64646465 0.65656566</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] 0.66666667 0.67676768 0.68686869 0.69696970 0.70707071 0.71717172</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 0.72727273 0.73737374 0.74747475 0.75757576 0.76767677 0.77777778</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] 0.78787879 0.79797980 0.80808081 0.81818182 0.82828283 0.83838384</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 0.84848485 0.85858586 0.86868687 0.87878788 0.88888889 0.89898990</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 0.90909091 0.91919192 0.92929293 0.93939394 0.94949495 0.95959596</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 0.96969697 0.97979798 0.98989899 1.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $lorenz_curve$lorenz</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "lq"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example 2: Specifying the number of bins for the Lorenz Curve</span></span></span>
+<span class="r-in"><span><span class="fu">pipgd_lorenz_curve</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
+<span class="r-in"><span>                   weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
+<span class="r-in"><span>                   n_bins <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $lorenz_curve</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $lorenz_curve$output</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.000000000 0.006808033 0.014255849 0.022302075 0.030911793 0.040055347</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] 0.049707427 0.059846372 0.070453613 0.081513244 0.093011673 0.104937348</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] 0.117280536 0.130033146 0.143188589 0.156741666 0.170688490 0.185026418</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] 0.199754014 0.214871027 0.230378386 0.246278213 0.262573861 0.279269957</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] 0.296372487 0.313888885 0.331828163 0.350201075 0.369020310 0.388300749</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] 0.408059777 0.428317676 0.449098123 0.470428821 0.492342315 0.514877054</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] 0.538078796 0.562002505 0.586714954 0.612298402 0.638855924 0.666519417</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [43] 0.695462132 0.725919329 0.758224630 0.792879765 0.830705384 0.873231159</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [49] 0.924071589 1.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $lorenz_curve$points</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.00000000 0.02040816 0.04081633 0.06122449 0.08163265 0.10204082</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] 0.12244898 0.14285714 0.16326531 0.18367347 0.20408163 0.22448980</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] 0.24489796 0.26530612 0.28571429 0.30612245 0.32653061 0.34693878</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] 0.36734694 0.38775510 0.40816327 0.42857143 0.44897959 0.46938776</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] 0.48979592 0.51020408 0.53061224 0.55102041 0.57142857 0.59183673</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] 0.61224490 0.63265306 0.65306122 0.67346939 0.69387755 0.71428571</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] 0.73469388 0.75510204 0.77551020 0.79591837 0.81632653 0.83673469</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [43] 0.85714286 0.87755102 0.89795918 0.91836735 0.93877551 0.95918367</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [49] 0.97959184 1.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $lorenz_curve$lorenz</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "lq"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example 3: Using pre-calculated parameters</span></span></span>
+<span class="r-in"><span><span class="va">validated_parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="pipgd_validate_lorenz.html">pipgd_validate_lorenz</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
+<span class="r-in"><span>                                              weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">pipgd_lorenz_curve</span><span class="op">(</span>params <span class="op">=</span> <span class="va">validated_parameters</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in check_pipgd_params(pl):</span> argument <span style="color: #00BB00;">params</span> must be of class `pipgd_params`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> It should be created using `pipgd_params()`</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example 4: Generating Lorenz Curve with a specific Lorenz model(e.g. Lorenz beta)</span></span></span>
+<span class="r-in"><span><span class="fu">pipgd_lorenz_curve</span><span class="op">(</span>params <span class="op">=</span> <span class="va">validated_parameters</span>,</span></span>
+<span class="r-in"><span>                   lorenz <span class="op">=</span> <span class="st">"lb"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in check_pipgd_params(pl):</span> argument <span style="color: #00BB00;">params</span> must be of class `pipgd_params`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> It should be created using `pipgd_params()`</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
