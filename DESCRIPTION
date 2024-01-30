@@ -13,6 +13,8 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.0
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0),
     tibble,
     withr
@@ -21,8 +23,11 @@ Imports:
     cli,
     collapse (>= 2.0.9),
     data.table,
-    wbpip (>= 0.1.0.9009)
+    wbpip (>= 0.1.0.9011)
 Depends: 
     R (>= 2.10)
 LazyData: true
 URL: https://pip-technical-team.github.io/pipster/
+Remotes: 
+    github::PIP-Technical-Team/wbpip@refactor_consistency
+VignetteBuilder: knitr
