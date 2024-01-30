@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">pipster</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9003</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>params</dt>
-<dd><p>list of parameters from <code>pipgd_validate_lorenz()</code></p></dd>
+<dd><p>list of parameters from <code><a href="pipgd_params.html">pipgd_params()</a></code></p></dd>
 
 
 <dt>welfare</dt>
@@ -112,12 +112,14 @@ previously used <code>get_gd</code> functions. Default is <code>FALSE</code></p>
 <span class="r-in"><span>             weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">pipgd_validate_lorenz</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="pipgd_select_lorenz.html">pipgd_select_lorenz</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in check_pipgd_params(pl):</span> argument <span style="color: #00BB00;">params</span> must be of class `pipgd_params`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> It should be created using `pipgd_params()`</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Using welfare and population vecotrs</span></span></span>
 <span class="r-in"><span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu"><a href="pipgd_select_lorenz.html">pipgd_select_lorenz</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
 <span class="r-in"><span>                            weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">res2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'res' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -55,6 +55,15 @@
     <loc>https://pip-technical-team.github.io/pipster/reference/pip_md_s.html</loc>
   </url>
   <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_gini.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_lorenz_curve.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_mld.html</loc>
+  </url>
+  <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_params.html</loc>
   </url>
   <url>
@@ -70,6 +79,12 @@
     <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_pov_headcount_nv.html</loc>
   </url>
   <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_pov_severity.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_pov_severity_nv.html</loc>
+  </url>
+  <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_quantile.html</loc>
   </url>
   <url>
@@ -82,13 +97,64 @@
     <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_validate_lorenz.html</loc>
   </url>
   <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_watts.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_watts_nv.html</loc>
+  </url>
+  <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_welfare_share_at.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_gini.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_mld.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_polarization.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_pov_gap.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_pov_gap_nv.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_pov_headcount.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_pov_headcount_nv.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_pov_severity.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_pov_severity_nv.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_quantile.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_quantile_welfare_share.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_watts.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_watts_nv.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/pipmd_welfare_share_at.html</loc>
   </url>
   <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/pipster.html</loc>
   </url>
   <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/return_format.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/return_format_md.html</loc>
   </url>
   <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/sum_up_to_one.html</loc>
