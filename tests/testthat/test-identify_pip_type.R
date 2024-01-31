@@ -23,12 +23,14 @@ test_that("Identifies group data", {
   ## up to 1 ---------
   gd1_1 <- identify_pip_type(welfare = L,
                              weight = P)
-
+  # gd1_1b <- identify_pip_type(welfare = L/sum(L),
+  #                             weight = P/sum(P))
   expect_equal(gd1_1, "gd_1")
+  # expect_equal(gd1_1b, )
 
   ## up to 100 ---------
   gd1_100 <- identify_pip_type(welfare = L*100,
-                           weight = P)
+                               weight = P)
 
   expect_equal(gd1_100, "gd_1")
 
@@ -137,16 +139,114 @@ test_that("Errors are triggered", {
 })
 
 
+
 test_that("Warnings", {
-  # NA present in one of the vectors ----
-  expect_equal(2 * 2, 4)
 
   # negative present in welfare -----
-
+  Y <- sample(1000, 300, replace = TRUE)
+  Y <- sort(Y)
+  Y[sample(length(Y), 1)] <- -5  # Introduce negative value in welfare
+  Q <- sample(35, 300, replace = TRUE)
+  identify_pip_type(welfare = Y, weight = Q) |>
+    expect_warning()
 
   # unequal number of observations in imputations -----
-
-
-  # identified as microdata but few observations  ----
+  I <- sample(LETTERS, 300, replace = TRUE)  # Different length for imputation_id
+  Y <- sample(1000, 300, replace = TRUE)
+  Y <- sort(Y)
+  identify_pip_type(welfare = Y, weight = Q, imputation_id = I) |>
+    expect_warning()
 
 })
+
+
+
+
+#_______________________________________________________________________________
+# sum_up_to_one ----------------------------------------------------------------
+#_______________________________________________________________________________
+
+
+test_that("sum_up_to_one works properly", {
+  # Test 1: Sum exactly equals 1
+  expect_true(
+    sum_up_to_one(c(0.5,
+                    0.5)))
+
+  # Test 2: Sum exactly equals 100
+  expect_true(
+    sum_up_to_one(
+      rep(1,
+          100)))
+
+  # Test 3: Sum does not equal 1 or 100
+  expect_false(
+    sum_up_to_one(
+      c(0.3,
+        0.3),
+      digits = 2))
+
+  # Test 4: Check with precision (digits parameter)
+  expect_true(sum_up_to_one(c(0.333, 0.333, 0.334), digits = 3))
+  expect_false(sum_up_to_one(c(0.333, 0.333, 0.333), digits = 3))
+
+  # Test 5: Empty vector
+  expect_false(sum_up_to_one(numeric(0)))
+
+  # Test 6: Single element vector
+  expect_true(sum_up_to_one(c(1)))
+  expect_true(sum_up_to_one(c(100)))
+  expect_false(sum_up_to_one(c(50)))
+
+
+})
+
+#_______________________________________________________________________________
+# is_cumulative ----------------------------------------------------------------
+#_______________________________________________________________________________
+
+
+test_that("is_cumulative works properly", {
+
+  # Test Cumulative
+  expect_true(is_cumulative(c(0.5,
+                              1), digits = 0))
+  expect_true(is_cumulative(c(0.3,
+                              0.5,
+                              0.6,
+                              1)))
+  expect_true(is_cumulative(c(0.3,
+                              0.5,
+                              0.6,
+                              1)*100))
+
+
+  # Test not cumulative
+  expect_false(is_cumulative(c(0.3,
+                               0.3,
+                               0.3)))
+
+
+  # Test Check with different precision levels
+  expect_true(
+    is_cumulative(c(0.3, 0.5, 0.6, 0.9999),
+                  digits = 3))
+
+  expect_false(
+    is_cumulative(
+      c(0.33333333, 0.33333333, 0.33333333),
+      digits = 8))
+
+
+  # Test Single element vector
+  expect_true(is_cumulative(c(1)))
+  expect_false(is_cumulative(c(0.5)))
+
+})
+
+
+
+
+
+
+
