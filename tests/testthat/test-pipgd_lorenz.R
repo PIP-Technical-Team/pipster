@@ -1,14 +1,14 @@
 
 # Test pipgd_validate_lorenz function ####
 test_that("pipgd_validate_lorenz inputs and outputs", {
-  
+
   params <- pipgd_params(welfare = pip_gd$L, weight = pip_gd$P)
   res_with_params <- pipgd_params(welfare = pip_gd$L, weight = pip_gd$P) |>
     pipgd_validate_lorenz()
   res_with_welfare_weight <- pipgd_validate_lorenz(welfare = pip_gd$L, weight = pip_gd$P)
 
   # Inputs --------------------------------------------------------------------------------
-  # test for expecting stop when neither (welfare and wieght) nor params (as output of pipster::pipgd_params) are provided
+  # test for expecting stop when neither (welfare and weight) nor params (as output of pipster::pipgd_params) are provided
   test_params <- params
   test_params$gd_params$lq$reg_results$coef <- NULL
   pipgd_validate_lorenz(welfare = NULL, weight = NULL, params = test_params) |>
@@ -34,21 +34,21 @@ test_that("pipgd_validate_lorenz inputs and outputs", {
 
 # Test pipgd_select_lorenz function ####
 test_that("pipgd_select_lorenz", {
-  
+
   res_with_params <-
     pipgd_params(welfare = pip_gd$L,
                  weight = pip_gd$P) |>
     pipgd_validate_lorenz(complete = TRUE) |>
     pipgd_select_lorenz()
-    
+
   res_with_welfare_weight <- pipgd_select_lorenz(welfare = pip_gd$L,
                               weight = pip_gd$P)
-  
+
   expect_equal(res_with_params, res_with_welfare_weight)
   expect_equal(class(res_with_params), "list")
 
   # Inputs -----------------------------------------------------------------------------------------
-  expect_error(pipgd_select_lorenz(welfare = NULL, weight=NULL, params= NULL)) 
+  expect_error(pipgd_select_lorenz(welfare = NULL, weight=NULL, params= NULL))
   # "Either `welfare` and `weights` should be specified or `params` should be output from `pipster::pipgd_params()`")
 
   # Names in output list ---------------------------------------------------------------------------
@@ -85,7 +85,7 @@ test_that("pipgd_lorenz_curve", {
   # Names in output list ---------------------------------------------------------------
   names(res_with_lorenz) |>
     expect_equal("lorenz_curve")
-  
+
   names(res_with_lorenz$lorenz_curve) |>
     expect_equal(c("output", "points", "lorenz"))
 
