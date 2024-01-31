@@ -131,7 +131,6 @@ pipgd_params <- function(welfare,
 #' @keywords internal
 check_pipgd_params <- function(lp) {
 
-
   #   ____________________________________________________________________________
   #   Computations                                                            ####
 
