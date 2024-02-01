@@ -2,7 +2,6 @@
 % Please edit documentation in R/pipster.R
 \docType{package}
 \name{pipster}
-\alias{-package}
 \alias{pipster}
 \title{pipster: Poverty and Inequality methodology of WB methodology}
 \description{

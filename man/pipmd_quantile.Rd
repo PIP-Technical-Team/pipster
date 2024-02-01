@@ -56,8 +56,7 @@ pipmd_quantile(welfare = pip_md_s$welfare,
                n       = 10,
                format  = "dt")
 
-# Example 3: Calculating quantiles at specific population shares and format
-atomic.
+# Example 3: Calculating quantiles at specific population shares and format atomic.
 specific_popshares <- seq(from = 0, to = 1, length.out = 100)
 pipmd_quantile(welfare = pip_md_s$welfare,
                weight  = pip_md_s$weight,

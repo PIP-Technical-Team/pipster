@@ -69,13 +69,13 @@ pipgd_lorenz_curve(welfare = pip_gd$L,
                    n_bins = 50)
 
 # Example 3: Using pre-calculated parameters
-validated_parameters <- pipgd_validate_lorenz(welfare = pip_gd$L,
-                                              weight = pip_gd$P)
-pipgd_lorenz_curve(params = validated_parameters)
+use_params <- pipgd_params(welfare = pip_gd$L,
+                           weight = pip_gd$P)
+pipgd_lorenz_curve(params = use_params)
 
 
 # Example 4: Generating Lorenz Curve with a specific Lorenz model(e.g. Lorenz beta)
-pipgd_lorenz_curve(params = validated_parameters,
+pipgd_lorenz_curve(params = use_params,
                    lorenz = "lb")
 
 

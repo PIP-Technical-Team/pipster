@@ -505,6 +505,7 @@ pipgd_pov_severity_nv <- function(
 #' @param format character: either "dt" for data.table, "list" or "atomic" for a
 #' single numeric vector, whose names are corresponding selected Lorenz for
 #' each value.  Default is "dt"
+#' @inheritParams pipgd_pov_severity_nv
 #'
 #' @return Returns a `data.table` and `data.frame` object with two variables:
 #' `pov_severity` and `lorenz`.  Check `format` argument to change
@@ -778,14 +779,15 @@ pipgd_watts_nv <- function(
 #'
 #'
 #' # Example 3: Detailed output with complete = TRUE
-#' pipgd_watts(welfare = pip_gd$L,
-#'             weight  = pip_gd$P,
+#' pipgd_watts(welfare  = pip_gd$L,
+#'             weight   = pip_gd$P,
+#'             format   = "list",
 #'             complete = TRUE)
 #'
 #' # Example 4: Custom mean and times_mean with data.table format
-#' pipgd_watts(welfare = pip_gd$L,
-#'             weight  = pip_gd$P,
-#'             mean    = 109.9,
+#' pipgd_watts(welfare    = pip_gd$L,
+#'             weight     = pip_gd$P,
+#'             mean       = 109.9,
 #'             times_mean = 1.5)
 #'
 pipgd_watts <- function(

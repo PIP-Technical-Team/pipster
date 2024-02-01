@@ -38,20 +38,20 @@ Calculate poverty gap from microdata
 }
 \examples{
 # Example 1: Basic poverty gap calculation
-pipmd_pov_gap(welfare = pipmd_s$welfare,
-              weight  = pipmd_s$weight,
+pipmd_pov_gap(welfare = pip_md_s$welfare,
+              weight  = pip_md_s$weight,
               povline = 1.3,
               format  = "list")
 
 # Example 2: Returning data.table format, multiple povline.
-pipmd_pov_gap(welfare = pipmd_s$welfare,
-              weight  = pipmd_s$weight,
+pipmd_pov_gap(welfare = pip_md_s$welfare,
+              weight  = pip_md_s$weight,
               povline = c(1.3, 1.2),
               format  = "dt")
 
 # Example 3: Returning atomic format
-pipmd_pov_gap(welfare = pipmd_s$welfare,
-              weight  = pipmd_s$weight,
+pipmd_pov_gap(welfare = pip_md_s$welfare,
+              weight  = pip_md_s$weight,
               povline = 1.3,
               format  = "atomic")
 

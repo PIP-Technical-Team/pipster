@@ -7,6 +7,9 @@
 #'   single numeric vector, whose names are corresponding selected Lorenz for
 #'   each value.  Default is "dt"
 #' @param var character: name of variable to be returned.
+#' @param povline numeric: poverty line
+#' @param complete logical: if `format = "list"` then `complete = TRUE` gives complete
+#' information output.
 #'
 #' @return data.table, list, or atomic vector
 #' @keywords internal

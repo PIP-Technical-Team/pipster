@@ -48,8 +48,8 @@ pipmd_pov_headcount_nv <- function(
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } 
-  
+  }
+
   if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
@@ -197,8 +197,8 @@ pipmd_pov_gap_nv <- function(
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } 
-  
+  }
+
   if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
@@ -236,20 +236,20 @@ pipmd_pov_gap_nv <- function(
 #'
 #' @examples
 #' # Example 1: Basic poverty gap calculation
-#' pipmd_pov_gap(welfare = pipmd_s$welfare,
-#'               weight  = pipmd_s$weight,
+#' pipmd_pov_gap(welfare = pip_md_s$welfare,
+#'               weight  = pip_md_s$weight,
 #'               povline = 1.3,
 #'               format  = "list")
 #'
 #' # Example 2: Returning data.table format, multiple povline.
-#' pipmd_pov_gap(welfare = pipmd_s$welfare,
-#'               weight  = pipmd_s$weight,
+#' pipmd_pov_gap(welfare = pip_md_s$welfare,
+#'               weight  = pip_md_s$weight,
 #'               povline = c(1.3, 1.2),
 #'               format  = "dt")
 #'
 #' # Example 3: Returning atomic format
-#' pipmd_pov_gap(welfare = pipmd_s$welfare,
-#'               weight  = pipmd_s$weight,
+#' pipmd_pov_gap(welfare = pip_md_s$welfare,
+#'               weight  = pip_md_s$weight,
 #'               povline = 1.3,
 #'               format  = "atomic")
 #'
@@ -344,8 +344,8 @@ pipmd_pov_severity_nv <- function(
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } 
-  
+  }
+
   if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
@@ -488,8 +488,8 @@ pipmd_watts_nv <- function(
     cli::cli_abort(
       text = "A numeric poverty line must be specified"
     )
-  } 
-  
+  }
+
   if (povline < min(welfare) || povline > max(welfare)) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"

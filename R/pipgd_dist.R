@@ -315,7 +315,7 @@ pipgd_quantile <-
       match.arg(lorenz, c("lq", "lb"))
     }
 
-    qfun <- paste0("wbpip:::derive_", lorenz) |>
+    qfun <- paste0("wbpip::derive_", lorenz) |>
       parse(text = _)
     # value_at_vc <- Vectorize(eval(qfun),
     #                          vectorize.args = "x",
@@ -366,17 +366,6 @@ pipgd_quantile <-
 #' pipgd_gini(welfare = pip_gd$L,
 #'            weight = pip_gd$P,
 #'            complete = TRUE)
-#'
-#' # Example 4: Gini Coefficient with Adjusted Mean
-#' pipgd_gini(welfare = pip_gd$L,
-#'            weight = pip_gd$P,
-#'            times_mean = 1.5)
-#'
-#' # Example 5: Focusing on a Subset Below Poverty Line at 50
-#' pipgd_gini(welfare = pip_gd$L,
-#'            weight = pip_gd$P,
-#'            povline = 50)
-#'
 pipgd_gini <- function(
   params     = NULL,
   welfare    = NULL,
@@ -420,7 +409,7 @@ pipgd_gini <- function(
   #   _________________________________________________________________
   if (lorenz == "lb") {
     gini <-
-      wbpip:::gd_compute_gini_lb(
+      wbpip::gd_compute_gini_lb(
         A         = params$gd_params$lb$reg_results$coef[["A"]],
         B         = params$gd_params$lb$reg_results$coef[["B"]],
         C         = params$gd_params$lb$reg_results$coef[["C"]],
@@ -428,7 +417,7 @@ pipgd_gini <- function(
       )
   } else if (lorenz == "lq") {
     gini <-
-      wbpip:::gd_compute_gini_lq(
+      wbpip::gd_compute_gini_lq(
         A         = params$gd_params$lq$reg_results$coef[["A"]],
         B         = params$gd_params$lq$reg_results$coef[["B"]],
         C         = params$gd_params$lq$reg_results$coef[["C"]],
@@ -484,18 +473,6 @@ pipgd_gini <- function(
 #'           weight = pip_gd$P,
 #'           complete = TRUE)
 #'
-#' # Example 4: Adjusting for a Specific Mean
-#' actual_mean <- 90  # Replace with the actual mean of your data
-#' pipgd_mld(welfare = pip_gd$L,
-#'           weight = pip_gd$P,
-#'           mean = actual_mean)
-#'
-#'
-#' # Example 5: MLD Focusing on Specific Poverty Line
-#' pipgd_mld(welfare = pip_gd$L,
-#'           weight = pip_gd$P,
-#'           povline = 50)
-#'
 pipgd_mld <- function(
     params     = NULL,
     welfare    = NULL,
@@ -545,7 +522,7 @@ pipgd_mld <- function(
       )
   } else if (lorenz == "lq") {
     mld <-
-      wbpip:::gd_compute_mld_lq(
+      wbpip::gd_compute_mld_lq(
         A         = params$gd_params$lq$reg_results$coef[["A"]],
         B         = params$gd_params$lq$reg_results$coef[["B"]],
         C         = params$gd_params$lq$reg_results$coef[["C"]],
