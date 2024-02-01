@@ -675,29 +675,16 @@ pipgd_watts_nv <- function(
 
   # __________________________________________________________________________
   #   Calculate Watts -----------------------------------------------------
-  if (lorenz == "lb") {
-    wr <-
-      wbpip::gd_compute_watts_lb(
-        mean      = mean,
-        povline   = povline,
-        headcount = params$pov_stats$headcount,
-        A         = params$gd_params$lb$reg_results$coef[["A"]],
-        B         = params$gd_params$lb$reg_results$coef[["B"]],
-        C         = params$gd_params$lb$reg_results$coef[["C"]],
-        dd        = 0.005
-      )
-  } else if (lorenz == "lq") {
-    wr <-
-      wbpip::gd_compute_watts_lq(
-        mu        = mean,
-        povline   = povline,
-        headcount = params$pov_stats$headcount,
-        A         = params$gd_params$lb$reg_results$coef[["A"]],
-        B         = params$gd_params$lb$reg_results$coef[["B"]],
-        C         = params$gd_params$lb$reg_results$coef[["C"]],
-        dd        = 0.01
-      )
-  }
+  watts_ <-
+    paste0("wbpip::gd_compute_watts_", lorenz) |>
+    parse(text = _)
+
+  wr <- eval(watts_)(mean      = mean,
+                     povline   = povline,
+                     headcount = params$pov_stats$headcount,
+                     A         = params$gd_params$lb$reg_results$coef[["A"]],
+                     B         = params$gd_params$lb$reg_results$coef[["B"]],
+                     C         = params$gd_params$lb$reg_results$coef[["C"]])
 
   attributes(wr) <- NULL
 
