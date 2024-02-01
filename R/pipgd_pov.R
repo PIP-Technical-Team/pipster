@@ -641,8 +641,7 @@ pipgd_watts_nv <- function(
       )
     } else {
       params <- pipgd_pov_headcount_nv(
-        welfare    =  params$data$welfare,
-        weight     =  params$data$weight,
+        params     = params,
         complete   = TRUE,
         mean       = mean,
         popshare   = popshare,
@@ -652,31 +651,27 @@ pipgd_watts_nv <- function(
       )
     }
 
-  #___________________________________________________________________________
-  # Ensure `povline` exists
-  if (!is.null(popshare)) {
-    povline_lq <- mean * wbpip::derive_lq(popshare,
-                                          params$gd_params$lq$reg_results$coef[["A"]],
-                                          params$gd_params$lq$reg_results$coef[["B"]],
-                                          params$gd_params$lq$reg_results$coef[["C"]])
-
-    povline_lb <- mean * wbpip::derive_lb(popshare,
-                                          params$gd_params$lb$reg_results$coef[["A"]],
-                                          params$gd_params$lb$reg_results$coef[["B"]],
-                                          params$gd_params$lb$reg_results$coef[["C"]])
-
-  } else {
-    povline_lb <- povline_lq <- povline
-
-  }
-
-  # __________________________________________________________________________
-  #   Select Lorenz ----------------------------------------------------------
+  # Select Lorenz -------------------------------------------------------
   if (is.null(lorenz)) {
     lorenz <- params$selected_lorenz$for_pov
   } else {
     match.arg(lorenz, c("lq", "lb"))
   }
+
+
+  # Ensure `povline` exists  -----------
+  if (!is.null(popshare)) {
+    derive_ <-
+      paste0("wbpip::derive_", lorenz) |>
+      parse(text = _)
+
+    povline <-
+      mean * eval(derive_)(popshare,
+                           params$gd_params[[lorenz]]$reg_results$coef[["A"]],
+                           params$gd_params[[lorenz]]$reg_results$coef[["B"]],
+                           params$gd_params[[lorenz]]$reg_results$coef[["C"]])
+  }
+
 
   # __________________________________________________________________________
   #   Calculate Watts -----------------------------------------------------
@@ -684,7 +679,7 @@ pipgd_watts_nv <- function(
     wr <-
       wbpip::gd_compute_watts_lb(
         mean      = mean,
-        povline   = povline_lb,
+        povline   = povline,
         headcount = params$pov_stats$headcount,
         A         = params$gd_params$lb$reg_results$coef[["A"]],
         B         = params$gd_params$lb$reg_results$coef[["B"]],
@@ -695,7 +690,7 @@ pipgd_watts_nv <- function(
     wr <-
       wbpip::gd_compute_watts_lq(
         mu        = mean,
-        povline   = povline_lq,
+        povline   = povline,
         headcount = params$pov_stats$headcount,
         A         = params$gd_params$lb$reg_results$coef[["A"]],
         B         = params$gd_params$lb$reg_results$coef[["B"]],

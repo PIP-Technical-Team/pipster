@@ -842,6 +842,8 @@ test_that("pipgd_watts_nv inputs work as expected", {
                                weight  = weight)
   res_params <- pipgd_watts_nv(params  = params)
 
+
+
   # Check the output is the same when providing welfare and wieght or params
   expect_equal(res, res_params)
 

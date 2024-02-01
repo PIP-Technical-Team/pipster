@@ -23,11 +23,11 @@ Imports:
     cli,
     collapse (>= 2.0.9),
     data.table,
-    wbpip (>= 0.1.0.9011)
+    wbpip (>= 0.1.0.9012)
 Depends: 
     R (>= 2.10)
 LazyData: true
 URL: https://pip-technical-team.github.io/pipster/
 Remotes: 
-    github::PIP-Technical-Team/wbpip@refactor_consistency
+    github::PIP-Technical-Team/wbpip@dev_stage2
 VignetteBuilder: knitr
