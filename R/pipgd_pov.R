@@ -342,12 +342,6 @@ pipgd_pov_gap <- function(params     = NULL,
 }
 
 
-
-
-
-
-
-
 #' Estimate poverty severity (non-vectorized)
 #'
 #' This function is not vectorized and thus is not exported. Use
@@ -384,36 +378,35 @@ pipgd_pov_severity_nv <- function(
     #   Computations -----------------------------------------------------------
     if (!is.null(pov_gap)) {
       if (!all(c("pov_gap", "lorenz") %in% names(pov_gap$pov_stats))) {
-        stop("argument `pov_gap` should be the output of `pipster:::pipgd_pov_gap_nv`, else leave `pov_gap = NULL`")
+        stop("argument `pov_gap` should be the output of
+             `pipster:::pipgd_pov_gap_nv`, else leave `pov_gap = NULL`")
       } else {
         params <- pov_gap
       }
     }
 
     if (!is.null(welfare)) {
-        params <- pipgd_pov_gap_nv(
-          welfare    = welfare,
-          weight     = weight,
-          complete   = TRUE,
-          mean       = mean,
-          times_mean = times_mean,
-          popshare   = popshare,
-          povline    = povline,
-          lorenz     = lorenz
-        )}
-
-      else {
-        params <- pipgd_pov_gap_nv(
-          welfare    =  params$data$welfare,
-          weight     =  params$data$weight,
-          complete   = TRUE,
-          mean       = mean,
-          times_mean = times_mean,
-          popshare   = popshare,
-          povline    = povline,
-          lorenz     = lorenz
-        )
-      }
+      params <- pipgd_pov_gap_nv(
+        welfare    = welfare,
+        weight     = weight,
+        complete   = TRUE,
+        mean       = mean,
+        times_mean = times_mean,
+        popshare   = popshare,
+        povline    = povline,
+        lorenz     = lorenz
+      )
+    } else {
+      params <- pipgd_pov_gap_nv(
+        params     = params,
+        complete   = TRUE,
+        mean       = mean,
+        times_mean = times_mean,
+        popshare   = popshare,
+        povline    = povline,
+        lorenz     = lorenz
+      )
+    }
 
     #___________________________________________________________________________
     # Ensure `povline` exists

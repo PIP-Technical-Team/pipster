@@ -64,6 +64,7 @@ return_format <-
 
     if (format == "atomic") {
       names(pg) <- sl
+      attr(pg,"povline") <- povline
       return(pg)
     }
 

@@ -379,6 +379,16 @@ test_that("pipgd_pov_gap works as expected", {
                      weight  = weight,
                      povline = 0.5)$pov_stats$pov_gap)
 
+
+  expect_equal(pipgd_pov_gap(welfare = welfare,
+                             weight  = weight,
+                             povline = c(.5, 1, 2, 3),
+                             format  = "atomic"),
+               pipgd_pov_gap(params = params,
+                             povline = c(.5, 1, 2, 3),
+                             format  = "atomic"))
+
+
   res_povgap_list <- pipgd_pov_gap(welfare = welfare,
                                    weight  = weight,
                                    povline = c(.5, 1, 2, 3),
