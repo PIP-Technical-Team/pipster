@@ -491,10 +491,6 @@ pipgd_mld <- function(
       weight   = weight,
       complete = TRUE
     )
-  } else {
-    params <- pipgd_select_lorenz(welfare    = params$data$welfare,
-                                  weight     = params$data$weight,
-                                  complete   = TRUE)
   }
 
   #   _________________________________________________________________
@@ -507,23 +503,14 @@ pipgd_mld <- function(
   }
 
   # Compute mld
-  if (lorenz == "lb") {
-    mld <-
-      wbpip::gd_compute_mld_lb(
-        A         = params$gd_params$lb$reg_results$coef[["A"]],
-        B         = params$gd_params$lb$reg_results$coef[["B"]],
-        C         = params$gd_params$lb$reg_results$coef[["C"]],
-        dd        = 0.01
-      )
-  } else if (lorenz == "lq") {
-    mld <-
-      wbpip::gd_compute_mld_lq(
-        A         = params$gd_params$lq$reg_results$coef[["A"]],
-        B         = params$gd_params$lq$reg_results$coef[["B"]],
-        C         = params$gd_params$lq$reg_results$coef[["C"]],
-        dd        = 0.01
-      )
-  }
+  mld_ <- paste0("wbpip::gd_compute_mld_", lorenz) |>
+    parse(text = _)
+
+  mld <- eval(mld_)(
+    A         = params$gd_params[[lorenz]]$reg_results$coef[["A"]],
+    B         = params$gd_params[[lorenz]]$reg_results$coef[["B"]],
+    C         = params$gd_params[[lorenz]]$reg_results$coef[["C"]]
+  )
 
   attributes(mld) <- NULL
 
