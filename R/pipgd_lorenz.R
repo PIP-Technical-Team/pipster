@@ -63,20 +63,23 @@ pipgd_validate_lorenz <-
                            weight  = weight)
   } else if (is.null(params$gd_params$lq$reg_results$coef)) {
     stop(
-      "Either `welfare` and `weights` should be specified or `params` should be output from `pipster::pipgd_params()`"
+      "Either `welfare` and `weights` should be specified or `params`
+      should be output from `pipster::pipgd_params()`"
     )
   }
 
   if (!is.null(popshare)) {
-    povline_lq <- mean * wbpip::derive_lq(popshare,
-                                   params$gd_params$lq$reg_results$coef[["A"]],
-                                   params$gd_params$lq$reg_results$coef[["B"]],
-                                   params$gd_params$lq$reg_results$coef[["C"]])
+    povline_lq <-
+      mean * wbpip::derive_lq(popshare,
+                              params$gd_params$lq$reg_results$coef[["A"]],
+                              params$gd_params$lq$reg_results$coef[["B"]],
+                              params$gd_params$lq$reg_results$coef[["C"]])
 
-    povline_lb <- mean * wbpip::derive_lb(popshare,
-                                   params$gd_params$lb$reg_results$coef[["A"]],
-                                   params$gd_params$lb$reg_results$coef[["B"]],
-                                   params$gd_params$lb$reg_results$coef[["C"]])
+    povline_lb <-
+      mean * wbpip::derive_lb(popshare,
+                              params$gd_params$lb$reg_results$coef[["A"]],
+                              params$gd_params$lb$reg_results$coef[["B"]],
+                              params$gd_params$lb$reg_results$coef[["C"]])
 
   } else {
     povline_lb <- povline_lq <- povline
@@ -93,22 +96,24 @@ pipgd_validate_lorenz <-
     params$gd_params$lq$key_values$n,
     params$gd_params$lq$key_values$r^2)
 
-  headcount_lq <- wbpip::gd_compute_headcount_lq(mean,
-                                          povline_lq,
-                                          params$gd_params$lq$reg_results$coef[["B"]],
-                                          params$gd_params$lq$key_values$m,
-                                          params$gd_params$lq$key_values$n,
-                                          params$gd_params$lq$key_values$r)
+  headcount_lq <-
+    wbpip::gd_compute_headcount_lq(mean,
+                                   povline_lq,
+                                   params$gd_params$lq$reg_results$coef[["B"]],
+                                   params$gd_params$lq$key_values$m,
+                                   params$gd_params$lq$key_values$n,
+                                   params$gd_params$lq$key_values$r)
 
   validity_lq$headcount <- headcount_lq
 
   # Validity of LB
   # Compute poverty stats
-  headcount_lb <- wbpip::gd_compute_headcount_lb(mean,
-                                          povline_lb,
-                                          params$gd_params$lb$reg_results$coef[["A"]],
-                                          params$gd_params$lb$reg_results$coef[["B"]],
-                                          params$gd_params$lb$reg_results$coef[["C"]])
+  headcount_lb <-
+    wbpip::gd_compute_headcount_lb(mean,
+                                   povline_lb,
+                                   params$gd_params$lb$reg_results$coef[["A"]],
+                                   params$gd_params$lb$reg_results$coef[["B"]],
+                                   params$gd_params$lb$reg_results$coef[["C"]])
 
   # Check validity
   validity_lb <-
@@ -209,6 +214,13 @@ pipgd_select_lorenz <-
   if (!is.null(welfare)) {
     params <- pipgd_validate_lorenz(welfare    = welfare,
                                     weight     = weight,
+                                    complete   = TRUE,
+                                    mean       = mean,
+                                    times_mean = times_mean,
+                                    povline    = povline,
+                                    popshare   = popshare)
+  } else {
+    params <- pipgd_validate_lorenz(params     = params,
                                     complete   = TRUE,
                                     mean       = mean,
                                     times_mean = times_mean,

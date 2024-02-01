@@ -39,8 +39,7 @@ pipgd_pov_headcount_nv <-
                                     popshare   = popshare,
                                     povline    = povline)
   } else {
-    params <- pipgd_select_lorenz(welfare  =  params$data$welfare,
-                                  weight   =  params$data$weight,
+    params <- pipgd_select_lorenz(params = params,
                                   complete = TRUE,
                                   mean     = mean,
                                   popshare = popshare,
@@ -195,30 +194,11 @@ pipgd_pov_gap_nv <- function(params     = NULL,
                                      povline  = povline,
                                      lorenz   = lorenz)
   } else {
-    params <- pipgd_pov_headcount_nv(welfare  =  params$data$welfare,
-                                     weight   =  params$data$weight,
+    params <- pipgd_pov_headcount_nv(params   = params,
                                      complete = TRUE,
                                      popshare = popshare,
                                      povline  = povline,
                                      lorenz   = lorenz)
-  }
-
-  #   ____________________________________________________
-  # Ensure `povline` exists
-  if (!is.null(popshare)) {
-    povline_lq <- mean * wbpip::derive_lq(popshare,
-                                          params$gd_params$lq$reg_results$coef[["A"]],
-                                          params$gd_params$lq$reg_results$coef[["B"]],
-                                          params$gd_params$lq$reg_results$coef[["C"]])
-
-    povline_lb <- mean * wbpip::derive_lb(popshare,
-                                          params$gd_params$lb$reg_results$coef[["A"]],
-                                          params$gd_params$lb$reg_results$coef[["B"]],
-                                          params$gd_params$lb$reg_results$coef[["C"]])
-
-  } else {
-    povline_lb <- povline_lq <- povline
-
   }
 
   # __________________________________________________________________________
@@ -229,24 +209,35 @@ pipgd_pov_gap_nv <- function(params     = NULL,
     match.arg(lorenz, c("lq", "lb"))
   }
 
-  if (lorenz == "lq") {
-    povline <- povline_lq
-  } else if (lorenz == "lb") {
-    povline <- povline_lb
+
+  #   ____________________________________________________
+  # Ensure `povline` exists
+  if (!is.null(popshare)) {
+    derive_ <-
+      paste0("wbpip::derive_", lorenz) |>
+      parse(text = _)
+
+    povline <-
+      mean * eval(derive_)(popshare,
+                           params$gd_params[[lorenz]]$reg_results$coef[["A"]],
+                           params$gd_params[[lorenz]]$reg_results$coef[["B"]],
+                           params$gd_params[[lorenz]]$reg_results$coef[["C"]])
+
   }
+
   #_______________________________________________________
   # Call wbpip:: function
-  fun_to_vc <-
+  pov_gap_ <-
     paste0("wbpip::gd_compute_pov_gap_", lorenz) |>
     parse(text = _)
 
   pov_gap <-
-    eval(fun_to_vc)(mean      = mean,
-                    povline   = povline,
-                    headcount = params$pov_stats$headcount,
-                    A         = params$gd_params[[lorenz]]$reg_results$coef[["A"]],
-                    B         = params$gd_params[[lorenz]]$reg_results$coef[["B"]],
-                    C         = params$gd_params[[lorenz]]$reg_results$coef[["C"]])
+    eval(pov_gap_)(mean      = mean,
+                   povline   = povline,
+                   headcount = params$pov_stats$headcount,
+                   A         = params$gd_params[[lorenz]]$reg_results$coef[["A"]],
+                   B         = params$gd_params[[lorenz]]$reg_results$coef[["B"]],
+                   C         = params$gd_params[[lorenz]]$reg_results$coef[["C"]])
   attributes(pov_gap) <- NULL
 
   #   ____________________________________________________
