@@ -389,10 +389,6 @@ pipgd_gini <- function(
       weight   = weight,
       complete = TRUE
     )
-  } else {
-    params <- pipgd_select_lorenz(welfare    = params$data$welfare,
-                                  weight     = params$data$weight,
-                                  complete   = TRUE)
   }
 
   #   _________________________________________________________________
@@ -412,8 +408,7 @@ pipgd_gini <- function(
       wbpip::gd_compute_gini_lb(
         A         = params$gd_params$lb$reg_results$coef[["A"]],
         B         = params$gd_params$lb$reg_results$coef[["B"]],
-        C         = params$gd_params$lb$reg_results$coef[["C"]],
-        nbins     = 499
+        C         = params$gd_params$lb$reg_results$coef[["C"]]
       )
   } else if (lorenz == "lq") {
     gini <-
