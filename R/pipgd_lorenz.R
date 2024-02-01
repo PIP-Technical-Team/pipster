@@ -9,24 +9,35 @@
 #' @param popshare numeric: range (0,1). Share of population. Provide share of
 #'   population instead of poverty line
 #' @param times_mean numeric factor that multiplies the mean to create a
-#'   relative povertyline. Default is 1
+#'   relative poverty line. Default is 1
 #'
 #'
-#' @return list of distributional validity of each Lorenz model
+#' @return Returns a nested list of distributional validity of each Lorenz model
+#' accessible at `$gd_params$lq$validity$is_normal` for the Lorenz beta and
+#' `$gd_params$lq$validity$is_normal` for the Lorenz quadratic.
+#'
 #' @export
 #'
 #' @examples
-#' # Using Lorenz parameters from pipgd_validate_lorenz
-#'  res <-
-#' pipgd_params(welfare = pip_gd$L,
-#'              weight = pip_gd$P) |>
-#'   pipgd_validate_lorenz() |>
-#'   pipgd_select_lorenz()
+#' # Example 1: Validate Lorenz Curves using pre-calculated parameters.
+#' parameters <- pipgd_params(welfare = pip_gd$L, weight = pip_gd$P)
+#' pipgd_validate_lorenz(params = parameters)
 #'
-#' # Using welfare and population vecotrs
-#' res2 <- pipgd_select_lorenz(welfare = pip_gd$L,
-#'                             weight = pip_gd$P)
-#' identical(res, res2)
+#' # Example 2: Directly using welfare and weight vectors.
+#' pipgd_validate_lorenz(welfare = pip_gd$L,
+#'                       weight = pip_gd$P)
+#'
+#' # Example 3: Specifying mean and poverty line
+#' pipgd_validate_lorenz(welfare = pip_gd$L,
+#'                       weight = pip_gd$P,
+#'                       mean = mean(pip_gd$X),
+#'                       povline = 50)
+#'
+#' # Example 4: Using a custom population share
+#' pipgd_validate_lorenz(welfare = pip_gd$L,
+#'                       weight = pip_gd$P,
+#'                       popshare = 0.5)
+#'
 pipgd_validate_lorenz <-
   function(params     = NULL,
            welfare    = NULL,
@@ -45,7 +56,6 @@ pipgd_validate_lorenz <-
   pl <- as.list(environment())
   check_pipgd_params(pl)
 
-
   #   ____________________________________________________________________________
   #   Computations                                                            ####
   if (!is.null(welfare) & !is.null(weight)) {
@@ -53,7 +63,7 @@ pipgd_validate_lorenz <-
                            weight  = weight)
   } else if (is.null(params$gd_params$lq$reg_results$coef)) {
     stop(
-      "Either `welfare` and `weights` should be specified or `params`  should be output from `pipster::pipgd_params()`"
+      "Either `welfare` and `weights` should be specified or `params` should be output from `pipster::pipgd_params()`"
     )
   }
 
@@ -129,7 +139,7 @@ pipgd_validate_lorenz <-
   params$gd_params$lq$validity <- validity_lq
   params$gd_params$lb$validity <- validity_lb
 
-  return(params)
+  params
 
 }
 
@@ -141,33 +151,42 @@ pipgd_validate_lorenz <-
 #' @param params list of parameters from `pipgd_validate_lorenz()`
 #' @param mean numeric scalar of distribution mean. Default is 1
 #'
-#' @return list of values with best lorenz fit for distributional Stats
+#' @return Returns a list of values with the best lorenz fit given the
+#' distributional Stats.
+#'
 #' @export
 #'
 #' @examples
-#' # Using Lorenz parameters from get_gd_lorenz_params
-#' withr::local_options(pipster.return_complete  = TRUE)
-#' params <- pipgd_validate_lorenz(
-#'   welfare = pip_gd$L,
-#'   weight = pip_gd$P)
+#' # Example 1: Directly using welfare and weight vectors.
+#' pipgd_select_lorenz(welfare = pip_gd$L,
+#'                     weight = pip_gd$P)
 #'
-#' params <- pipgd_validate_lorenz(
-#'   params = params,
-#'   complete = TRUE)
-#' pipgd_select_lorenz(params = params)
+#' # Example 2: Specifying mean and poverty line.
+#' custom_mean <- sum(pip_gd$W * pip_gd$X) / sum(pip_gd$W)
+#' pipgd_select_lorenz(welfare = pip_gd$L,
+#'                     weight = pip_gd$P,
+#'                     mean = custom_mean,
+#'                     povline = 1.25)
 #'
-#' # Using Lorenz parameters from pipgd_validate_lorenz
-#' params <- pipgd_validate_lorenz(
-#'   welfare = pip_gd$L,
-#'   weight = pip_gd$P,
-#'   complete = TRUE)
-#' pipgd_select_lorenz(params = params)
 #'
-#' # Using original vectors
+#' # Example 3.1: Using parameters from pipgd_validate_lorenz()
+#' validated_parameters <- pipgd_validate_lorenz(welfare = pip_gd$L,
+#'                                               weight = pip_gd$P,
+#'                                               complete = TRUE)
+#' pipgd_select_lorenz(params = validated_parameters)
 #'
-#' pipgd_select_lorenz(
-#'   welfare = pip_gd$L,
-#'   weight = pip_gd$P)
+#'
+#' # Example 3.2: Piping from from pipgd_params |> pipgd_validate_lorenz()
+#' pipgd_params(welfare = pip_gd$L,
+#'              weight = pip_gd$P) |>
+#' pipgd_validate_lorenz(complete = TRUE)|>
+#' pipgd_select_lorenz()
+#'
+#' # Example 4: Detailed output with complete = TRUE
+#' pipgd_select_lorenz(welfare = pip_gd$L,
+#'                     weight = pip_gd$P,
+#'                     complete = TRUE)
+#'
 pipgd_select_lorenz <-
   function(params     = NULL,
            welfare    = NULL,
@@ -188,8 +207,8 @@ pipgd_select_lorenz <-
   #   ____________________________________________________________________________
   #   Computations                                                            ####
   if (!is.null(welfare)) {
-    params <- pipgd_validate_lorenz(welfare = welfare,
-                                    weight = weight,
+    params <- pipgd_validate_lorenz(welfare    = welfare,
+                                    weight     = weight,
                                     complete   = TRUE,
                                     mean       = mean,
                                     times_mean = times_mean,
@@ -243,7 +262,8 @@ pipgd_select_lorenz <-
   }
 
   params$selected_lorenz <- l_res
-  return(params)
+
+  params
 
 }
 
@@ -262,14 +282,35 @@ pipgd_select_lorenz <-
 #' @param n_bins atomic double vector of length 1: number of points on the
 #' lorenz curve
 #'
-#' @return list: contains i) numeric lorenz curve, ii) corresponding points on
-#' x-axis, iii) whether lq or lb parameterization, and
-#' iv) if `complete=TRUE`, also returns all params.
+#' @return Returns a list which contains:
+#'  * numeric lorenz curve,
+#'  * corresponding points on x-axis,
+#'  * whether lq or lb parameterization, and
+#'  * if `complete=TRUE`, also returns all params.
+#'
 #' @export
 #'
 #' @examples
+#' # Example 1: Generating a Lorenz Curve with default settings
 #' pipgd_lorenz_curve(welfare = pip_gd$L,
-#'                    weight  = pip_gd$P)
+#'                    weight = pip_gd$P)
+#'
+#' # Example 2: Specifying the number of bins for the Lorenz Curve
+#' pipgd_lorenz_curve(welfare = pip_gd$L,
+#'                    weight = pip_gd$P,
+#'                    n_bins = 50)
+#'
+#' # Example 3: Using pre-calculated parameters
+#' use_params <- pipgd_params(welfare = pip_gd$L,
+#'                            weight = pip_gd$P)
+#' pipgd_lorenz_curve(params = use_params)
+#'
+#'
+#' # Example 4: Generating Lorenz Curve with a specific Lorenz model(e.g. Lorenz beta)
+#' pipgd_lorenz_curve(params = use_params,
+#'                    lorenz = "lb")
+#'
+#'
 pipgd_lorenz_curve <- function(
     params     = NULL,
     welfare    = NULL,
@@ -285,15 +326,15 @@ pipgd_lorenz_curve <- function(
     n_bins     = 100
 ){
 
-  #   _________________________________________________________________
+  #____________________________________________________________________
   #   Defenses
-  #   _________________________________________________________________
+  #____________________________________________________________________
   pl <- as.list(environment())
   check_pipgd_params(pl)
 
-  #   _________________________________________________________________
+  #____________________________________________________________________
   #   Params
-  #   _________________________________________________________________
+  #____________________________________________________________________
   if (!is.null(welfare)) {
     params <- pipgd_select_lorenz(
       welfare  = welfare,
@@ -330,11 +371,11 @@ pipgd_lorenz_curve <- function(
   if (lorenz == "lb") {
 
 
-    lc <- wbpip:::value_at_lb(
+    lc <- wbpip::value_at_lb(
       x = x_vec,
-      A = foo$gd_params$lb$reg_results$coef[["A"]],
-      B = foo$gd_params$lb$reg_results$coef[["B"]],
-      C = foo$gd_params$lb$reg_results$coef[["C"]]
+      A = params$gd_params$lb$reg_results$coef[["A"]],
+      B = params$gd_params$lb$reg_results$coef[["B"]],
+      C = params$gd_params$lb$reg_results$coef[["C"]]
     )
 
   } else if (lorenz == "lq") {
@@ -342,11 +383,11 @@ pipgd_lorenz_curve <- function(
     lc <- sapply(
       X   = x_vec,
       FUN = function(x1){
-        wbpip:::value_at_lq(
+        wbpip::value_at_lq(
           x = x1,
-          A = foo$gd_params$lq$reg_results$coef[["A"]],
-          B = foo$gd_params$lq$reg_results$coef[["B"]],
-          C = foo$gd_params$lq$reg_results$coef[["C"]]
+          A = params$gd_params$lq$reg_results$coef[["A"]],
+          B = params$gd_params$lq$reg_results$coef[["B"]],
+          C = params$gd_params$lq$reg_results$coef[["C"]]
         )
 
       }
@@ -367,11 +408,26 @@ pipgd_lorenz_curve <- function(
   params$lorenz_curve$points <- x_vec
   params$lorenz_curve$lorenz <- lorenz
 
-  return(
-    params
-  )
+  params
+
 
 }
+
+
+# # Example 1:
+# # !!!! This example is not working
+# # Using Lorenz parameters from pipgd_validate_lorenz
+#
+#  res <-
+# pipgd_params(welfare = pip_gd$L,
+#              weight = pip_gd$P) |>
+#   pipgd_validate_lorenz() |>
+#   pipgd_select_lorenz()
+#
+# # Using welfare and population vectors
+# res2 <- pipgd_select_lorenz(welfare = pip_gd$L,
+#                             weight = pip_gd$P)
+# identical(res, res2)
 
 
 

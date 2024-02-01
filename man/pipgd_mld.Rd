@@ -8,10 +8,6 @@ pipgd_mld(
   params = NULL,
   welfare = NULL,
   weight = NULL,
-  mean = 1,
-  times_mean = 1,
-  popshare = NULL,
-  povline = ifelse(is.null(popshare), mean * times_mean, NA_real_),
   complete = getOption("pipster.return_complete"),
   lorenz = NULL
 )
@@ -23,16 +19,6 @@ pipgd_mld(
 
 \item{weight}{numeric vector of cumulative share of the population}
 
-\item{mean}{numeric scalar of distribution mean. Default is 1}
-
-\item{times_mean}{numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1}
-
-\item{popshare}{numeric: range (0,1). Share of population. Provide share of
-population instead of poverty line}
-
-\item{povline}{numeric: value of poverty line. Default is the \code{mean} value}
-
 \item{complete}{logical: If TRUE, returns a list a cumulative returns from
 previously used \code{get_gd} functions. Default is \code{FALSE}}
 
@@ -40,14 +26,29 @@ previously used \code{get_gd} functions. Default is \code{FALSE}}
 Lorenz Quadratic or "lb" for Lorenz Beta}
 }
 \value{
-list: contains numeric MLD and, if \code{complete=TRUE},
-also returns all params.
+Returns a nested list containing distribution statistics:
+\verb{$dist_stats$mld} is a numeric vector containing the mld calculation.
+\verb{$dist_stats$lorenz} is a numeric vector showing the lorenz curve used.
+If \code{complete = TRUE}, it returns a \code{pipgd_params} object with additional
+details and intermediate calculations.
 }
 \description{
-MLD is computed using either the beta or quadratic Lorenz
-functions.
+MLD (Mean Logarithimic Deviation) is computed using either the beta or
+quadratic Lorenz functions.
 }
 \examples{
+# Example 1: Basic MLD Calculation
 pipgd_mld(welfare = pip_gd$L,
-          weight  = pip_gd$P)
+          weight = pip_gd$P)
+
+# Example 2: MLD with a Specific Lorenz Curve
+pipgd_mld(welfare = pip_gd$L,
+          weight = pip_gd$P,
+          lorenz = "lb")
+
+# Example 3: Detailed Output of MLD Calculation
+pipgd_mld(welfare = pip_gd$L,
+          weight = pip_gd$P,
+          complete = TRUE)
+
 }

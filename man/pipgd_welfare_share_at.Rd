@@ -32,7 +32,13 @@ Lorenz Quadratic or "lb" for Lorenz Beta}
 \item{popshare}{numeric: vector of share of population. Default is \code{seq(from = 1/n, to = 1, by = 1/n)}}
 }
 \value{
-list with vector of share of welfare by quantiles
+Returns a nested list containing distribution statistics:
+\verb{$dist_stats$pop_share} is a numeric vector containing the share of the
+population.
+\verb{$dist_stats$welfare_share_at} is a numeric vector showing the
+corresponding share of welfare.
+If \code{complete = TRUE}, it returns a \code{pipgd_params} object with additional
+details and intermediate calculations.
 }
 \description{
 \code{pipgd_welfare_share_at} returns the share of welfare held by the specified
@@ -41,7 +47,34 @@ select the number of quantiles (10 be default), to estimate the corresponding
 share of welfare in each.
 }
 \examples{
+# Example 1: Basic usage with default parameters
 pipgd_welfare_share_at(welfare = pip_gd$L,
-                        weight = pip_gd$P,
-                        complete = FALSE)
+                       weight = pip_gd$P,
+                       complete = FALSE)
+
+# Example 2: Specifying a custom number of quantiles (n = 5)
+pipgd_welfare_share_at(welfare = pip_gd$L,
+                       weight = pip_gd$P,
+                       complete = FALSE,
+                       n = 5)
+
+# Example 3: Using a custom population share vector
+custom_popshare_vector <- seq(from = 1/13, to = 1, length.out = 13)
+pipgd_welfare_share_at(welfare = pip_gd$L,
+                       weight = pip_gd$P,
+                       complete = FALSE,
+                       popshare = custom_popshare_vector)
+
+
+# Example 4: Using a specified Lorenz curve (e.g., Lorenz Beta)
+pipgd_welfare_share_at(welfare = pip_gd$L,
+                       weight = pip_gd$P,
+                       complete = FALSE,
+                       lorenz = "lb")
+
+# Example 5: Detailed output with complete = TRUE
+pipgd_welfare_share_at(welfare = pip_gd$L,
+                       weight = pip_gd$P,
+                       complete = TRUE)
+
 }

@@ -28,7 +28,7 @@ pipgd_pov_severity(
 \item{mean}{numeric scalar of distribution mean. Default is 1}
 
 \item{times_mean}{numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1}
+relative poverty line. Default is 1}
 
 \item{popshare}{numeric: range (0,1). Share of population. Provide share of
 population instead of poverty line}
@@ -42,49 +42,55 @@ each value.  Default is "dt"}
 \item{lorenz}{character or NULL. Lorenz curve selected. It could be "lq" for
 Lorenz Quadratic or "lb" for Lorenz Beta}
 
+\item{pov_gap}{list: When NULL (default), the welfare and weight
+arguments are used to estimate all underlying parameters.
+Else, should be a list of output from \link{pipgd_pov_gap_nv}.}
+
 \item{complete}{logical: If TRUE, returns a list a cumulative returns from
 previously used \code{get_gd} functions. Default is \code{FALSE}}
 }
 \value{
-list: contains numeric poverty severity. See \code{complete} and \code{format}
+Returns a \code{data.table} and \code{data.frame} object with two variables:
+\code{pov_severity} and \code{lorenz}.  Check \code{format} argument to change
+the output format.
+If \code{complete = TRUE}, it returns a \code{pipgd_params} object with additional
+details and intermediate calculations.
 }
 \description{
 Estimate poverty severity
 }
 \examples{
-pipgd_pov_severity(
-welfare = pip_gd$L,
-weight  = pip_gd$P,
-mean = 109.90,
-povline = 89,
-complete = FALSE)
-# Return data.table
-pipgd_pov_severity(
-welfare = pip_gd$L,
-weight = pip_gd$P,
-povline = c(.5, 1, 2, 3),
-complete = FALSE)
+# Example 1: Basic usage with specified mean and poverty line
+pipgd_pov_severity(welfare = pip_gd$L,
+                   weight  = pip_gd$P,
+                   mean    = 109.90,
+                   povline = 89,
+                   complete = FALSE)
 
-# Return list
-pipgd_pov_severity(
-welfare = pip_gd$L,
-weight = pip_gd$P,
-povline = c(.5, 1, 2, 3),
-format = "list")
+# Example 2: Multiple poverty lines, returning data.table
+pipgd_pov_severity(welfare = pip_gd$L,
+                   weight  = pip_gd$P,
+                   povline = c(0.5, 1, 2, 3),
+                   complete = FALSE)
 
-# Return list complete
-pipgd_pov_severity(
-welfare = pip_gd$L,
-weight = pip_gd$P,
-povline = c(.5, 1, 2, 3),
-format = "list",
-complete = TRUE)
+# Example 3: Multiple poverty lines, returning list format
+pipgd_pov_severity(welfare = pip_gd$L,
+                   weight  = pip_gd$P,
+                   povline = c(0.5, 1, 2, 3),
+                   format  = "list")
 
-# Return data.table
-pipgd_pov_severity(
-welfare = pip_gd$L,
-weight = pip_gd$P,
-povline = c(.5, 1, 2, 3),
-format = "atomic",
-complete = FALSE)
+# Example 4: Multiple poverty lines, returning detailed list format
+pipgd_pov_severity(welfare = pip_gd$L,
+                   weight  = pip_gd$P,
+                   povline = c(0.5, 1, 2, 3),
+                   format  = "list",
+                   complete = TRUE)
+
+# Example 5: Multiple poverty lines, returning atomic format
+pipgd_pov_severity(welfare = pip_gd$L,
+                   weight  = pip_gd$P,
+                   povline = c(0.5, 1, 2, 3),
+                   format  = "atomic",
+                   complete = FALSE)
+
 }

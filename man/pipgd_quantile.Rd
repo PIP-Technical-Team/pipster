@@ -35,11 +35,17 @@ previously used \code{get_gd} functions. Default is \code{FALSE}}
 Lorenz Quadratic or "lb" for Lorenz Beta}
 }
 \value{
-vector of quantiles
+Returns a nested list containing distribution statistics:
+\verb{$dist_stats$pop_share} is a numeric vector containing the share of the
+population.
+\verb{$dist_stats$quantile} is a numeric vector showing the
+corresponding quantile.
+If \code{complete = TRUE}, it returns a \code{pipgd_params} object with additional
+details and intermediate calculations.
 }
 \description{
 \code{pipgd_quantile} returns the quantile (i.e., monetary value) that corresponds
-to share of the population that lives below that threshold.
+to the share of the population that lives below that threshold.
 }
 \details{
 This is basically the inverse of estimating the poverty rate (headcount or
@@ -48,7 +54,7 @@ headcount and \code{pipgd_quantile} returns the "poverty line".
 
 The quantiles are calculated as function of the mean of the distribution
 times an \code{x} factor. Basically, the quantile is \code{x} times the mean. By
-default, the mean is equal to 1, which implies that, if no mean value if
+default, the mean is equal to 1, which implies that, if no mean value is
 provided, the return value is equal to \code{x}.
 
 \strong{NOTE:} the outcome from \code{pipgd_quantile} is not necessarily the inverse
@@ -59,6 +65,30 @@ use the same Lorenz parametrization for any point. The lorenz used is the one
 that fits best for all distributional measures.
 }
 \examples{
+# Example 1: Basic usage with default parameters
 pipgd_quantile(welfare = pip_gd$L,
                weight  = pip_gd$P)
+
+# Example 2: Specifying a custom number of quantiles
+pipgd_quantile(welfare = pip_gd$L,
+               weight  = pip_gd$P,
+               n       = 5)
+
+# Example 3: Using a custom population share vector
+custom_popshare_vector <- c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95)
+pipgd_quantile(welfare = pip_gd$L,
+               weight  = pip_gd$P,
+               popshare = custom_popshare_vector)
+
+
+# Example 4: Specifying a different Lorenz curve ('lb', Lorenz beta)
+pipgd_quantile(welfare = pip_gd$L,
+               weight  = pip_gd$P,
+               lorenz  = "lb")
+
+# Example 5: Detailed output with complete = TRUE and different mean factor
+pipgd_quantile(welfare = pip_gd$L,
+               weight  = pip_gd$P,
+               mean = 1.5,
+               complete = TRUE)
 }

@@ -44,8 +44,7 @@
 #'                n       = 10,
 #'                format  = "dt")
 #'
-#' # Example 3: Calculating quantiles at specific population shares and format
-#' atomic.
+#' # Example 3: Calculating quantiles at specific population shares and format atomic.
 #' specific_popshares <- seq(from = 0, to = 1, length.out = 100)
 #' pipmd_quantile(welfare = pip_md_s$welfare,
 #'                weight  = pip_md_s$weight,
@@ -443,7 +442,7 @@ pipmd_polarization <- function(
     )
   }
   if (is.null(mean)) {
-    mean <- weighted.mean(
+    mean <- stats::weighted.mean(
       x = welfare,
       w = weight
     )
@@ -543,7 +542,7 @@ pipmd_mld <- function(
   }
   format <- match.arg(format)
   if (is.null(mean)) {
-    mean <- weighted.mean(
+    mean <- stats::weighted.mean(
       x = welfare,
       w = weight
     )
@@ -584,26 +583,5 @@ pipmd_mld <- function(
 
 
 
-
-
-
-#
-#
-# md_compute_quantiles # to compute specified quantiles
-#
-
-
-#
-#
-#
-# # welfare at xth percentile
-# return(list(
-#   mean = mean, # no vectorization
-#   median = median,
-#   gini = gini,
-#   polarization = polarization,
-#   mld = mld,
-#   quantiles = quantiles[["quantiles"]]
-# ))
 
 
