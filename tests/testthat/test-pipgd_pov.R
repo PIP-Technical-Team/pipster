@@ -18,12 +18,18 @@ test_that("pipgd_pov_headcount_nv works", {
                                                     weight  = NULL)
   res_with_welfare_weight <- pipgd_pov_headcount_nv(welfare = welfare,
                                                     weight  = weight)
+  res_complete            <- pipgd_pov_headcount_nv(welfare = welfare,
+                                                    weight  = weight,
+                                                    complete = TRUE)
   #__________________________________
   # Type
   expect_equal(class(res_with_params),
                "list")
   expect_equal(class(res_with_welfare_weight),
                "list")
+  expect_equal(class(res_complete),
+               "pipgd_params")
+
   #__________________________________
   # Errors
   expect_error(
@@ -62,6 +68,7 @@ test_that("pipgd_pov_headcount_nv works", {
     )
   #__________________________________
   # Output
+
   expect_equal(res_with_params,
                res_with_welfare_weight)
   expect_equal(
@@ -200,6 +207,40 @@ test_that("pipgd_pov_gap_nv works as expected", {
                      weight  = weight,
                      lorenz  = "Neither NULL, lq or lb"))
 
+  expect_no_error(
+    pipgd_pov_gap_nv(welfare = welfare,
+                     weight  = weight,
+                     popshare = 0.6))
+
+  expect_error(
+    pipgd_pov_gap_nv(welfare = welfare,
+                     weight  = weight,
+                     popshare = 0.6,
+                     povline = 0.8))
+
+
+  # Computation of povline ---------------------------------------
+  out_lq <- pipgd_pov_gap_nv(welfare = welfare,
+                          weight = weight,
+                          popshare = 0.6,
+                          lorenz = "lq")
+
+  pov_gap_lq_bm <- 0.18981108366762
+
+  out_lq$pov_stats$pov_gap |>
+      expect_equal(pov_gap_lq_bm)
+
+  pov_gap_lb_bm <- 0.196668019926771
+
+  out_lb <- pipgd_pov_gap_nv(welfare = welfare,
+                             weight = weight,
+                             popshare = 0.6,
+                             lorenz = "lb")
+
+  #out_lb$pov_stats$pov_gap |>
+  #  expect_equal(pov_gap_lb_bm)
+
+
   # Output -------------------------------------------------------
   res_params_complete <- pipgd_pov_gap_nv(params   = params,
                                           complete = TRUE)
@@ -229,17 +270,9 @@ test_that("pipgd_pov_gap_nv works as expected", {
                      lorenz = "lq")$pov_stats$lorenz,
     "lq")
 
-  # QUESTION: is it an error or is it correct that when complete is FALSE the output is of class list
-  # and not of class pipgd_params? (i am aware this is because in the function definition we specify:
-  #  if (isFALSE(complete)) {
-  #   params <- vector("list")
-  #    })
-  # but I am unsure on why we want to specify it
-
-  # If this is not what we want, I would add expect_equal(class(res_params), class(res_params_complete))
-
   expect_equal(class(res_params),
                "list")
+
   expect_equal(class(res_params_complete),
                "pipgd_params")
 
@@ -398,6 +431,17 @@ test_that("pipgd_pov_severity_nv() -params works", {
 
   expect_equal(res_ps_params,
                res_ps_welfare_weight)
+
+  expect_error(
+    pipgd_pov_severity_nv(welfare = welfare,
+                          weight = NULL)
+  )
+
+  expect_error(
+    pipgd_pov_severity_nv(welfare = NULL,
+                          weight = weight)
+  )
+
   expect_no_error(
     pipgd_pov_severity_nv(params = params,
                           welfare = NULL,
@@ -473,6 +517,26 @@ test_that("pipgd_pov_severity_nv() -pov_gap works", {
                         weight  = weight,
                         pov_gap = pov_gap) |>
     expect_error()
+  pov_gap <- list(pov_stats = list("not_correct" = 1:5))
+  pipgd_pov_severity_nv(welfare = welfare,
+                        weight  = weight,
+                        pov_gap = pov_gap) |>
+    expect_error()
+
+  pov_gap <- pipgd_pov_gap_nv(
+    welfare  = welfare,
+    weight   = weight,
+    complete = TRUE
+  )
+
+  expect_equal(
+    pipgd_pov_severity_nv(pov_gap = pov_gap,
+                          welfare = welfare,
+                          weight = weight),
+
+    pipgd_pov_severity_nv(welfare = welfare,
+                          weight = weight)
+    )
 
 })
 
@@ -482,6 +546,19 @@ test_that("pipgd_pov_severity_nv() -complete works", {
                                             complete = TRUE)
   res_not_complete <- pipgd_pov_severity_nv(welfare  = welfare,
                                             weight   = weight)
+
+  # Checking popshare and povline arguments
+
+test_that("pipgd_pov_severity_nv() -popshare works", {
+
+    popshare = 0.4
+    pipgd_pov_severity_nv(welfare = welfare,
+                          weight  = weight,
+                          popshare = popshare) |>
+      expect_no_error()
+
+  })
+
 
   # Output--------------------------------------
   expect_equal(
@@ -636,6 +713,13 @@ test_that("pipgd_pov_severity inputs works as expected", {
                      povline   = povline,
                      mean      = NULL) |>
     expect_error()
+
+  # Test popshare argument works
+  pipgd_pov_severity(welfare   = welfare,
+                     weight    = weight,
+                     popshare = 0.4) |>
+    expect_no_error()
+
 
   # Test pov_gap argument works as expected
   # NOTE:

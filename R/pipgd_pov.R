@@ -392,7 +392,7 @@ pipgd_pov_severity_nv <- function(
     # __________________________________________________________________________
     #   Computations -----------------------------------------------------------
     if (!is.null(pov_gap)) {
-      if (!all(c("pov_gap", "lorenz") %in% pov_gap$pov_stats |> names())) {
+      if (!all(c("pov_gap", "lorenz") %in% names(pov_gap$pov_stats))) {
         stop("argument `pov_gap` should be the output of `pipster:::pipgd_pov_gap_nv`, else leave `pov_gap = NULL`")
       } else {
         params <- pov_gap
