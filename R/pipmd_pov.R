@@ -23,13 +23,11 @@ pipmd_pov_headcount_nv <- function(
   times_mean = 1
 ){
 
-  #   ____________________________________________________________________________
-  #   Defenses                                                                ####
-  pl <- as.list(environment())
-  check_pipmd_params(pl)
 
-  # ____________________________________________________________________________
-  # Computations ---------------------------------------------------------------
+  #   Defenses -------------
+  check_pipmd_params()
+
+  # Computations ------------
   output <- list()
   hc <- wbpip::md_compute_fgt(
     welfare      = welfare,
@@ -142,36 +140,10 @@ pipmd_pov_gap_nv <- function(
     welfare    ,
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
-    times_mean = 1
-){
-  # ____________________________________________________________________________
-  # Arguments ------------------------------------------------------------------
-  if (is.na(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
-  }
-  if (is.null(welfare)) {
-    cli::cli_abort("Welfare vector cannot be NULL")
-  }
-  if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
-  }
-  if (is.null(weight)) {
-    weight <- rep(1, length = length(welfare))
-    cli::cli_alert_warning(
-      text = "No weight vector specified, each observation assigned equal weight"
-    )
-  }
-  if (is.null(povline) || !is.numeric(povline)) {
-    cli::cli_abort(
-      text = "A numeric poverty line must be specified"
-    )
-  }
-
-  if (povline < min(welfare) || povline > max(welfare)) {
-    cli::cli_alert_info(
-      text = "Note: specified poverty line is not within the welfare range"
-    )
-  }
+    times_mean = 1)
+  {
+  #   Defenses -------------
+  check_pipmd_params()
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
@@ -287,36 +259,10 @@ pipmd_pov_severity_nv <- function(
     welfare    ,
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
-    times_mean = 1
-){
-  # ____________________________________________________________________________
-  # Arguments ------------------------------------------------------------------
-  if (is.na(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
-  }
-  if (!is.numeric(welfare)) {
-    cli::cli_abort("Welfare vector cannot be NULL")
-  }
-  if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
-  }
-  if (is.null(weight)) {
-    weight <- rep(1, length = length(welfare))
-    cli::cli_alert_warning(
-      text = "No weight vector specified, each observation assigned equal weight"
-    )
-  }
-  if (is.null(povline) || !is.numeric(povline)) {
-    cli::cli_abort(
-      text = "A numeric poverty line must be specified"
-    )
-  }
-
-  if (povline < min(welfare) || povline > max(welfare)) {
-    cli::cli_alert_info(
-      text = "Note: specified poverty line is not within the welfare range"
-    )
-  }
+    times_mean = 1)
+  {
+  #   Defenses -------------
+  check_pipmd_params()
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
@@ -431,45 +377,19 @@ pipmd_watts_nv <- function(
     povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1
 ){
-  # ____________________________________________________________________________
-  # Arguments ------------------------------------------------------------------
-  if (is.na(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
-  }
-  if (is.null(welfare)) {
-    cli::cli_abort("Welfare vector cannot be NULL")
-  }
-  if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
-  }
-  if (is.null(weight)) {
-    weight <- rep(1, length = length(welfare))
-    cli::cli_alert_warning(
-      text = "No weight vector specified, each observation assigned equal weight"
-    )
-  }
-  if (is.null(povline) || !is.numeric(povline)) {
-    cli::cli_abort(
-      text = "A numeric poverty line must be specified"
-    )
-  }
-
-  if (povline < min(welfare) || povline > max(welfare)) {
-    cli::cli_alert_info(
-      text = "Note: specified poverty line is not within the welfare range"
-    )
-  }
-
+  #   Defenses -------------
+  check_pipmd_params()
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   output <- list()
-  wi <- wbpip::md_compute_poverty_stats(
+  wi <- wbpip::md_compute_watts(
     welfare      = welfare,
     weight       = weight,
-    povline_lcu  = povline
+    povline      = povline
   )
-  output$watts <- wi$watts
+  attributes(wi) <- NULL
+  output$watts <- wi
 
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------
