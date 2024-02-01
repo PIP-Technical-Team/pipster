@@ -517,6 +517,26 @@ test_that("pipgd_pov_severity_nv() -pov_gap works", {
                         weight  = weight,
                         pov_gap = pov_gap) |>
     expect_error()
+  pov_gap <- list(pov_stats = list("not_correct" = 1:5))
+  pipgd_pov_severity_nv(welfare = welfare,
+                        weight  = weight,
+                        pov_gap = pov_gap) |>
+    expect_error()
+
+  pov_gap <- pipgd_pov_gap_nv(
+    welfare  = welfare,
+    weight   = weight,
+    complete = TRUE
+  )
+
+  expect_equal(
+    pipgd_pov_severity_nv(pov_gap = pov_gap,
+                          welfare = welfare,
+                          weight = weight),
+
+    pipgd_pov_severity_nv(welfare = welfare,
+                          weight = weight)
+    )
 
 })
 

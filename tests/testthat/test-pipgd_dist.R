@@ -12,11 +12,20 @@ params  <- pipgd_select_lorenz(welfare  = welfare,
 
 test_that("pipgd_welfare_share_at inputs work as expected", {
 
-    res1 <- pipgd_welfare_share_at(welfare = welfare,
-                                   weight  = weight)
-    res2 <- pipgd_welfare_share_at(params  = params)
+    res1      <- pipgd_welfare_share_at(welfare  = welfare,
+                                        weight   = weight)
+    res1_full <- pipgd_welfare_share_at(welfare  = welfare,
+                                        weight   = weight,
+                                        complete = TRUE)
+    res2      <- pipgd_welfare_share_at(params   = params)
+    res1_lq   <- pipgd_welfare_share_at(welfare  = welfare,
+                                        weight   = weight,
+                                        complete = TRUE,
+                                        lorenz   = "lq")
 
     expect_equal(res1, res2)
+    expect_equal(res1_full$dist_stats,
+                 res1_lq$dist_stats)
 
     # Welfare and weight arguments
     pipgd_welfare_share_at(params          = NULL,
@@ -236,9 +245,9 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
 # Inputs -------------------------------------------------------------------------
 test_that("pipgd_quantile_welfare_share inputs works as expected", {
 
-    res1 <- pipgd_quantile_welfare_share(welfare = welfare,
-                                         weight  = weight)
-    res2 <- pipgd_quantile_welfare_share(params  = params)
+    res1      <- pipgd_quantile_welfare_share(welfare  = welfare,
+                                              weight   = weight)
+    res2      <- pipgd_quantile_welfare_share(params   = params)
 
     # Welfare and weight arguments
     pipgd_quantile_welfare_share(welfare         = welfare,
@@ -293,12 +302,18 @@ test_that("pipgd_quantile_welfare_share outputs work as expected", {
     res_complete <- pipgd_quantile_welfare_share(welfare  = welfare,
                                                  weight   = weight,
                                                  complete = TRUE)
-
+    res_com_lq   <- pipgd_quantile_welfare_share(welfare  = welfare,
+                                                 weight   = weight,
+                                                 complete = TRUE,
+                                                 lorenz   = "lq")
     res_complete_params <- pipgd_quantile_welfare_share(params   = params,
                                                         complete = TRUE)
 
    res1 |>
       expect_equal(res2)
+
+   expect_equal(res_com_lq$dist_stats,
+                res_complete$dist_stats)
 
    class(res2) |>
       expect_equal("list")
@@ -451,6 +466,7 @@ test_that("pipgd_quantile outputs work as expected", {
                            weight                = weight)
     res2 <- pipgd_quantile(params                = params)
 
+
     res1 |>
         expect_equal(res2)
 
@@ -593,12 +609,34 @@ test_that("pipgd_quantile outputs work as expected", {
 
 # Test pipgd_gini function ####
 test_that("pipgd_gini works as expected", {
-    res1 <- pipgd_gini(welfare = welfare,
-                       weight  = weight)
-    res2 <- pipgd_gini(params  = params)
+
+    res1      <- pipgd_gini(welfare = welfare,
+                            weight  = weight)
+    res1_com  <- pipgd_gini(welfare = welfare,
+                            weight  = weight,
+                            complete = TRUE)
+    res1_lq   <- pipgd_gini(welfare = welfare,
+                            weight  = weight,
+                            complete = TRUE,
+                            lorenz   = "lq")
+    res2      <- pipgd_gini(params = params)
+    res2_com  <- pipgd_gini(params = params,
+                            complete = TRUE)
+    res2_lq   <- pipgd_gini(params = params,
+                            complete = TRUE,
+                            lorenz   = "lq")
 
     res1 |>
         expect_equal(res2)
+    res1_com |>
+      expect_equal(res2_com)
+    res1_lq |>
+      expect_equal(res2_lq)
+
+    expect_equal(res2_com$dist_stats$gini,
+                 res2_lq$dist_stats$gini)
+    expect_equal(res1_com$dist_stats$gini,
+                 res1_lq$dist_stats$gini)
 
     # Output type
     class(res2) |>
