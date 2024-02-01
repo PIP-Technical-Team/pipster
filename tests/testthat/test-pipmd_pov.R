@@ -23,9 +23,6 @@ test_that("pipmd_pov_headcount_nv arguments work as expected", {
                          weight  = weight_test) |>
     expect_error()
 
-  pipmd_pov_headcount_nv(welfare = welfare_s) |>
-    expect_message()
-
   pipmd_pov_headcount_nv(welfare = welfare_s,
                          weight  = weight_s,
                          povline = "non numeric povline") |>
@@ -52,7 +49,8 @@ test_that("pipmd_pov_headcount_nv arguments work as expected", {
 test_that("pipmd_pov_headcount_nv outputs work as expected", {
 
   res <- pipmd_pov_headcount_nv(welfare = welfare_s,
-                                 weight = weight_s)
+                                weight  = weight_s,
+                                povline = 1)
   res_benchmark <- list(pov_headcount   = 0.126034968864758)
 
   class(res) |>
@@ -82,7 +80,7 @@ test_that("pipmd_pov_headcount work as expected -when format is list", {
   weight_test[1]  = NA
 
   povline      <- c(0.5, 1, 2)
-  format          = "list"
+  format       <-  "list"
 
   # Arguments
   pipmd_pov_headcount(welfare        = welfare_test,
@@ -103,10 +101,10 @@ test_that("pipmd_pov_headcount work as expected -when format is list", {
                       format         = format) |>
     expect_error()
 
-  pipmd_pov_headcount(welfare        = welfare_s,
-                      povline        = povline,
-                      format         = format) |>
-    expect_message()
+  # pipmd_pov_headcount(welfare        = welfare_s,
+  #                     povline        = povline,
+  #                     format         = format) |>
+  #   expect_message()
 
   pipmd_pov_headcount(welfare        = welfare_s,
                       weight         = weight_s,
@@ -197,10 +195,10 @@ test_that("pipmd_pov_headcount work as expected -when format is dt", {
                       format         = format) |>
     expect_error()
 
-  pipmd_pov_headcount(welfare        = welfare_s,
-                      povline        = povline,
-                      format         = format) |>
-    expect_message()
+  # pipmd_pov_headcount(welfare        = welfare_s,
+  #                     povline        = povline,
+  #                     format         = format) |>
+  #   expect_message()
 
   pipmd_pov_headcount(welfare        = welfare_s,
                       weight         = weight_s,
@@ -299,10 +297,10 @@ test_that("pipmd_pov_headcount work as expected -when format is atomic", {
                       format         = format) |>
     expect_error()
 
-  pipmd_pov_headcount(welfare        = welfare_s,
-                      povline        = povline,
-                      format         = format) |>
-    expect_message()
+  # pipmd_pov_headcount(welfare        = welfare_s,
+  #                     povline        = povline,
+  #                     format         = format) |>
+  #   expect_message()
 
   pipmd_pov_headcount(welfare        = welfare_s,
                       weight         = weight_s,
@@ -414,7 +412,8 @@ test_that("pipmd_pov_gap_nv arguments work as expected", {
 # Outputs --------------------------------------------------------
 test_that("pipmd_pov_gap_nv outputs work as expected", {
   res <- pipmd_pov_gap_nv(welfare = welfare_s,
-                          weight  = weight_s)
+                          weight  = weight_s,
+                          povline = 1)
 
   res_benchmark <- list(pov_gap   = 0.0376375358962338)
 
@@ -930,6 +929,10 @@ test_that("pipmd_watts work as expected", {
     expect_equal(length(povline))
 
 })
+
+
+
+
 
 
 

@@ -12,59 +12,32 @@
 #' @param weight 	numeric: A vector of population weights. If NULL, a vector of 1s
 #' is used to give equal weight to each observation.
 #' @param povline numeric: Poverty line in international dollars, same units as welfare.
-#' @param mean numeric scalar of distribution mean. Default is 1.
 #' @param times_mean numeric factor that multiplies the mean to create a relative poverty line. Default is 1
 #'
 #' @return numeric: Poverty headcount ratio
 #' @keywords internal
 pipmd_pov_headcount_nv <- function(
-  welfare    = NULL,
-  weight     = NULL,
-  povline    = ifelse(!is.na(mean*times_mean),
-    mean*times_mean,
-    NULL
-  ),
-  mean       = 1,
+  welfare    ,
+  weight     = rep(1, length = length(welfare)),
+  povline    = fmean(welfare, w = weight)*times_mean,
   times_mean = 1
 ){
-  # ____________________________________________________________________________
-  # Arguments ------------------------------------------------------------------
-  if (is.na(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
-  }
-  if (is.null(welfare)) {
-    cli::cli_abort("Welfare vector cannot be NULL")
-  }
-  if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
-  }
-  if (is.null(weight)) {
-    weight <- rep(1, length = length(welfare))
-    cli::cli_alert_warning(
-      text = "No weight vector specified, each observation assigned equal weight"
-    )
-  }
-  if (is.null(povline) || !is.numeric(povline)) {
-    cli::cli_abort(
-      text = "A numeric poverty line must be specified"
-    )
-  }
 
-  if (povline < min(welfare) || povline > max(welfare)) {
-    cli::cli_alert_info(
-      text = "Note: specified poverty line is not within the welfare range"
-    )
-  }
+  #   ____________________________________________________________________________
+  #   Defenses                                                                ####
+  pl <- as.list(environment())
+  check_pipmd_params(pl)
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   output <- list()
-  hc <- wbpip::md_compute_poverty_stats(
+  hc <- wbpip::md_compute_fgt(
     welfare      = welfare,
     weight       = weight,
-    povline_lcu  = povline
+    povline      = povline
   )
-  output$pov_headcount <- hc$headcount
+  attributes(hc) <- NULL
+  output$pov_headcount <- hc
 
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------
@@ -77,11 +50,11 @@ pipmd_pov_headcount_nv <- function(
 #'
 #' @inheritParams pipmd_pov_headcount_nv
 #' @param format atomic character vector: specifies the format of output, either
-#' "dt", "list", or "atomic"
+#'   "dt", "list", or "atomic"
 #'
 #' @return A `data.table` and `data.frame` object of length equal to the povline
-#' vector with variables `povline` and `pov_headcount`.
-#' See `format` to change the output format.
+#'   vector with variables `povline` and `pov_headcount`. See `format` to change
+#'   the output format.
 #'
 #' @export
 #'
@@ -105,20 +78,19 @@ pipmd_pov_headcount_nv <- function(
 #'                     format  = "atomic")
 #'
 pipmd_pov_headcount <- function(
-    welfare    = NULL,
-    weight     = NULL,
-    povline    = NULL,
-    mean       = 1,
+    welfare    ,
+    weight     = rep(1, length = length(welfare)),
+    povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1,
     format     = c("dt", "list", "atomic")
 ){
 
-  # ____________________________________________________________________________
-  # Arguments ------------------------------------------------------------------
+  # ______________________________________________________________
+  # Arguments ----------------------------------------------------
   format <- match.arg(format)
 
-  # ____________________________________________________________________________
-  # Computations ---------------------------------------------------------------
+  # ______________________________________________________________
+  # Computations -------------------------------------------------
   pipmd_pov_headcount_v <- Vectorize(
     FUN            = pipmd_pov_headcount_nv,
     vectorize.args = "povline",
@@ -167,13 +139,9 @@ pipmd_pov_headcount <- function(
 #' @return numeric: Poverty gap
 #' @keywords internal
 pipmd_pov_gap_nv <- function(
-    welfare    = NULL,
-    weight     = NULL,
-    povline    = ifelse(!is.na(mean*times_mean),
-                        mean*times_mean,
-                        NULL
-    ),
-    mean       = 1,
+    welfare    ,
+    weight     = rep(1, length = length(welfare)),
+    povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1
 ){
   # ____________________________________________________________________________
@@ -208,12 +176,14 @@ pipmd_pov_gap_nv <- function(
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   output <- list()
-  pg <- wbpip::md_compute_poverty_stats(
+  pg <- wbpip::md_compute_fgt(
     welfare      = welfare,
     weight       = weight,
-    povline_lcu  = povline
+    povline      = povline,
+    alpha        = 1
   )
-  output$pov_gap <- pg$poverty_gap
+  attributes(pg) <- NULL
+  output$pov_gap <- pg
 
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------
@@ -314,13 +284,9 @@ pipmd_pov_gap <- function(
 #' @return numeric: Poverty severity
 #' @keywords internal
 pipmd_pov_severity_nv <- function(
-    welfare    = NULL,
-    weight     = NULL,
-    povline    = ifelse(!is.na(mean*times_mean),
-                        mean*times_mean,
-                        NULL
-    ),
-    mean       = 1,
+    welfare    ,
+    weight     = rep(1, length = length(welfare)),
+    povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1
 ){
   # ____________________________________________________________________________
@@ -328,7 +294,7 @@ pipmd_pov_severity_nv <- function(
   if (is.na(welfare) |> any()) {
     cli::cli_abort("No elements in welfare vector can be NA")
   }
-  if (is.null(welfare)) {
+  if (!is.numeric(welfare)) {
     cli::cli_abort("Welfare vector cannot be NULL")
   }
   if (length(weight) > 1 & any(is.na(weight))) {
@@ -355,12 +321,14 @@ pipmd_pov_severity_nv <- function(
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   output <- list()
-  pg <- wbpip::md_compute_poverty_stats(
+  ps <- wbpip::md_compute_fgt(
     welfare      = welfare,
     weight       = weight,
-    povline_lcu  = povline
+    povline      = povline,
+    alpha        = 2
   )
-  output$pov_severity <- pg$poverty_severity
+  attributes(ps) <- NULL
+  output$pov_severity <- ps
 
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------
@@ -458,13 +426,9 @@ pipmd_pov_severity <- function(
 #' @return numeric: Watts index
 #' @keywords internal
 pipmd_watts_nv <- function(
-    welfare    = NULL,
-    weight     = NULL,
-    povline    = ifelse(!is.na(mean*times_mean),
-                        mean*times_mean,
-                        NULL
-    ),
-    mean       = 1,
+    welfare    ,
+    weight     = rep(1, length = length(welfare)),
+    povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1
 ){
   # ____________________________________________________________________________
