@@ -72,12 +72,15 @@ pipgd_welfare_share_at <- function(
   pl <- as.list(environment())
   check_pipgd_params(pl)
 
-
   #   ____________________________________________________
   #   Computations                              ####
   if (!is.null(welfare)) {
-    params <- pipgd_select_lorenz(welfare = welfare,
-                                  weight =  weight,
+    params <- pipgd_select_lorenz(welfare    = welfare,
+                                  weight     = weight,
+                                  complete   = TRUE)
+  } else {
+    params <- pipgd_select_lorenz(welfare    = params$data$welfare,
+                                  weight     = params$data$weight,
                                   complete   = TRUE)
   }
 
@@ -87,17 +90,17 @@ pipgd_welfare_share_at <- function(
     match.arg(lorenz, c("lq", "lb"))
   }
 
-  qfun <- paste0("wbpip:::value_at_", lorenz) |>
+  qfun <- paste0("wbpip::value_at_", lorenz) |>
     parse(text = _)
+
   value_at_vc <- Vectorize(eval(qfun),
                            vectorize.args = "x",
-                           SIMPLIFY = TRUE)
+                           SIMPLIFY       = TRUE)
 
   value_at <-  value_at_vc(x = popshare,
                            params$gd_params[[lorenz]]$reg_results$coef[["A"]],
                            params$gd_params[[lorenz]]$reg_results$coef[["B"]],
                            params$gd_params[[lorenz]]$reg_results$coef[["C"]])
-
 
   #   ____________________________________________________________
   #   Return                                                ####
@@ -107,7 +110,8 @@ pipgd_welfare_share_at <- function(
 
   params$dist_stats$popshare         <- popshare
   params$dist_stats$welfare_share_at <- value_at
-  return(params)
+
+  params
 
 }
 
@@ -179,8 +183,12 @@ pipgd_quantile_welfare_share <-
     #   ____________________________________________________
     #   Computations                              ####
     if (!is.null(welfare)) {
-      params <- pipgd_select_lorenz(welfare = welfare,
-                                    weight =  weight,
+      params <- pipgd_select_lorenz(welfare    = welfare,
+                                    weight     =  weight,
+                                    complete   = TRUE)
+    } else {
+      params <- pipgd_select_lorenz(welfare    = params$data$welfare,
+                                    weight     = params$data$weight,
                                     complete   = TRUE)
     }
 
@@ -191,20 +199,22 @@ pipgd_quantile_welfare_share <-
     }
 
     # get shares ------------------------
-    shr <- pipgd_welfare_share_at(params = params,
+    shr <- pipgd_welfare_share_at(params   = params,
                                   complete = FALSE,
-                                  n = n)
+                                  n        = n)
     shr <- c(shr$dist_stats$welfare_share_at[1],
              diff(shr$dist_stats$welfare_share_at))
 
     #   ____________________________________________________________
     #   Return                                                ####
-    if (isFALSE(complete))
+    if (isFALSE(complete)) {
       params <- vector("list")
+    }
 
-    params$dist_stats$popshare         <- popshare
+    params$dist_stats$popshare               <- popshare
     params$dist_stats$quantile_welfare_share <- shr
-    return(params)
+
+    params
 
 }
 
@@ -292,6 +302,10 @@ pipgd_quantile <-
     if (!is.null(welfare)) {
       params <- pipgd_select_lorenz(welfare = welfare,
                                     weight =  weight,
+                                    complete   = TRUE)
+    } else {
+      params <- pipgd_select_lorenz(welfare    = params$data$welfare,
+                                    weight     = params$data$weight,
                                     complete   = TRUE)
     }
 
@@ -386,29 +400,20 @@ pipgd_gini <- function(
       weight   = weight,
       complete = TRUE
     )
+  } else {
+    params <- pipgd_select_lorenz(welfare    = params$data$welfare,
+                                  weight     = params$data$weight,
+                                  complete   = TRUE)
   }
 
   #   _________________________________________________________________
   #   Select Lorenz
   #   _________________________________________________________________
   if (is.null(lorenz)) {
-
-    if (is.null(params$selected_lorenz$for_dist)) {
-      params <- pipgd_select_lorenz(params)
-    }
-
     lorenz <- params$selected_lorenz$for_dist
-
   } else {
-
-    if (!lorenz %in% c("lq", "lb")) {
-      cli::cli_abort("argument {.arg lorenz} must be either
-                     {.val lq} or {.val lb}, not {.val {lorenz}}")
-    }
-
+    match.arg(lorenz, c("lq", "lb"))
   }
-
-
 
   #   _________________________________________________________________
   #   Gini
@@ -495,12 +500,6 @@ pipgd_mld <- function(
     params     = NULL,
     welfare    = NULL,
     weight     = NULL,
-    mean       = 1,
-    times_mean = 1,
-    popshare   = NULL,
-    povline    = ifelse(is.null(popshare),
-                        mean*times_mean,
-                        NA_real_),
     complete   = getOption("pipster.return_complete"),
     lorenz     = NULL
 ){
@@ -518,18 +517,12 @@ pipgd_mld <- function(
     params <- pipgd_select_lorenz(
       welfare  = welfare,
       weight   = weight,
-      complete = TRUE,
-      mean     = mean,
-      povline  = povline
+      complete = TRUE
     )
   } else {
-    params <- pipgd_select_lorenz(
-      welfare  =  params$data$welfare,
-      weight   =  params$data$weight,
-      complete = TRUE,
-      mean     = mean,
-      povline  = povline
-    )
+    params <- pipgd_select_lorenz(welfare    = params$data$welfare,
+                                  weight     = params$data$weight,
+                                  complete   = TRUE)
   }
 
   #   _________________________________________________________________
@@ -541,9 +534,7 @@ pipgd_mld <- function(
     match.arg(lorenz, c("lq", "lb"))
   }
 
-  #   _________________________________________________________________
-  #   Gini
-  #   _________________________________________________________________
+  # Compute mld
   if (lorenz == "lb") {
     mld <-
       wbpip::gd_compute_mld_lb(

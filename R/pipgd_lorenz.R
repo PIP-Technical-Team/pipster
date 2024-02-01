@@ -56,7 +56,6 @@ pipgd_validate_lorenz <-
   pl <- as.list(environment())
   check_pipgd_params(pl)
 
-
   #   ____________________________________________________________________________
   #   Computations                                                            ####
   if (!is.null(welfare) & !is.null(weight)) {
@@ -140,7 +139,7 @@ pipgd_validate_lorenz <-
   params$gd_params$lq$validity <- validity_lq
   params$gd_params$lb$validity <- validity_lb
 
-  return(params)
+  params
 
 }
 
@@ -208,8 +207,8 @@ pipgd_select_lorenz <-
   #   ____________________________________________________________________________
   #   Computations                                                            ####
   if (!is.null(welfare)) {
-    params <- pipgd_validate_lorenz(welfare = welfare,
-                                    weight = weight,
+    params <- pipgd_validate_lorenz(welfare    = welfare,
+                                    weight     = weight,
                                     complete   = TRUE,
                                     mean       = mean,
                                     times_mean = times_mean,
@@ -263,7 +262,8 @@ pipgd_select_lorenz <-
   }
 
   params$selected_lorenz <- l_res
-  return(params)
+
+  params
 
 }
 
@@ -326,15 +326,15 @@ pipgd_lorenz_curve <- function(
     n_bins     = 100
 ){
 
-  #   _________________________________________________________________
+  #____________________________________________________________________
   #   Defenses
-  #   _________________________________________________________________
+  #____________________________________________________________________
   pl <- as.list(environment())
   check_pipgd_params(pl)
 
-  #   _________________________________________________________________
+  #____________________________________________________________________
   #   Params
-  #   _________________________________________________________________
+  #____________________________________________________________________
   if (!is.null(welfare)) {
     params <- pipgd_select_lorenz(
       welfare  = welfare,
@@ -371,7 +371,7 @@ pipgd_lorenz_curve <- function(
   if (lorenz == "lb") {
 
 
-    lc <- wbpip:::value_at_lb(
+    lc <- wbpip::value_at_lb(
       x = x_vec,
       A = params$gd_params$lb$reg_results$coef[["A"]],
       B = params$gd_params$lb$reg_results$coef[["B"]],
@@ -383,7 +383,7 @@ pipgd_lorenz_curve <- function(
     lc <- sapply(
       X   = x_vec,
       FUN = function(x1){
-        wbpip:::value_at_lq(
+        wbpip::value_at_lq(
           x = x1,
           A = params$gd_params$lq$reg_results$coef[["A"]],
           B = params$gd_params$lq$reg_results$coef[["B"]],
@@ -408,9 +408,8 @@ pipgd_lorenz_curve <- function(
   params$lorenz_curve$points <- x_vec
   params$lorenz_curve$lorenz <- lorenz
 
-  return(
-    params
-  )
+  params
+
 
 }
 

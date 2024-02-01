@@ -1,15 +1,15 @@
 # Testing utils functions
 
-welfare = pip_gd$L
-weight = pip_gd$P
-povline = 1
-mean = 1
+welfare    = pip_gd$L
+weight     = pip_gd$P
+povline    = 1
+mean       = 1
 times_mean = 1
-lorenz = "lq"
+lorenz     = "lq"
 
 pipgd_pov_gap_v <- Vectorize(pipgd_pov_gap_nv,
-                               vectorize.args = "povline",
-                               SIMPLIFY = FALSE)
+                             vectorize.args = "povline",
+                             SIMPLIFY       = FALSE)
 
 pipmd_pov_headcount_v <- Vectorize(
     FUN            = pipmd_pov_headcount_nv,
@@ -17,7 +17,8 @@ pipmd_pov_headcount_v <- Vectorize(
     SIMPLIFY       = FALSE
   )
 
-data_list_gd <- pipgd_pov_gap_v(welfare    = welfare,
+data_list_gd <- pipgd_pov_gap_v(
+                       welfare    = welfare,
                        weight     = weight,
                        params     = NULL,
                        povline    = povline,
@@ -41,10 +42,10 @@ test_that("return format works -when format is list", {
   format = "list"
 
   res <- return_format(data_list_gd,
-                       var = "pov_gap",
-                       povline = povline,
+                       var      = "pov_gap",
+                       povline  = povline,
                        complete = TRUE,
-                       format = format)
+                       format   = format)
 
   # Check output class
   class(res) |>
@@ -112,6 +113,7 @@ test_that("return format works -when format is dt", {
 # When format is "list" -------------------------------------------------------------
 
 test_that("return_format_md works as expected ", {
+
   format = "list"
 
   res <- return_format_md(
@@ -145,7 +147,7 @@ test_that("return format md works -when format is atomic", {
     expect_equal("numeric")
 
   # Check complete = TRUE gives error
-  return_format(data_list_md,
+  return_format_md(data_list_md,
                        var = "pov_gap",
                        povline = povline,
                        complete = TRUE,
@@ -170,7 +172,7 @@ test_that("return format md works -when format is dt", {
   #class(res) |>
   #  expect_equal("data.table") & expect_equal("data.frame")
 
-  return_format(data_list_md,
+  return_format_md(data_list_md,
                        var = "pov_gap",
                        povline = povline,
                        complete = TRUE,

@@ -72,9 +72,10 @@ as_pip <- function(
   } else {
     identify_pip_type_check()
   }
-  pip_type <- match.arg(pip_type, c("md", "id", "gd_1", "gd_2", "gd_3", "gd_4", "gd_5"))
 
+  pip_type <- match.arg(pip_type, c("md", "id", "gd_1", "gd_2", "gd_3", "gd_4", "gd_5"))
   convert_to_pip_format_check()
+
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # set up   ---------
@@ -169,10 +170,10 @@ convert_to_pip_format_check <- function() {
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ## Defenses --------
-  stopifnot( exprs = {
-
-  }
-  )
+  # stopifnot( exprs = {
+  #
+  # }
+  # )
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ## Warnings --------

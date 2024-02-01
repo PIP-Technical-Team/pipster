@@ -29,20 +29,21 @@ pipgd_pov_headcount_nv <-
   pl <- as.list(environment())
   check_pipgd_params(pl)
 
-
   #   ____________________________________________________
   #   Computations                              ####
   if (!is.null(welfare)) {
-    params <- pipgd_select_lorenz(welfare  = welfare,
-                                  weight   = weight,
-                                  complete = TRUE,
-                                  mean     = mean,
-                                  povline  = povline)
+    params   <- pipgd_select_lorenz(welfare    = welfare,
+                                    weight     = weight,
+                                    complete   = TRUE,
+                                    mean       = mean,
+                                    popshare   = popshare,
+                                    povline    = povline)
   } else {
     params <- pipgd_select_lorenz(welfare  =  params$data$welfare,
                                   weight   =  params$data$weight,
                                   complete = TRUE,
                                   mean     = mean,
+                                  popshare = popshare,
                                   povline  = povline)
   }
 
@@ -63,7 +64,8 @@ pipgd_pov_headcount_nv <-
 
   params$pov_stats$headcount <- headcount
   params$pov_stats$lorenz    <- lorenz
-  return(params)
+
+  params
 }
 
 
@@ -124,7 +126,7 @@ pipgd_pov_headcount <-
            povline    = ifelse(is.null(popshare),
                                mean*times_mean,
                                NA_real_),
-           format = c("dt", "list", "atomic"),
+           format     = c("dt", "list", "atomic"),
            lorenz     = NULL,
            complete   = getOption("pipster.return_complete")) {
 
@@ -133,14 +135,15 @@ pipgd_pov_headcount <-
     #   ____________________________________________________
     #   Computations                                     ####
     pipgd_pov_headcount_v <- Vectorize(pipgd_pov_headcount_nv,
-                                    vectorize.args = "povline",
-                                    SIMPLIFY = FALSE)
+                                       vectorize.args = "povline",
+                                       SIMPLIFY       = FALSE)
 
 
     ld <- pipgd_pov_headcount_v(welfare    = welfare,
                                 weight     = weight,
                                 params     = params,
                                 povline    = povline,
+                                popshare   = popshare,
                                 complete   = complete,
                                 lorenz     = lorenz,
                                 mean       = mean,
@@ -150,10 +153,10 @@ pipgd_pov_headcount <-
     #   Return                                           ####
 
     out <- return_format(ld,
-                         var = "headcount",
-                         povline = povline,
+                         var      = "headcount",
+                         povline  = povline,
                          complete = complete,
-                         format = format)
+                         format   = format)
     out
   }
 
@@ -178,38 +181,63 @@ pipgd_pov_gap_nv <- function(params     = NULL,
                              complete   = getOption("pipster.return_complete")
                              ){
   #   _________________________________________________________________
-  #   Defenses                                                ####
+  #   Defenses
   pl <- as.list(environment())
   check_pipgd_params(pl)
 
-
   #   ____________________________________________________
-  #   Computations                              ####
-
-
+  #   Compute params
   if (!is.null(welfare)) {
     params <- pipgd_pov_headcount_nv(welfare  = welfare,
                                      weight   = weight,
                                      complete = TRUE,
-                                     mean     = mean,
-                                     povline  = povline)
+                                     popshare = popshare,
+                                     povline  = povline,
+                                     lorenz   = lorenz)
   } else {
     params <- pipgd_pov_headcount_nv(welfare  =  params$data$welfare,
                                      weight   =  params$data$weight,
                                      complete = TRUE,
-                                     mean     = mean,
-                                     povline  = povline)
+                                     popshare = popshare,
+                                     povline  = povline,
+                                     lorenz   = lorenz)
   }
 
-  # force selection of lorenz
+  #   ____________________________________________________
+  # Ensure `povline` exists
+  if (!is.null(popshare)) {
+    povline_lq <- mean * wbpip::derive_lq(popshare,
+                                          params$gd_params$lq$reg_results$coef[["A"]],
+                                          params$gd_params$lq$reg_results$coef[["B"]],
+                                          params$gd_params$lq$reg_results$coef[["C"]])
+
+    povline_lb <- mean * wbpip::derive_lb(popshare,
+                                          params$gd_params$lb$reg_results$coef[["A"]],
+                                          params$gd_params$lb$reg_results$coef[["B"]],
+                                          params$gd_params$lb$reg_results$coef[["C"]])
+
+  } else {
+    povline_lb <- povline_lq <- povline
+
+  }
+
+  # __________________________________________________________________________
+  #   Select Lorenz ----------------------------------------------------------
   if (is.null(lorenz)) {
     lorenz <- params$selected_lorenz$for_pov
   } else {
     match.arg(lorenz, c("lq", "lb"))
   }
 
+  if (lorenz == "lq") {
+    povline <- povline_lq
+  } else if (lorenz == "lb") {
+    povline <- povline_lb
+  }
+  #_______________________________________________________
+  # Call wbpip:: function
   fun_to_vc <-
-    paste0("wbpip:::gd_compute_pov_gap_", lorenz) |>
+    paste0("wbpip::gd_compute_pov_gap_", lorenz) |>
     parse(text = _)
 
   pov_gap <-
@@ -228,7 +256,7 @@ pipgd_pov_gap_nv <- function(params     = NULL,
   }
 
   params$pov_stats$pov_gap <- pov_gap
-  params$pov_stats$lorenz <- lorenz
+  params$pov_stats$lorenz  <- lorenz
 
   params
 }
@@ -298,12 +326,12 @@ pipgd_pov_gap <- function(params     = NULL,
   #   Computations                                     ####
   pipgd_pov_gap_v <- Vectorize(pipgd_pov_gap_nv,
                                vectorize.args = "povline",
-                               SIMPLIFY = FALSE)
-
+                               SIMPLIFY       = FALSE)
 
   ld <- pipgd_pov_gap_v(welfare    = welfare,
                         weight     = weight,
                         params     = params,
+                        popshare   = popshare,
                         povline    = povline,
                         complete   = complete,
                         lorenz     = lorenz,
@@ -314,10 +342,10 @@ pipgd_pov_gap <- function(params     = NULL,
   #   Return                                           ####
 
   out <- return_format(ld,
-                       var = "pov_gap",
-                       povline = povline,
+                       var      = "pov_gap",
+                       povline  = povline,
                        complete = complete,
-                       format = format)
+                       format   = format)
   out
 
 }
@@ -363,36 +391,57 @@ pipgd_pov_severity_nv <- function(
 
     # __________________________________________________________________________
     #   Computations -----------------------------------------------------------
-
     if (!is.null(pov_gap)) {
-      pov_gap = pov_gap
-      if (!pov_gap == pipgd_pov_gap_nv(welfare = welfare, weight = weight)$pov_stats$pov_gap) {
-      #if (is.null(pipgd_pov_gap_nv(welfare = welfare, weight = weight)$pov_stats$pov_gap)) {
+      if (!all(c("pov_gap", "lorenz") %in% names(pov_gap$pov_stats))) {
         stop("argument `pov_gap` should be the output of `pipster:::pipgd_pov_gap_nv`, else leave `pov_gap = NULL`")
       } else {
         params <- pov_gap
       }
-    } 
-    
+    }
+
     if (!is.null(welfare)) {
         params <- pipgd_pov_gap_nv(
-          welfare  = welfare,
-          weight   = weight,
-          complete = TRUE,
-          mean     = mean,
-          povline  = povline
-        )} 
-      
+          welfare    = welfare,
+          weight     = weight,
+          complete   = TRUE,
+          mean       = mean,
+          times_mean = times_mean,
+          popshare   = popshare,
+          povline    = povline,
+          lorenz     = lorenz
+        )}
+
       else {
         params <- pipgd_pov_gap_nv(
-          welfare  =  params$data$welfare,
-          weight   =  params$data$weight,
-          complete = TRUE,
-          mean     = mean,
-          povline  = povline
+          welfare    =  params$data$welfare,
+          weight     =  params$data$weight,
+          complete   = TRUE,
+          mean       = mean,
+          times_mean = times_mean,
+          popshare   = popshare,
+          povline    = povline,
+          lorenz     = lorenz
         )
       }
-    
+
+    #___________________________________________________________________________
+    # Ensure `povline` exists
+    if (!is.null(popshare)) {
+      povline_lq <- mean * wbpip::derive_lq(popshare,
+                                            params$gd_params$lq$reg_results$coef[["A"]],
+                                            params$gd_params$lq$reg_results$coef[["B"]],
+                                            params$gd_params$lq$reg_results$coef[["C"]])
+
+      povline_lb <- mean * wbpip::derive_lb(popshare,
+                                            params$gd_params$lb$reg_results$coef[["A"]],
+                                            params$gd_params$lb$reg_results$coef[["B"]],
+                                            params$gd_params$lb$reg_results$coef[["C"]])
+
+    } else {
+      povline_lb <- povline_lq <- povline
+
+    }
+
     # __________________________________________________________________________
     #   Select Lorenz ----------------------------------------------------------
     if (is.null(lorenz)) {
@@ -405,20 +454,20 @@ pipgd_pov_severity_nv <- function(
     #   Calculate Severity -----------------------------------------------------
     if (lorenz == "lb") {
       pov_severity <-
-        wbpip:::gd_compute_pov_severity_lb(
-          mean      = mean,
-          povline   = povline,
+        wbpip::gd_compute_pov_severity_lb(
+          u         = mean,
           headcount = params$pov_stats$headcount,
           pov_gap   = params$pov_stats$pov_gap,
+          povline   = povline_lb,
           A         = params$gd_params$lb$reg_results$coef[["A"]],
           B         = params$gd_params$lb$reg_results$coef[["B"]],
           C         = params$gd_params$lb$reg_results$coef[["C"]]
         )
     } else if (lorenz == "lq") {
       pov_severity <-
-        wbpip:::gd_compute_pov_severity_lq(
+        wbpip::gd_compute_pov_severity_lq(
           mean      = mean,
-          povline   = povline,
+          povline   = povline_lq,
           headcount = params$pov_stats$headcount,
           pov_gap   = params$pov_stats$pov_gap,
           A         = params$gd_params$lq$reg_results$coef[["A"]],
@@ -519,6 +568,14 @@ pipgd_pov_severity <- function(
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
 
+  # __________________________________________________________________________
+  #   Select Lorenz ----------------------------------------------------------
+  if (is.null(lorenz)) {
+    lorenz <- params$selected_lorenz$for_pov
+  } else {
+    match.arg(lorenz, c("lq", "lb"))
+  }
+
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   pipgd_pov_severity_v <- Vectorize(
@@ -543,7 +600,7 @@ pipgd_pov_severity <- function(
   # Format ---------------------------------------------------------------------
   out <- return_format(
     ld       = list_povsev,
-    povline = povline,
+    povline  = povline,
     var      = "pov_severity",
     format   = format,
     complete = complete
@@ -591,26 +648,47 @@ pipgd_watts_nv <- function(
 
   # __________________________________________________________________________
   #   Computations -----------------------------------------------------------
-
-
     if (!is.null(welfare)) {
       params <- pipgd_pov_headcount_nv(
-        welfare  = welfare,
-        weight   = weight,
-        complete = TRUE,
-        mean     = mean,
-        povline  = povline
+        welfare    = welfare,
+        weight     = weight,
+        complete   = TRUE,
+        mean       = mean,
+        popshare   = popshare,
+        povline    = povline,
+        times_mean = times_mean,
+        lorenz     = lorenz
       )
     } else {
       params <- pipgd_pov_headcount_nv(
-        welfare  =  params$data$welfare,
-        weight   =  params$data$weight,
-        complete = TRUE,
-        mean     = mean,
-        povline  = povline
+        welfare    =  params$data$welfare,
+        weight     =  params$data$weight,
+        complete   = TRUE,
+        mean       = mean,
+        popshare   = popshare,
+        povline    = povline,
+        times_mean = times_mean,
+        lorenz     = lorenz
       )
     }
 
+  #___________________________________________________________________________
+  # Ensure `povline` exists
+  if (!is.null(popshare)) {
+    povline_lq <- mean * wbpip::derive_lq(popshare,
+                                          params$gd_params$lq$reg_results$coef[["A"]],
+                                          params$gd_params$lq$reg_results$coef[["B"]],
+                                          params$gd_params$lq$reg_results$coef[["C"]])
+
+    povline_lb <- mean * wbpip::derive_lb(popshare,
+                                          params$gd_params$lb$reg_results$coef[["A"]],
+                                          params$gd_params$lb$reg_results$coef[["B"]],
+                                          params$gd_params$lb$reg_results$coef[["C"]])
+
+  } else {
+    povline_lb <- povline_lq <- povline
+
+  }
 
   # __________________________________________________________________________
   #   Select Lorenz ----------------------------------------------------------
@@ -621,13 +699,12 @@ pipgd_watts_nv <- function(
   }
 
   # __________________________________________________________________________
-  #   Calculate Severity -----------------------------------------------------
-
+  #   Calculate Watts -----------------------------------------------------
   if (lorenz == "lb") {
     wr <-
-      wbpip:::gd_compute_watts_lb(
+      wbpip::gd_compute_watts_lb(
         mean      = mean,
-        povline   = povline,
+        povline   = povline_lb,
         headcount = params$pov_stats$headcount,
         A         = params$gd_params$lb$reg_results$coef[["A"]],
         B         = params$gd_params$lb$reg_results$coef[["B"]],
@@ -636,9 +713,9 @@ pipgd_watts_nv <- function(
       )
   } else if (lorenz == "lq") {
     wr <-
-      wbpip:::gd_compute_watts_lq(
+      wbpip::gd_compute_watts_lq(
         mu        = mean,
-        povline   = povline,
+        povline   = povline_lq,
         headcount = params$pov_stats$headcount,
         A         = params$gd_params$lb$reg_results$coef[["A"]],
         B         = params$gd_params$lb$reg_results$coef[["B"]],
@@ -754,7 +831,7 @@ pipgd_watts <- function(
   out <- return_format(
     ld       = list_watts,
     var      = "watts",
-    povline = povline,
+    povline  = povline,
     format   = format,
     complete = complete
   )
@@ -764,34 +841,4 @@ pipgd_watts <- function(
   out
 
 }
-#
-#
-# pipgd_pov_headcount_v <- Vectorize(pipgd_pov_headcount_nv,
-#                                    vectorize.args = "povline",
-#                                    SIMPLIFY = FALSE)
-#
-#
-# ld <- pipgd_pov_headcount_v(welfare    = welfare,
-#                             weight     = weight,
-#                             params     = params,
-#                             povline    = povline,
-#                             complete   = complete,
-#                             lorenz     = lorenz,
-#                             mean       = mean,
-#                             times_mean = times_mean)
-#
-# #   ____________________________________________________
-# #   Return                                           ####
-#
-# out <- return_format(ld,
-#                      var = "headcount",
-#                      povline = povline,
-#                      complete = complete,
-#                      format = format)
-#pip
-# out <- return_format(
-#   ld       = list_povsev,
-#   var      = "pov_severity",
-#   format   = format,
-#   complete = complete
-# )
+
