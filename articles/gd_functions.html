@@ -80,14 +80,14 @@ functions for grouped data. Grouped data are consumption expenditure or
 income organized in intervals or bins, such as deciles or percentiles.
 In order to estimate poverty and inequality measures from grouped data,
 one has to derive a continuous Lorenz curve and use it together with
-mean welfare to build a full distribution.</p>
-<p><code>pipster</code> provides a series of functions to estimate
-poverty and inequality measures, based on the methodology of <a href="http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf" class="external-link">Datt
+mean welfare to build a full distribution. <code>pipster</code> provides
+a series of functions to estimate poverty and inequality measures, based
+on the methodology of <a href="http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf" class="external-link">Datt
 (1998)</a>:</p>
 <ul>
-<li><p><code>pipgd_pov_headcount</code> (FGT0)</p></li>
-<li><p><code>pipgd_pov_gap</code> (FGT1)</p></li>
-<li><p><code>pipgd_pov_severity</code> (FGT2)</p></li>
+<li><p><code><a href="../reference/pipgd_pov_headcount.html">pipgd_pov_headcount()</a></code> (FGT0)</p></li>
+<li><p><code><a href="../reference/pipgd_pov_gap.html">pipgd_pov_gap()</a></code> (FGT1)</p></li>
+<li><p><code><a href="../reference/pipgd_pov_severity.html">pipgd_pov_severity()</a></code> (FGT2)</p></li>
 </ul>
 <p>It also provides a series of functions to calculate distributional
 measures and to select and validate the best Lorenz curve for subsequent
@@ -100,7 +100,168 @@ estimation:</p>
 <li><p><code><a href="../reference/pipgd_select_lorenz.html">pipgd_select_lorenz()</a></code></p></li>
 </ul>
 </div>
-  </main>
+<div class="section level2">
+<h2 id="sample-grouped-data">Sample Grouped Data<a class="anchor" aria-label="anchor" href="#sample-grouped-data"></a>
+</h2>
+<p>In this vignette, we will explore several typical scenarios in which
+the pipster package can be effectively utilized. In each of these
+scenario, we will use a sample dataset, <code>pip_gd</code>, available
+with the package and obtained from <a href="http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf" class="external-link">Datt
+(1998)</a>. The dataset shows the distribution of consumption
+expenditure in rural India in 1983. The variables are the following:</p>
+<ul>
+<li>
+<strong>W</strong>: Weights, share of population, sum up to
+100.</li>
+<li>
+<strong>X</strong>: Welfare vector with mean welfare by group.</li>
+<li>
+<strong>P</strong>: Cumulative share of population.</li>
+<li>
+<strong>L</strong>: Cumulative share of welfare.</li>
+<li>
+<strong>R</strong>: Share of welfare, sum up to 1.</li>
+</ul>
+<pre><code><span><span class="co">#&gt;        W      X      P       L           R</span></span>
+<span><span class="co">#&gt; 1   0.92  24.84 0.0092 0.00208 0.002079692</span></span>
+<span><span class="co">#&gt; 2   2.47  35.80 0.0339 0.01013 0.008047104</span></span>
+<span><span class="co">#&gt; 3   5.11  45.36 0.0850 0.03122 0.021093739</span></span>
+<span><span class="co">#&gt; 4   7.90  55.10 0.1640 0.07083 0.039613054</span></span>
+<span><span class="co">#&gt; 5   9.69  64.92 0.2609 0.12808 0.057248211</span></span>
+<span><span class="co">#&gt; 6  15.24  77.08 0.4133 0.23498 0.106902117</span></span>
+<span><span class="co">#&gt; 7  13.64  91.75 0.5497 0.34887 0.113888553</span></span>
+<span><span class="co">#&gt; 8  16.99 110.64 0.7196 0.51994 0.171066582</span></span>
+<span><span class="co">#&gt; 9  10.00 134.90 0.8196 0.64270 0.122764156</span></span>
+<span><span class="co">#&gt; 10  9.78 167.76 0.9174 0.79201 0.149309315</span></span>
+<span><span class="co">#&gt; 11  3.96 215.48 0.9570 0.86966 0.077653634</span></span>
+<span><span class="co">#&gt; 12  1.81 261.66 0.9751 0.91277 0.043099829</span></span>
+<span><span class="co">#&gt; 13  2.49 384.97 1.0000 1.00000 0.087234016</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="case-1-simple-welfare-analysis-and-lorenz-curve">Case 1: Simple Welfare Analysis and Lorenz Curve<a class="anchor" aria-label="anchor" href="#case-1-simple-welfare-analysis-and-lorenz-curve"></a>
+</h2>
+<div class="section level3">
+<h3 id="welfare-share-at-a-given-population-share">1.1 Welfare share at a given population share<a class="anchor" aria-label="anchor" href="#welfare-share-at-a-given-population-share"></a>
+</h3>
+<p>One simple use case is calculating the welfare share of a specific
+share of the population, which can be achieved using
+<code><a href="../reference/pipgd_welfare_share_at.html">pipgd_welfare_share_at()</a></code>:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Calculate the welfare share at a given population share</span></span>
+<span><span class="va">selected_popshare</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span>
+<span><span class="va">welfare_share_50</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_welfare_share_at.html">pipgd_welfare_share_at</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span>
+<span>                                           weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
+<span>                                           popshare <span class="op">=</span> <span class="va">selected_popshare</span>,</span>
+<span>                                           complete <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'collapse::fdroplevels' by</span></span>
+<span><span class="co">#&gt; 'data.table::fdroplevels' when loading 'wbpip'</span></span></code></pre></div>
+<p>When <code>complete = FALSE</code>, the output is a list. The results
+can be accessed like so:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Format the string with the given values</span></span>
+<span><span class="va">formatted_message</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.0f%% of the population owns %.0f%% of welfare."</span>,</span>
+<span>                             <span class="va">selected_popshare</span> <span class="op">*</span> <span class="fl">100</span>,</span>
+<span>                             <span class="va">welfare_share_50</span><span class="op">$</span><span class="va">dist_stats</span><span class="op">$</span><span class="va">welfare_share_at</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">formatted_message</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "50% of the population owns 31% of welfare."</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="quantile-share-vs-cumulative-share">1.2 Quantile share vs cumulative share<a class="anchor" aria-label="anchor" href="#quantile-share-vs-cumulative-share"></a>
+</h3>
+<p><code>pipster</code> has a selection of functions to calculate
+welfare shares. When <code>n</code> is declared,
+<code><a href="../reference/pipgd_quantile_welfare_share.html">pipgd_quantile_welfare_share()</a></code> will calculate the share of
+welfare owned by a specific share of the population, while
+<code><a href="../reference/pipgd_welfare_share_at.html">pipgd_welfare_share_at()</a></code> will return the cumulative
+share:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">quantile_welfare_share</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_quantile_welfare_share.html">pipgd_quantile_welfare_share</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span>
+<span>                                                       weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
+<span>                                                       n <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>                                                       complete <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">quantile_welfare_share_at</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_welfare_share_at.html">pipgd_welfare_share_at</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span>
+<span>                                                    weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
+<span>                                                    n <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>                                                    complete <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Combine into a dataframe for practicality</span></span>
+<span><span class="va">df_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  popshare <span class="op">=</span> <span class="va">quantile_welfare_share</span><span class="op">$</span><span class="va">dist_stats</span><span class="op">$</span><span class="va">popshare</span>,</span>
+<span>  quantile_share <span class="op">=</span> <span class="va">quantile_welfare_share</span><span class="op">$</span><span class="va">dist_stats</span><span class="op">$</span><span class="va">quantile_welfare_share</span>,</span>
+<span>  cumulative_share <span class="op">=</span> <span class="va">quantile_welfare_share_at</span><span class="op">$</span><span class="va">dist_stats</span><span class="op">$</span><span class="va">welfare_share_at</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># View the combined dataframe</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">df_combined</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   popshare quantile_share cumulative_share</span></span>
+<span><span class="co">#&gt; 1      0.2     0.09067747       0.09067747</span></span>
+<span><span class="co">#&gt; 2      0.4     0.13345103       0.22412849</span></span>
+<span><span class="co">#&gt; 3      0.6     0.17201737       0.39614586</span></span>
+<span><span class="co">#&gt; 4      0.8     0.22138237       0.61752824</span></span>
+<span><span class="co">#&gt; 5      1.0     0.38247176       1.00000000</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="estimate-and-plot-the-lorenz-curve">1.3 Estimate and Plot the Lorenz Curve<a class="anchor" aria-label="anchor" href="#estimate-and-plot-the-lorenz-curve"></a>
+</h3>
+<p><code>pister</code> can also be used to estimate a Lorenz curve for a
+dataset of grouped data. One hypothetical workflow:</p>
+<ol style="list-style-type: decimal">
+<li>First, generate the parameters using
+<code><a href="../reference/pipgd_params.html">pipgd_params()</a></code>
+</li>
+<li>Validate the parameters using
+<code><a href="../reference/pipgd_validate_lorenz.html">pipgd_validate_lorenz()</a></code>
+</li>
+<li>Generate the Lorenz curve using the validated parameters with
+<code><a href="../reference/pipgd_lorenz_curve.html">pipgd_lorenz_curve()</a></code>
+</li>
+</ol>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Validate Lorenz curve.</span></span>
+<span><span class="va">parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_params.html">pipgd_params</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span>
+<span>                           weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span><span class="op">)</span></span>
+<span><span class="va">validated_lorenz</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_validate_lorenz.html">pipgd_validate_lorenz</a></span><span class="op">(</span>params <span class="op">=</span> <span class="va">parameters</span>,</span>
+<span>                                          complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Select the best Lorenz curve and check which method has been used.</span></span>
+<span><span class="va">selected_lorenz</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_select_lorenz.html">pipgd_select_lorenz</a></span><span class="op">(</span>params <span class="op">=</span> <span class="va">validated_lorenz</span><span class="op">)</span></span>
+<span><span class="va">lorenz_used_for_dist</span> <span class="op">&lt;-</span> <span class="va">selected_lorenz</span><span class="op">$</span><span class="va">selected_lorenz</span><span class="op">$</span><span class="va">for_dist</span></span>
+<span><span class="va">lorenz_used_for_pov</span> <span class="op">&lt;-</span> <span class="va">selected_lorenz</span><span class="op">$</span><span class="va">selected_lorenz</span><span class="op">$</span><span class="va">for_pov</span></span>
+<span></span>
+<span><span class="va">formatted_message</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%s used for distribution statistics and %s used for poverty metrics."</span>,</span>
+<span>                             <span class="va">lorenz_used_for_dist</span>,</span>
+<span>                             <span class="va">lorenz_used_for_pov</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">formatted_message</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "lq used for distribution statistics and lb used for poverty metrics."</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Plot the Lorenz Curve</span></span>
+<span><span class="va">lorenz_curve_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_lorenz_curve.html">pipgd_lorenz_curve</a></span><span class="op">(</span>params <span class="op">=</span> <span class="va">validated_lorenz</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">lorenz_curve_data</span><span class="op">$</span><span class="va">lorenz_curve</span><span class="op">$</span><span class="va">points</span>,</span>
+<span>     <span class="va">lorenz_curve_data</span><span class="op">$</span><span class="va">lorenz_curve</span><span class="op">$</span><span class="va">output</span>,</span>
+<span>     type <span class="op">=</span> <span class="st">'l'</span>, col <span class="op">=</span> <span class="st">'blue'</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">'Cumulative Share of Population'</span>,</span>
+<span>     ylab <span class="op">=</span> <span class="st">'Cumulative Share of Welfare'</span>,</span>
+<span>     main <span class="op">=</span> <span class="st">'Lorenz Curve'</span>,</span>
+<span>     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>     xaxs <span class="op">=</span> <span class="st">"i"</span>, yaxs <span class="op">=</span> <span class="st">"i"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add the line of equality</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, col <span class="op">=</span> <span class="st">'red'</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<p><img src="gd_functions_files/figure-html/lorenz-plot-1.png" width="700"></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="case-2">Case 2:<a class="anchor" aria-label="anchor" href="#case-2"></a>
+</h2>
+</div>
+<div class="section level2">
+<h2 id="case-3">Case 3:<a class="anchor" aria-label="anchor" href="#case-3"></a>
+</h2>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
