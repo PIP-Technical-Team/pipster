@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">pipster</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,6 +106,12 @@ each value.  Default is "dt"</p></dd>
 Lorenz Quadratic or "lb" for Lorenz Beta</p></dd>
 
 
+<dt>pov_gap</dt>
+<dd><p>list: When NULL (default), the welfare and weight
+arguments are used to estimate all underlying parameters.
+Else, should be a list of output from <a href="pipgd_pov_gap_nv.html">pipgd_pov_gap_nv</a>.</p></dd>
+
+
 <dt>complete</dt>
 <dd><p>logical: If TRUE, returns a list a cumulative returns from
 previously used <code>get_gd</code> functions. Default is <code>FALSE</code></p></dd>
@@ -132,7 +138,7 @@ details and intermediate calculations.</p>
 <span class="r-in"><span>                   complete <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    povline pov_severity lorenz</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;num&gt;        &lt;num&gt; &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:      89   0.04966338     lb</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:      89     1.613349     lq</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 2: Multiple poverty lines, returning data.table</span></span></span>
 <span class="r-in"><span><span class="fu">pipgd_pov_severity</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
@@ -795,6 +801,8 @@ details and intermediate calculations.</p>
 <span class="r-in"><span>                   complete <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          lb          lb          lb          lb </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.007590746 0.090218282 0.321801149 0.482687436 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"povline")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5 1.0 2.0 3.0</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -803,7 +811,7 @@ details and intermediate calculations.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by R.Andres Castaneda.</p>
+  <p></p><p>Developed by R.Andres Castaneda, Zander Prinsloo.</p>
 </div>
 
 <div class="pkgdown-footer-right">

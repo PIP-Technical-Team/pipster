@@ -12,7 +12,7 @@ functions."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
     
     <a class="navbar-brand me-2" href="../index.html">pipster</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,10 +55,6 @@ functions.</p>
 <span>  params <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  welfare <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  weight <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  mean <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  times_mean <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  popshare <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  povline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">popshare</span><span class="op">)</span>, <span class="va">mean</span> <span class="op">*</span> <span class="va">times_mean</span>, <span class="cn">NA_real_</span><span class="op">)</span>,</span>
 <span>  complete <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"pipster.return_complete"</span><span class="op">)</span>,</span>
 <span>  lorenz <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -76,24 +72,6 @@ functions.</p>
 
 <dt>weight</dt>
 <dd><p>numeric vector of cumulative share of the population</p></dd>
-
-
-<dt>mean</dt>
-<dd><p>numeric scalar of distribution mean. Default is 1</p></dd>
-
-
-<dt>times_mean</dt>
-<dd><p>numeric factor that multiplies the mean to create a
-relative poverty line. Default is 1</p></dd>
-
-
-<dt>popshare</dt>
-<dd><p>numeric: range (0,1). Share of population. Provide share of
-population instead of poverty line</p></dd>
-
-
-<dt>povline</dt>
-<dd><p>numeric: value of poverty line. Default is the <code>mean</code> value</p></dd>
 
 
 <dt>complete</dt>
@@ -287,19 +265,6 @@ details and intermediate calculations.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "pipgd_params"</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Example 4: Gini Coefficient with Adjusted Mean</span></span></span>
-<span class="r-in"><span><span class="fu">pipgd_gini</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
-<span class="r-in"><span>           weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
-<span class="r-in"><span>           times_mean <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in pipgd_gini(welfare = pip_gd$L, weight = pip_gd$P, times_mean = 1.5):</span> unused argument (times_mean = 1.5)</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Example 5: Focusing on a Subset Below Poverty Line at 50</span></span></span>
-<span class="r-in"><span><span class="fu">pipgd_gini</span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span></span>
-<span class="r-in"><span>           weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span></span>
-<span class="r-in"><span>           povline <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in pipgd_gini(welfare = pip_gd$L, weight = pip_gd$P, povline = 50):</span> unused argument (povline = 50)</span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -307,7 +272,7 @@ details and intermediate calculations.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by R.Andres Castaneda.</p>
+  <p></p><p>Developed by R.Andres Castaneda, Zander Prinsloo.</p>
 </div>
 
 <div class="pkgdown-footer-right">

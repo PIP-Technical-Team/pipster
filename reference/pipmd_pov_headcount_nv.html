@@ -12,7 +12,7 @@ function pipmd_pov_headcount"><!-- mathjax --><script src="https://cdnjs.cloudfl
     
     <a class="navbar-brand me-2" href="../index.html">pipster</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,10 +52,9 @@ function <a href="pipmd_pov_headcount.html">pipmd_pov_headcount</a></p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pipmd_pov_headcount_nv</span><span class="op">(</span></span>
-<span>  welfare <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  weight <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  povline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">mean</span> <span class="op">*</span> <span class="va">times_mean</span><span class="op">)</span>, <span class="va">mean</span> <span class="op">*</span> <span class="va">times_mean</span>, <span class="cn">NULL</span><span class="op">)</span>,</span>
-<span>  mean <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">welfare</span>,</span>
+<span>  weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">welfare</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  povline <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html" class="external-link">fmean</a></span><span class="op">(</span><span class="va">welfare</span>, w <span class="op">=</span> <span class="va">weight</span><span class="op">)</span> <span class="op">*</span> <span class="va">times_mean</span>,</span>
 <span>  times_mean <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -75,10 +74,6 @@ is used to give equal weight to each observation.</p></dd>
 <dd><p>numeric: Poverty line in international dollars, same units as welfare.</p></dd>
 
 
-<dt>mean</dt>
-<dd><p>numeric scalar of distribution mean. Default is 1.</p></dd>
-
-
 <dt>times_mean</dt>
 <dd><p>numeric factor that multiplies the mean to create a relative poverty line. Default is 1</p></dd>
 
@@ -95,7 +90,7 @@ is used to give equal weight to each observation.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by R.Andres Castaneda.</p>
+  <p></p><p>Developed by R.Andres Castaneda, Zander Prinsloo.</p>
 </div>
 
 <div class="pkgdown-footer-right">

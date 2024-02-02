@@ -31,6 +31,9 @@
     <loc>https://pip-technical-team.github.io/pipster/reference/check_pipgd_params.html</loc>
   </url>
   <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/check_pipmd_pov.html</loc>
+  </url>
+  <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/convert_to_pip_md.html</loc>
   </url>
   <url>
@@ -155,6 +158,9 @@
   </url>
   <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/return_format_md.html</loc>
+  </url>
+  <url>
+    <loc>https://pip-technical-team.github.io/pipster/reference/return_format_md_dist.html</loc>
   </url>
   <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/sum_up_to_one.html</loc>
