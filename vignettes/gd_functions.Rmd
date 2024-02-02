@@ -144,5 +144,26 @@ abline(0, 1, col = 'red', lty = 2)
 ```
 
 
-## Case 2:
+## Case 2: Poverty Profiling
+### 2.1 Poverty Headcount
+First, we can apply the `pipgd_pov_headcount()` function to determine the proportion of the population living below a specified poverty line. According to Datt(1998), the 
+rural poverty line for India in 1983 is Rs. 89:
+
+```{r headcount}
+poverty_line <- 89 
+headcount1 <- pipgd_pov_headcount(welfare = pip_gd$L, 
+                                 weight = pip_gd$P, 
+                                 povline = poverty_line)
+poverty_line <- c(89) 
+headcount2 <- pipgd_pov_headcount(welfare = pip_gd$L, 
+                                 weight = pip_gd$P, 
+                                 povline = poverty_line,
+                                 mean = 109.9,
+                                 times_mean = 10)
+
+print(headcount1, headcount2)
+
+```
+
+
 ## Case 3:
