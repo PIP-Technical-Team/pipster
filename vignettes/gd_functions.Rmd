@@ -111,7 +111,8 @@ print(df_combined)
 # Validate Lorenz curve.
 parameters <- pipgd_params(welfare = pip_gd$L,
                            weight = pip_gd$P)
-validated_lorenz <- pipgd_validate_lorenz(params = parameters)
+validated_lorenz <- pipgd_validate_lorenz(params = parameters,
+                                          complete = TRUE)
 
 # Select the best Lorenz curve and check which method has been used.
 selected_lorenz <- pipgd_select_lorenz(params = validated_lorenz)
