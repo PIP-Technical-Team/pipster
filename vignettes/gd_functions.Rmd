@@ -154,15 +154,20 @@ poverty_line <- 89
 headcount1 <- pipgd_pov_headcount(welfare = pip_gd$L, 
                                  weight = pip_gd$P, 
                                  povline = poverty_line)
-poverty_line <- c(89) 
+print(headcount1)
+```
+
+However, one might want to calculate the poverty line using `povertyline = mean * times_mean` instead.
+When defining these parameters, it is important not to define a poverty line as well,
+otherwise the parameters `mean` and `times_mean` will be ignored:
+
+```{r headcount-times}
 headcount2 <- pipgd_pov_headcount(welfare = pip_gd$L, 
                                  weight = pip_gd$P, 
-                                 povline = poverty_line,
                                  mean = 109.9,
-                                 times_mean = 10)
+                                 times_mean = 0.8)
 
-print(headcount1, headcount2)
-
+print(headcount2)
 ```
 
 
