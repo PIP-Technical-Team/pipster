@@ -2,6 +2,8 @@
 welfare_s = pip_md_s$welfare
 weight_s  = pip_md_s$weight
 
+
+
 # Testing poverty headcount function (non vectorized) ####
 # Arguments ---------------------------------------------------------------
 test_that("pipmd_pov_headcount_nv arguments work as expected", {

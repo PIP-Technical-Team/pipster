@@ -5,8 +5,8 @@
 \title{Mean Log Deviation}
 \usage{
 pipmd_mld(
-  welfare = NULL,
-  weight = NULL,
+  welfare,
+  weight = rep(1, length = length(welfare)),
   mean = NULL,
   format = c("dt", "list", "atomic")
 )

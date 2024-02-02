@@ -141,8 +141,31 @@ return_format_md <- function(
 
 
 
+return_format_md_dist <- \(){
+
+}
 
 
 
 
-
+#' return md dist data format
+#'
+#' @param p object from md_dist functions
+#' @param name character: name of the indicator
+#' @inheritParams pipmd_quantile
+#'
+#' @return depending on format.
+#' @keywords internal
+return_format_md_dist <- function(p, name, format = "atomic") {
+  if (format == "list") {
+    return(p |> as.list())
+  } else if (format == "atomic") {
+    return(p)
+  } else if (format == "dt") {
+    p <- data.table::data.table(
+      indicator = name,
+      value     = p
+    )
+    return(p)
+  }
+}

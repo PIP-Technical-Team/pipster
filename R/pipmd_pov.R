@@ -25,7 +25,7 @@ pipmd_pov_headcount_nv <- function(
 
 
   #   Defenses -------------
-  check_pipmd_params()
+  check_pipmd_pov()
 
   # Computations ------------
   output <- list()
@@ -143,7 +143,7 @@ pipmd_pov_gap_nv <- function(
     times_mean = 1)
   {
   #   Defenses -------------
-  check_pipmd_params()
+  check_pipmd_pov()
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
@@ -262,7 +262,7 @@ pipmd_pov_severity_nv <- function(
     times_mean = 1)
   {
   #   Defenses -------------
-  check_pipmd_params()
+  check_pipmd_pov()
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
@@ -378,7 +378,7 @@ pipmd_watts_nv <- function(
     times_mean = 1
 ){
   #   Defenses -------------
-  check_pipmd_params()
+  check_pipmd_pov()
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
