@@ -3,13 +3,15 @@
 #' Get Parameters and key values derived from the quadratic and Beta Lorenz
 #' parametrization. `welfare` and `population` must be vectors of a group data
 #' dataset
-#'
+#' @name pipgd_params
 #' @param welfare numeric vector of cumulative share of welfare (income/consumption)
 #' @param weight numeric vector of cumulative share of the population
 #' @param mean numeric scalar of distribution mean. Default is NULL
 #' @param population numeric scalar with actual size of population. Default is NULL
 #'
-#' @return list with Group data parameters parameters
+#' @return Returns a `pipgd_params` object with Group data parameters accessible
+#' at `$gd_params` and the data used accessible at `$data`.
+#'
 #' @export
 #' @references
 #' Datt, G. 1998. "[Computational Tools For Poverty Measurement And
@@ -25,11 +27,31 @@
 #' *Journal of Econometrics 40* (2): 327-338.
 #'
 #' @examples
-#' # Get Lorenz parameters
+#' # Example 1: Get Lorenz parameters
 #' res <- pipgd_params(
 #'   welfare = pip_gd$L,
 #'   weight = pip_gd$P)
 #' str(res)
+#' rm(res)
+#'
+#' # Example 2: Get Lorenz parameters with Specific Mean
+#' actual_mean <- 90
+#' res <- pipgd_params(
+#'   welfare = pip_gd$L,
+#'   weight = pip_gd$P,
+#'   mean = actual_mean)
+#' str(res)
+#' rm(res)
+#'
+#' # Example 3: Get Lorenz parameters with Specific Population Count
+#' actual_pop <- 1000
+#' res <- pipgd_params(
+#'   welfare = pip_gd$L,
+#'   weight = pip_gd$P,
+#'   population = actual_pop)
+#' str(res)
+#' rm(res)
+#'
 pipgd_params <- function(welfare,
                          weight,
                          mean = NULL,
@@ -52,11 +74,11 @@ pipgd_params <- function(welfare,
 
   ## STEP 1: Prep data to fit functional form-------------
   functional_form_lq <-
-    wbpip:::create_functional_form_lq(welfare    = welfare,
+    wbpip::create_functional_form_lq(welfare    = welfare,
                                      population = weight)
 
   ## STEP 2: Estimate regression coefficients using LQ parametrization------
-  reg_results_lq <- wbpip:::regres(functional_form_lq, is_lq = TRUE)
+  reg_results_lq <- wbpip::regres(functional_form_lq, is_lq = TRUE)
   names(reg_results_lq$coef) <- c("A", "B", "C")
 
   # add to results list
@@ -65,7 +87,7 @@ pipgd_params <- function(welfare,
 
   ## STEP 3: get key values
   # Compute key numbers from Lorenz quadratic form
-  kv <- wbpip:::gd_lq_key_values(reg_results_lq$coef[["A"]],
+  kv <- wbpip::gd_lq_key_values(reg_results_lq$coef[["A"]],
                          reg_results_lq$coef[["B"]],
                          reg_results_lq$coef[["C"]])
 
@@ -76,11 +98,11 @@ pipgd_params <- function(welfare,
 
   ## STEP 1: Prep data to fit functional form --------------
   functional_form_lb <-
-    wbpip:::create_functional_form_lb(welfare    = welfare,
+    wbpip::create_functional_form_lb(welfare    = welfare,
                                       population = weight)
 
   ## STEP 2: Estimate regression coefficients using LB parameterization
-  reg_results_lb <- wbpip:::regres(functional_form_lb, is_lq = FALSE)
+  reg_results_lb <- wbpip::regres(functional_form_lb, is_lq = FALSE)
   names(reg_results_lb$coef) <- c("A", "B", "C")
 
   # add to results list
@@ -98,77 +120,3 @@ pipgd_params <- function(welfare,
   l_res
 }
 
-
-
-
-#' Check parameters of get_gd functions
-#'
-#' @param lp list of parameters
-#'
-#' @return invisible TRUE
-#' @keywords internal
-check_pipgd_params <- function(lp) {
-
-
-  #   ____________________________________________________________________________
-  #   Computations                                                            ####
-
-  nlp <- names(lp)
-
-  ## params --------------------
-  if ("params" %in% nlp) {
-    if (!is.null(lp$params) && !inherits(lp$params, "pipgd_params")) {
-      cli::cli_abort(c("argument {.field params} must be of
-                       class {.code pipgd_params}.",
-                       "It should be created using {.fun pipgd_params}"))
-    }
-  }
-
-  ## welfare -----------
-
-
-  ## welfare and params -----------
-  if ( all(c("params", "welfare") %in% nlp)) {
-    if (!is.null(lp$params) &&
-        (!is.null(lp$welfare)  || !is.null(lp$population))) {
-      cli::cli_abort("You must specify either {.field params} or
-                {.field welfare} and {.field population}")
-    }
-  }
-
-
-  ## povline and popshare ----------
-  if ( all(c("povline", "popshare") %in% nlp)) {
-    if (!is.na(lp$povline) && !is.null(lp$popshare)) {
-      cli::cli_abort("You must specify either {.field povline} or
-                {.field popshare}")
-    }
-  }
-
-
-  # "Either `params` or `welfare` and `population` should be spefied" =
-  #   (is.null(params) && !is.null(welfare) && !is.null(population)) ||
-  #   (!is.null(params) && is.null(welfare) && is.null(population))
-  #
-  # "`params` should be a list from `pipgd_validate_lorenz()`" =
-  #   is.list(params) || is.null(params)
-  #
-  # "`complete` must be logical" =
-  #   is.logical(complete)
-
-  ## lorenz -----------
-  if ( all(c("lorenz") %in% nlp)) {
-
-    if (!is.null(lp$lorenz) && !lp$lorenz %in% c("lq", "lb")) {
-
-      cli::cli_abort("{.field lorenz} must be either 'lq' or 'lb', or
-                {.code NULL} to let the algorithm select")
-    }
-  }
-
-
-  #   ____________________________________________________________________________
-  #   Return                                                                  ####
-  return(invisible(TRUE))
-
-}

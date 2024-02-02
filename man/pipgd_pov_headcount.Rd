@@ -24,10 +24,10 @@ pipgd_pov_headcount(
 
 \item{weight}{numeric vector of cumulative share of the population}
 
-\item{mean}{numeric scalar of distribution mean. Default is NULL}
+\item{mean}{numeric scalar of distribution mean. Default is 1}
 
 \item{times_mean}{numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1}
+relative poverty line. Default is 1}
 
 \item{popshare}{numeric: range (0,1). Share of population. Provide share of
 population instead of poverty line}
@@ -45,45 +45,47 @@ Lorenz Quadratic or "lb" for Lorenz Beta}
 previously used \code{get_gd} functions. Default is \code{FALSE}}
 }
 \value{
-list of numeric vector. Check \code{format} argument
+Returns a \code{data.table} and \code{data.frame} object with three variables:
+\code{povline}, \code{headcount}, and \code{lorenz}.  Check \code{format} argument to change
+the output format.
+If \code{complete = TRUE}, it returns a \code{pipgd_params} object with additional
+details and intermediate calculations.
 }
 \description{
 Estimate poverty headcount (FGT0)
 }
 \examples{
-pipgd_pov_headcount(
-welfare = pip_gd$L,
-weight  = pip_gd$P,
-mean = 109.90,
-povline = 89,
-complete = FALSE)
-# Return data.table
-pipgd_pov_headcount(
-welfare = pip_gd$L,
-weight = pip_gd$P,
-povline = c(.5, 1, 2, 3),
-complete = FALSE)
+# Example 1: Basic usage with specified mean and poverty line
+pipgd_pov_headcount(welfare = pip_gd$L,
+                    weight  = pip_gd$P,
+                    mean    = 109.90,
+                    povline = 89,
+                    complete = FALSE)
 
-# Return list
-pipgd_pov_headcount(
-welfare = pip_gd$L,
-weight = pip_gd$P,
-povline = c(.5, 1, 2, 3),
-format = "list")
+# Example 2: Multiple poverty lines, returning data.table
+pipgd_pov_headcount(welfare = pip_gd$L,
+                    weight  = pip_gd$P,
+                    povline = c(0.5, 1, 2, 3),
+                    complete = FALSE)
 
-# Return list complete
-pipgd_pov_headcount(
-welfare = pip_gd$L,
-weight = pip_gd$P,
-povline = c(.5, 1, 2, 3),
-format = "list",
-complete = TRUE)
+# Example 3: Multiple poverty lines, returning list format
+pipgd_pov_headcount(welfare = pip_gd$L,
+                    weight  = pip_gd$P,
+                    povline = c(0.5, 1, 2, 3),
+                    format  = "list")
 
-# Return data.table
-pipgd_pov_headcount(
-welfare = pip_gd$L,
-weight = pip_gd$P,
-povline = c(.5, 1, 2, 3),
-format = "atomic",
-complete = FALSE)
+# Example 4: Multiple poverty lines, returning detailed list format
+pipgd_pov_headcount(welfare = pip_gd$L,
+                    weight  = pip_gd$P,
+                    povline = c(0.5, 1, 2, 3),
+                    format  = "list",
+                    complete = TRUE)
+
+# Example 5: Multiple poverty lines, returning atomic format
+pipgd_pov_headcount(welfare = pip_gd$L,
+                    weight  = pip_gd$P,
+                    povline = c(0.5, 1, 2, 3),
+                    format  = "atomic",
+                    complete = FALSE)
+
 }

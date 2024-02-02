@@ -22,10 +22,10 @@ pipgd_select_lorenz(
 
 \item{weight}{numeric vector of cumulative share of the population}
 
-\item{mean}{numeric scalar of distribution mean. Default is NULL}
+\item{mean}{numeric scalar of distribution mean. Default is 1}
 
 \item{times_mean}{numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1}
+relative poverty line. Default is 1}
 
 \item{popshare}{numeric: range (0,1). Share of population. Provide share of
 population instead of poverty line}
@@ -36,33 +36,41 @@ population instead of poverty line}
 previously used \code{get_gd} functions. Default is \code{FALSE}}
 }
 \value{
-list of values with best lorenz fit for distributional Stats
+Returns a list of values with the best lorenz fit given the
+distributional Stats.
 }
 \description{
 Get selected Lorenz curve for distributional stats
 }
 \examples{
-# Using Lorenz parameters from get_gd_lorenz_params
-withr::local_options(pipster.return_complete  = TRUE)
-params <- pipgd_validate_lorenz(
-  welfare = pip_gd$L,
-  weight = pip_gd$P)
+# Example 1: Directly using welfare and weight vectors.
+pipgd_select_lorenz(welfare = pip_gd$L,
+                    weight = pip_gd$P)
 
-params <- pipgd_validate_lorenz(
-  params = params,
-  complete = TRUE)
-pipgd_select_lorenz(params = params)
+# Example 2: Specifying mean and poverty line.
+custom_mean <- sum(pip_gd$W * pip_gd$X) / sum(pip_gd$W)
+pipgd_select_lorenz(welfare = pip_gd$L,
+                    weight = pip_gd$P,
+                    mean = custom_mean,
+                    povline = 1.25)
 
-# Using Lorenz parameters from pipgd_validate_lorenz
-params <- pipgd_validate_lorenz(
-  welfare = pip_gd$L,
-  weight = pip_gd$P,
-  complete = TRUE)
-pipgd_select_lorenz(params = params)
 
-# Using original vectors
+# Example 3.1: Using parameters from pipgd_validate_lorenz()
+validated_parameters <- pipgd_validate_lorenz(welfare = pip_gd$L,
+                                              weight = pip_gd$P,
+                                              complete = TRUE)
+pipgd_select_lorenz(params = validated_parameters)
 
-pipgd_select_lorenz(
-  welfare = pip_gd$L,
-  weight = pip_gd$P)
+
+# Example 3.2: Piping from from pipgd_params |> pipgd_validate_lorenz()
+pipgd_params(welfare = pip_gd$L,
+             weight = pip_gd$P) |>
+pipgd_validate_lorenz(complete = TRUE)|>
+pipgd_select_lorenz()
+
+# Example 4: Detailed output with complete = TRUE
+pipgd_select_lorenz(welfare = pip_gd$L,
+                    weight = pip_gd$P,
+                    complete = TRUE)
+
 }

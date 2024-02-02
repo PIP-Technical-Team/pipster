@@ -16,7 +16,8 @@ pipgd_params(welfare, weight, mean = NULL, population = NULL)
 \item{population}{numeric scalar with actual size of population. Default is NULL}
 }
 \value{
-list with Group data parameters parameters
+Returns a \code{pipgd_params} object with Group data parameters accessible
+at \verb{$gd_params} and the data used accessible at \verb{$data}.
 }
 \description{
 Get Parameters and key values derived from the quadratic and Beta Lorenz
@@ -24,11 +25,31 @@ parametrization. \code{welfare} and \code{population} must be vectors of a group
 dataset
 }
 \examples{
-# Get Lorenz parameters
+# Example 1: Get Lorenz parameters
 res <- pipgd_params(
   welfare = pip_gd$L,
   weight = pip_gd$P)
 str(res)
+rm(res)
+
+# Example 2: Get Lorenz parameters with Specific Mean
+actual_mean <- 90
+res <- pipgd_params(
+  welfare = pip_gd$L,
+  weight = pip_gd$P,
+  mean = actual_mean)
+str(res)
+rm(res)
+
+# Example 3: Get Lorenz parameters with Specific Population Count
+actual_pop <- 1000
+res <- pipgd_params(
+  welfare = pip_gd$L,
+  weight = pip_gd$P,
+  population = actual_pop)
+str(res)
+rm(res)
+
 }
 \references{
 Datt, G. 1998. "\href{https://ageconsearch.umn.edu/record/94862/}{Computational Tools For Poverty Measurement And Analysis}". FCND

@@ -2,37 +2,39 @@ test_that("Groupd data is converted properly", {
 
   # Group  Data 1 --------
   ## it does not modify it is already setup ----
-  as_pip(dt = pip_gd,
+  as_pip(dt          = pip_gd,
          welfare_var = "L",
-         weight_var = "P",
-         pip_type = "gd_1") |>
-    expect_equal(pip_gd, ignore_attr =  TRUE)
-
+         weight_var  = "P",
+         pip_type    = "gd_1",
+         verbose     = T) |>
+    expect_equal(pip_gd,
+                 ignore_attr =  TRUE)
 
   ## transform to range from 0 to 1 -----
   pip_gd2 <- pip_gd |>
     ftransform(L = L*100)
 
-
-  as_pip(dt = pip_gd2,
+  as_pip(dt          = pip_gd2,
          welfare_var = "L",
-         weight_var = "P",
-         pip_type = "gd_1") |>
-    expect_equal(pip_gd, ignore_attr =  TRUE)
+         weight_var  = "P",
+         pip_type    = "gd_1") |>
+    expect_equal(pip_gd,
+                 ignore_attr =  TRUE)
 
   ## identify type ----
-  as_pip(dt = pip_gd2,
+  as_pip(dt          = pip_gd2,
          welfare_var = "L",
-         weight_var = "P") |>
-    expect_equal(pip_gd, ignore_attr =  TRUE)
+         weight_var  = "P") |>
+    expect_equal(pip_gd,
+                 ignore_attr =  TRUE)
 
   # Group Data 2 ------
 
   ## convert R and W ----
-  gd <- as_pip(dt = pip_gd,
+  gd <- as_pip(dt          = pip_gd,
                welfare_var = "R",
-               weight_var = "W",
-               pip_type = "gd_2")
+               weight_var  = "W",
+               pip_type    = "gd_2")
 
 
   R <-
@@ -89,10 +91,10 @@ test_that("Groupd data is converted properly", {
 test_that("Microdata is converted properly", {
 
   # check data is sorted -------
-  as_pip(dt = pip_md,
-         welfare_var = "welfare",
-         weight_var = "weight",
-         pip_type = "md") |>
+  as_pip(dt                  = pip_md,
+         welfare_var         = "welfare",
+         weight_var          = "weight",
+         pip_type            = "md") |>
     expect_equal(roworderv(pip_md, "welfare"),
                  ignore_attr =  TRUE)
 
@@ -100,11 +102,39 @@ test_that("Microdata is converted properly", {
 
 
 test_that("Imputed data", {
-  as_pip(dt = pip_id,
-         welfare_var = "welfare",
-         weight_var = "weight",
-         imputation_id_var = "imputation_id",
-         pip_type = "id") |>
+  as_pip(dt                  = pip_id,
+         welfare_var         = "welfare",
+         weight_var          = "weight",
+         imputation_id_var   = "imputation_id",
+         pip_type            = "id") |>
     expect_equal(roworderv(pip_id, c("imputation_id", "welfare")),
                  ignore_attr =  TRUE)
+})
+
+
+
+test_that("Errors in as_pip pip_type", {
+  pip_type <- "not_pip_type"
+   convert_to_pip_format_check() |>
+     expect_error()
+#
+#      if (l$pip_type == "gd_1") {
+#
+#      } else if (l$pip_type == "gd_2") {
+#
+#      } else if (l$pip_type == "gd_3") {
+#
+#      } else if (l$pip_type == "gd_4") {
+#
+#      } else if (l$pip_type == "gd_5") {
+#
+#      } else if (l$pip_type == "md") {
+#
+#      } else if (l$pip_type == "id") {
+#
+#      } else {
+#        cli::cli_abort("{.var pip_type} {.field {pip_type}} is not a valid value")
+#      }
+
+
 })

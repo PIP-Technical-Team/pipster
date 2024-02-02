@@ -32,17 +32,49 @@ Lorenz Quadratic or "lb" for Lorenz Beta}
 \item{popshare}{numeric: vector of share of population. Default is \code{seq(from = 1/n, to = 1, by = 1/n)}}
 }
 \value{
-list with welfare shares
+Returns a nested list containing distribution statistics:
+\verb{$dist_stats$pop_share} is a numeric vector containing the share of the
+population.
+\verb{$dist_stats$quantile_welfare_share} is a numeric vector showing the
+corresponding share of welfare.
+If \code{complete = TRUE}, it returns a \code{pipgd_params} object with additional
+details and intermediate calculations.
 }
 \description{
 \code{pipgd_quantile_welfare_share} returns the share of welfare held by a
 particular quantile. Notice that \code{pipgd_welfare_share_at} get the share of
-welfare held by a particular share of the population. Instead,
-\code{pipgd_quantile_welfare_share} returns the proportion of welfare that only
-the specified quantile holds.
+welfare held by a particular share of the population, which is in a sense
+the cumulative share. Instead, \code{pipgd_quantile_welfare_share} returns
+the proportion of welfare that only the specified quantile holds.
 }
 \examples{
+# Example 1: Basic usage with default parameters
 pipgd_quantile_welfare_share(welfare = pip_gd$L,
-                        weight = pip_gd$P,
-                        complete = FALSE)
+                             weight = pip_gd$P,
+                             complete = FALSE)
+
+# Example 2: Specifying a custom quantile (e.g. 5)
+pipgd_quantile_welfare_share(welfare = pip_gd$L,
+                             weight = pip_gd$P,
+                             complete = FALSE,
+                             n = 5)
+
+# Example 3: Using a custom population share vector
+custom_popshare_vector <- seq(from = 1/13, to = 1, length.out = 13)
+pipgd_quantile_welfare_share(welfare = pip_gd$L,
+                             weight = pip_gd$P,
+                             complete = FALSE,
+                             popshare = custom_popshare_vector)
+
+# Example 4: Using a different Lorenz curve (e.g., Lorenz Beta)
+pipgd_quantile_welfare_share(welfare = pip_gd$L,
+                             weight = pip_gd$P,
+                             complete = FALSE,
+                             lorenz = "lb")
+
+# Example 5: Detailed output with complete = TRUE
+pipgd_quantile_welfare_share(welfare = pip_gd$L,
+                             weight = pip_gd$P,
+                             complete = TRUE)
+
 }

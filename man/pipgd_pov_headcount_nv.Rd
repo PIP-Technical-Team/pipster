@@ -23,10 +23,10 @@ pipgd_pov_headcount_nv(
 
 \item{weight}{numeric vector of cumulative share of the population}
 
-\item{mean}{numeric scalar of distribution mean. Default is NULL}
+\item{mean}{numeric scalar of distribution mean. Default is 1}
 
 \item{times_mean}{numeric factor that multiplies the mean to create a
-relative povertyline. Default is 1}
+relative poverty line. Default is 1}
 
 \item{popshare}{numeric: range (0,1). Share of population. Provide share of
 population instead of poverty line}
@@ -43,7 +43,7 @@ previously used \code{get_gd} functions. Default is \code{FALSE}}
 numeric poverty headcount
 }
 \description{
-This function is not vectorized and thus is not exported.Use
+This function is not vectorized and thus is not exported. Use
 \link{pipgd_pov_headcount} instead.
 }
 \keyword{internal}

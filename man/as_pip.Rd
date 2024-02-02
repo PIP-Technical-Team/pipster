@@ -41,8 +41,24 @@ Convert welfare, weight and (optionally) imputed id vectors to PIP format
 from a data.frame
 }
 \examples{
+# Example 1: Basic usage with md data.
 as_pip(dt = pip_md,
-welfare_var = "welfare",
-weight_var = "weight") |>
+       welfare_var = "welfare",
+       weight_var = "weight") |>
 class()
+
+# Example 2: Including imputation_id_var
+as_pip(dt = pip_id,
+       welfare_var = "welfare",
+       weight_var = "weight",
+       imputation_id_var = "imputation_id") |>
+class()
+
+# Example 3: Basic usage with gd data and explicit pip_type
+as_pip(dt = pip_gd,
+       welfare_var = "L",
+       weight_var = "P",
+       pip_type = "gd_1") |>
+class()
+
 }

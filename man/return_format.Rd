@@ -17,6 +17,11 @@ return_format(
 
 \item{var}{character: name of variable to be returned.}
 
+\item{povline}{numeric: poverty line}
+
+\item{complete}{logical: if \code{format = "list"} then \code{complete = TRUE} gives complete
+information output.}
+
 \item{format}{character: either "dt" for data.table, "list" or "atomic" for a
 single numeric vector, whose names are corresponding selected Lorenz for
 each value.  Default is "dt"}

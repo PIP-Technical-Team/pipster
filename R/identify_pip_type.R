@@ -168,8 +168,12 @@ identify_pip_type_check <- function() {
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ## add warnings for NA values --------
-
-  if (any(l$welfare < 0)) {
+  # if (any(is.na(l$welfare))) {
+  #   ww_n <- which(is.na(l$welfare))
+  #   lw_n <- length(ww_n)
+  #   cli::cli_warn("{.var welfare} has {lw_n} NA value{?s}")
+  # }
+  if (any(na_omit(l$welfare) < 0)) {
     ww_n <- which(l$welfare < 0)
     lw_n <- length(ww_n)
     cli::cli_warn("{.var welfare} has {lw_n} negative value{?s}")
@@ -221,8 +225,10 @@ sum_up_to_one <- function(x, digits = 0) {
 is_cumulative <- function(x, digits = 8) {
 
   share_x <- c(x[1], diff(x))
-  sum_up_to_one(share_x, digits = digits)
+  ret     <- sum_up_to_one(share_x,
+                           digits = digits)
 
+  ret
 }
 
 # # Check that share of income is always increasing

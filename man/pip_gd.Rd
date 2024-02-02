@@ -8,7 +8,7 @@
 A grouped data frame with five variables:
 \describe{
 \item{\code{W}}{Weights, share of population, sum up to 100}
-\item{\code{X}}{welfare vector with mean welfare by decile}
+\item{\code{X}}{welfare vector with mean welfare by group}
 \item{\code{P}}{Cumulative share of population}
 \item{\code{L}}{Cumulative share of welfare}
 \item{\code{R}}{share of welfare, sum up to 1}
