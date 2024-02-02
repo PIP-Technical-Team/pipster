@@ -56,7 +56,6 @@ pipgd_validate_lorenz <-
   pl <- as.list(environment())
   check_pipgd_params(pl)
 
-
   #   ____________________________________________________________________________
   #   Computations                                                            ####
   if (!is.null(welfare) & !is.null(weight)) {
@@ -64,20 +63,23 @@ pipgd_validate_lorenz <-
                            weight  = weight)
   } else if (is.null(params$gd_params$lq$reg_results$coef)) {
     stop(
-      "Either `welfare` and `weights` should be specified or `params` should be output from `pipster::pipgd_params()`"
+      "Either `welfare` and `weights` should be specified or `params`
+      should be output from `pipster::pipgd_params()`"
     )
   }
 
   if (!is.null(popshare)) {
-    povline_lq <- mean * wbpip::derive_lq(popshare,
-                                   params$gd_params$lq$reg_results$coef[["A"]],
-                                   params$gd_params$lq$reg_results$coef[["B"]],
-                                   params$gd_params$lq$reg_results$coef[["C"]])
+    povline_lq <-
+      mean * wbpip::derive_lq(popshare,
+                              params$gd_params$lq$reg_results$coef[["A"]],
+                              params$gd_params$lq$reg_results$coef[["B"]],
+                              params$gd_params$lq$reg_results$coef[["C"]])
 
-    povline_lb <- mean * wbpip::derive_lb(popshare,
-                                   params$gd_params$lb$reg_results$coef[["A"]],
-                                   params$gd_params$lb$reg_results$coef[["B"]],
-                                   params$gd_params$lb$reg_results$coef[["C"]])
+    povline_lb <-
+      mean * wbpip::derive_lb(popshare,
+                              params$gd_params$lb$reg_results$coef[["A"]],
+                              params$gd_params$lb$reg_results$coef[["B"]],
+                              params$gd_params$lb$reg_results$coef[["C"]])
 
   } else {
     povline_lb <- povline_lq <- povline
@@ -94,22 +96,24 @@ pipgd_validate_lorenz <-
     params$gd_params$lq$key_values$n,
     params$gd_params$lq$key_values$r^2)
 
-  headcount_lq <- wbpip::gd_compute_headcount_lq(mean,
-                                          povline_lq,
-                                          params$gd_params$lq$reg_results$coef[["B"]],
-                                          params$gd_params$lq$key_values$m,
-                                          params$gd_params$lq$key_values$n,
-                                          params$gd_params$lq$key_values$r)
+  headcount_lq <-
+    wbpip::gd_compute_headcount_lq(mean,
+                                   povline_lq,
+                                   params$gd_params$lq$reg_results$coef[["B"]],
+                                   params$gd_params$lq$key_values$m,
+                                   params$gd_params$lq$key_values$n,
+                                   params$gd_params$lq$key_values$r)
 
   validity_lq$headcount <- headcount_lq
 
   # Validity of LB
   # Compute poverty stats
-  headcount_lb <- wbpip::gd_compute_headcount_lb(mean,
-                                          povline_lb,
-                                          params$gd_params$lb$reg_results$coef[["A"]],
-                                          params$gd_params$lb$reg_results$coef[["B"]],
-                                          params$gd_params$lb$reg_results$coef[["C"]])
+  headcount_lb <-
+    wbpip::gd_compute_headcount_lb(mean,
+                                   povline_lb,
+                                   params$gd_params$lb$reg_results$coef[["A"]],
+                                   params$gd_params$lb$reg_results$coef[["B"]],
+                                   params$gd_params$lb$reg_results$coef[["C"]])
 
   # Check validity
   validity_lb <-
@@ -140,7 +144,7 @@ pipgd_validate_lorenz <-
   params$gd_params$lq$validity <- validity_lq
   params$gd_params$lb$validity <- validity_lb
 
-  return(params)
+  params
 
 }
 
@@ -208,8 +212,15 @@ pipgd_select_lorenz <-
   #   ____________________________________________________________________________
   #   Computations                                                            ####
   if (!is.null(welfare)) {
-    params <- pipgd_validate_lorenz(welfare = welfare,
-                                    weight = weight,
+    params <- pipgd_validate_lorenz(welfare    = welfare,
+                                    weight     = weight,
+                                    complete   = TRUE,
+                                    mean       = mean,
+                                    times_mean = times_mean,
+                                    povline    = povline,
+                                    popshare   = popshare)
+  } else {
+    params <- pipgd_validate_lorenz(params     = params,
                                     complete   = TRUE,
                                     mean       = mean,
                                     times_mean = times_mean,
@@ -263,7 +274,8 @@ pipgd_select_lorenz <-
   }
 
   params$selected_lorenz <- l_res
-  return(params)
+
+  params
 
 }
 
@@ -301,13 +313,13 @@ pipgd_select_lorenz <-
 #'                    n_bins = 50)
 #'
 #' # Example 3: Using pre-calculated parameters
-#' validated_parameters <- pipgd_validate_lorenz(welfare = pip_gd$L,
-#'                                               weight = pip_gd$P)
-#' pipgd_lorenz_curve(params = validated_parameters)
+#' use_params <- pipgd_params(welfare = pip_gd$L,
+#'                            weight = pip_gd$P)
+#' pipgd_lorenz_curve(params = use_params)
 #'
 #'
 #' # Example 4: Generating Lorenz Curve with a specific Lorenz model(e.g. Lorenz beta)
-#' pipgd_lorenz_curve(params = validated_parameters,
+#' pipgd_lorenz_curve(params = use_params,
 #'                    lorenz = "lb")
 #'
 #'
@@ -326,15 +338,15 @@ pipgd_lorenz_curve <- function(
     n_bins     = 100
 ){
 
-  #   _________________________________________________________________
+  #____________________________________________________________________
   #   Defenses
-  #   _________________________________________________________________
+  #____________________________________________________________________
   pl <- as.list(environment())
   check_pipgd_params(pl)
 
-  #   _________________________________________________________________
+  #____________________________________________________________________
   #   Params
-  #   _________________________________________________________________
+  #____________________________________________________________________
   if (!is.null(welfare)) {
     params <- pipgd_select_lorenz(
       welfare  = welfare,
@@ -371,7 +383,7 @@ pipgd_lorenz_curve <- function(
   if (lorenz == "lb") {
 
 
-    lc <- wbpip:::value_at_lb(
+    lc <- wbpip::value_at_lb(
       x = x_vec,
       A = params$gd_params$lb$reg_results$coef[["A"]],
       B = params$gd_params$lb$reg_results$coef[["B"]],
@@ -383,7 +395,7 @@ pipgd_lorenz_curve <- function(
     lc <- sapply(
       X   = x_vec,
       FUN = function(x1){
-        wbpip:::value_at_lq(
+        wbpip::value_at_lq(
           x = x1,
           A = params$gd_params$lq$reg_results$coef[["A"]],
           B = params$gd_params$lq$reg_results$coef[["B"]],
@@ -408,9 +420,8 @@ pipgd_lorenz_curve <- function(
   params$lorenz_curve$points <- x_vec
   params$lorenz_curve$lorenz <- lorenz
 
-  return(
-    params
-  )
+  params
+
 
 }
 

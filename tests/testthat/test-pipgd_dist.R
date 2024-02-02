@@ -3,7 +3,6 @@
 # Test pipgd_welfare_share_at function ####
 
 welfare <- pip_gd$L
-
 weight  <- pip_gd$P
 params  <- pipgd_select_lorenz(welfare  = welfare,
                                weight   = weight,
@@ -13,11 +12,20 @@ params  <- pipgd_select_lorenz(welfare  = welfare,
 
 test_that("pipgd_welfare_share_at inputs work as expected", {
 
-    res1 <- pipgd_welfare_share_at(welfare = welfare,
-                                   weight  = weight)
-    res2 <- pipgd_welfare_share_at(params  = params)
+    res1      <- pipgd_welfare_share_at(welfare  = welfare,
+                                        weight   = weight)
+    res1_full <- pipgd_welfare_share_at(welfare  = welfare,
+                                        weight   = weight,
+                                        complete = TRUE)
+    res2      <- pipgd_welfare_share_at(params   = params)
+    res1_lq   <- pipgd_welfare_share_at(welfare  = welfare,
+                                        weight   = weight,
+                                        complete = TRUE,
+                                        lorenz   = "lq")
 
     expect_equal(res1, res2)
+    expect_equal(res1_full$dist_stats,
+                 res1_lq$dist_stats)
 
     # Welfare and weight arguments
     pipgd_welfare_share_at(params          = NULL,
@@ -62,21 +70,32 @@ test_that("pipgd_welfare_share_at inputs work as expected", {
 
 # Outputs ------------------------------------------------------------------------------
 test_that("pipgd_welfare_share_at outputs work as expected", {
+    popshare = c(0.4, 0.7, 1.0)
 
-    res1 <- pipgd_welfare_share_at(welfare          = welfare,
-                                   weight           = weight)
-    res2 <- pipgd_welfare_share_at(params           = params)
+    res1         <- pipgd_welfare_share_at(welfare  = welfare,
+                                           weight   = weight)
+    res2         <- pipgd_welfare_share_at(params   = params)
     res_complete <- pipgd_welfare_share_at(welfare  = welfare,
                                            weight   = weight,
                                            complete = TRUE)
+
+    res_complete_params <- pipgd_welfare_share_at(params   = params,
+                                                  complete = TRUE)
+    res1 |>
+      expect_equal(res2)
+
+    res_complete_params |>
+      expect_equal(res_complete)
 
     # Class of outputs
     class(res1) |>
         expect_equal("list")
 
+    class(res_complete) |>
+      expect_equal("pipgd_params")
+
     # Length of output
     n = 5
-
     res_n5 <- pipgd_welfare_share_at(welfare = welfare,
                                      weight  = weight,
                                      n       = n)
@@ -87,6 +106,11 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
     length(res_n5$dist_stats$welfare_share_at) |>
         expect_equal(n)
 
+    length(res1) |>
+        expect_equal(1)
+    length(res1) |>
+        expect_equal(length(res2))
+
     # Value of output
     res_n5$dist_stats$popshare[n] |>
         expect_equal(1)
@@ -94,13 +118,66 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
     res_n5$dist_stats$popshare[n] |>
         expect_equal(res_n5$dist_stats$welfare_share_at[n])
 
+    # Computations
+    # When lorenz = "lb" and popshare is supplied
+    out <- pipgd_welfare_share_at(welfare  = welfare,
+                                  weight   = weight,
+                                  lorenz   = "lb",
+                                  popshare = popshare)
+
+    out$dist_stats$popshare |>
+        expect_equal(popshare)
+
+    welfare_share_at_benchmark = c(0.222132795469908, 0.499669550515477, 1)
+
+    out$dist_stats$welfare_share_at |>
+        expect_equal(welfare_share_at_benchmark)
+
+    # When lorenz = "lq" and popshare is supplied
+    out <- pipgd_welfare_share_at(welfare  = welfare,
+                                  weight   = weight,
+                                  lorenz   = "lq",
+                                  popshare = popshare)
+
+    welfare_share_at_benchmark = c(0.224128492162046, 0.499035579672699, 1)
+
+    out$dist_stats$welfare_share_at |>
+      expect_equal(welfare_share_at_benchmark)
+
+    # When n is supplied and lorenz is "lb"
+    out <- pipgd_welfare_share_at(welfare  = welfare,
+                                  weight   = weight,
+                                  lorenz   = "lb",
+                                  n = 8)
+
+    welfare_share_at_benchmark = c(0.0500334254250001, 0.119298465024495,
+                                   0.203491486891788, 0.303035894959234,
+                                   0.41981870625436, 0.557817404318982,
+                                   0.726600317579613, 1)
+
+    out$dist_stats$welfare_share_at |>
+      expect_equal(welfare_share_at_benchmark)
+
+    # When n is supplied and lorenz is "lq"
+    out <- pipgd_welfare_share_at(welfare  = welfare,
+                                  weight   = weight,
+                                  lorenz   = "lq",
+                                  n = 8)
+
+    welfare_share_at_benchmark = c(0.0509485786496592, 0.120430587750321,
+                                   0.205377235320994, 0.305078427620641,
+                                   0.420661080404237, 0.555950473802554,
+                                   0.722019187706309, 1)
+
+    out$dist_stats$welfare_share_at |>
+      expect_equal(welfare_share_at_benchmark)
+
+
     # Names in output list
     names(res1) |>
         expect_equal(names(res2))
-  
     names(res1) |>
         expect_equal("dist_stats")
-  
     names(res1$dist_stats) |>
         expect_equal(c("popshare",
                        "welfare_share_at"))
@@ -111,13 +188,13 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
                        "data",
                        "selected_lorenz",
                        "dist_stats"))
-  
+
     names(res_complete$gd_params) |>
         expect_equal(c("lq", "lb"))
-  
+
     names(res_complete$gd_params$lq) |>
         expect_equal(names(res_complete$gd_params$lb))
-  
+
     names(res_complete$gd_params$lq) |>
         expect_equal(c("reg_results",
                        "key_values",
@@ -149,7 +226,6 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
         expect_equal(NULL)
 
     names(res_complete$data) |>
-
         expect_equal(c("welfare",
                        "weight"))
 
@@ -169,10 +245,9 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
 # Inputs -------------------------------------------------------------------------
 test_that("pipgd_quantile_welfare_share inputs works as expected", {
 
-
-    res1 <- pipgd_quantile_welfare_share(welfare = welfare,
-                                         weight  = weight)
-    res2 <- pipgd_quantile_welfare_share(params  = params)
+    res1      <- pipgd_quantile_welfare_share(welfare  = welfare,
+                                              weight   = weight)
+    res2      <- pipgd_quantile_welfare_share(params   = params)
 
     # Welfare and weight arguments
     pipgd_quantile_welfare_share(welfare         = welfare,
@@ -221,27 +296,45 @@ test_that("pipgd_quantile_welfare_share inputs works as expected", {
 test_that("pipgd_quantile_welfare_share outputs work as expected", {
 
     # Check same results when params or (welfare and weights) are provided
-
-    res1 <- pipgd_quantile_welfare_share(welfare          = welfare,
-                                         weight           = weight)
-    res2 <- pipgd_quantile_welfare_share(params           = params)
+    res1         <- pipgd_quantile_welfare_share(welfare  = welfare,
+                                                 weight   = weight)
+    res2         <- pipgd_quantile_welfare_share(params   = params)
     res_complete <- pipgd_quantile_welfare_share(welfare  = welfare,
                                                  weight   = weight,
                                                  complete = TRUE)
+    res_com_lq   <- pipgd_quantile_welfare_share(welfare  = welfare,
+                                                 weight   = weight,
+                                                 complete = TRUE,
+                                                 lorenz   = "lq")
+    res_complete_params <- pipgd_quantile_welfare_share(params   = params,
+                                                        complete = TRUE)
 
-    expect_equal(res1, res2)
+   res1 |>
+      expect_equal(res2)
+
+   expect_equal(res_com_lq$dist_stats,
+                res_complete$dist_stats)
+
+   class(res2) |>
+      expect_equal("list")
+
+   class(res_complete) |>
+      expect_equal("pipgd_params")
+
+   res_complete |>
+      expect_equal(res_complete_params)
 
     # Check welfare shares values in output list for an example value of n
-
     n                                                     = 3
     params_from_select_l <- pipgd_select_lorenz(welfare   = welfare,
                                                 weight    = weight,
                                                 complete  = TRUE)
     res_n3 <- pipgd_quantile_welfare_share(welfare        = welfare,
                                            weight         = weight,
-                                           n              = 3)
+                                           n              = n)
     res_welfare_share <- pipgd_welfare_share_at(params    = params_from_select_l,
-                                                complete  = FALSE, n = 3)
+                                                complete  = FALSE,
+                                                n = n)
 
     length(res_n3$dist_stats$popshare) |>
         expect_equal(n)
@@ -255,6 +348,9 @@ test_that("pipgd_quantile_welfare_share outputs work as expected", {
     res_n3$dist_stats$quantile_welfare_share |>
         expect_equal(c(res_welfare_share$dist_stats$welfare_share_at[1],
              diff(res_welfare_share$dist_stats$welfare_share_at)))
+
+    res_n3$dist_stats$popshare |>
+      expect_equal(c(0.333333333333333, 0.666666666666667, 1))
 
     # Names in output list when complete is TRUE
     names(res_complete) |>
@@ -320,6 +416,7 @@ test_that("pipgd_quantile_welfare_share outputs work as expected", {
 # Test pipgd_quantile function ####
 # Inputs -------------------------------------------------------------------------
 test_that("pipgd_quantile inputs works as expected", {
+
     res1 <- pipgd_quantile(welfare = welfare,
                            weight  = weight)
     res2 <- pipgd_quantile(params  = params)
@@ -368,7 +465,16 @@ test_that("pipgd_quantile outputs work as expected", {
     res1 <- pipgd_quantile(welfare               = welfare,
                            weight                = weight)
     res2 <- pipgd_quantile(params                = params)
-    expect_equal(res1, res2)
+
+
+    res1 |>
+        expect_equal(res2)
+
+    res_complete       <- pipgd_quantile(welfare  = welfare,
+                                         weight   = weight,
+                                         complete = TRUE)
+    res_comlete_params <- pipgd_quantile(params  = params,
+                                         complete = TRUE)
 
     # Check same results when n or popshare are provided
     n                                            = 5
@@ -378,11 +484,9 @@ test_that("pipgd_quantile outputs work as expected", {
     res_with_popshare <- pipgd_quantile(welfare  = welfare,
                                         weight   = weight,
                                         popshare = c(0.2, 0.4, 0.6, 0.8, 1.0))
-    expect_equal(res_with_popshare, res_n5)
+    res_with_popshare |>
+      expect_equal(res_n5)
 
-    res_complete <- pipgd_quantile(welfare       = welfare,
-                                   weight        = weight,
-                                   complete      = TRUE)
 
     # Check output type
     class(res1) |>
@@ -422,6 +526,9 @@ test_that("pipgd_quantile outputs work as expected", {
 
     res$dist_stats$quantile |>
         expect_equal(qt)
+
+    res$dist_stats$popshare |>
+        expect_equal( c(0.2, 0.4, 0.6, 0.8, 1.0))
 
     # Check quantile output when lorenz = "lq"
     lorenz = "lq"
@@ -502,12 +609,34 @@ test_that("pipgd_quantile outputs work as expected", {
 
 # Test pipgd_gini function ####
 test_that("pipgd_gini works as expected", {
-    res1 <- pipgd_gini(welfare = welfare,
-                       weight  = weight)
-    res2 <- pipgd_gini(params  = params)
+
+    res1      <- pipgd_gini(welfare = welfare,
+                            weight  = weight)
+    res1_com  <- pipgd_gini(welfare = welfare,
+                            weight  = weight,
+                            complete = TRUE)
+    res1_lq   <- pipgd_gini(welfare = welfare,
+                            weight  = weight,
+                            complete = TRUE,
+                            lorenz   = "lq")
+    res2      <- pipgd_gini(params = params)
+    res2_com  <- pipgd_gini(params = params,
+                            complete = TRUE)
+    res2_lq   <- pipgd_gini(params = params,
+                            complete = TRUE,
+                            lorenz   = "lq")
 
     res1 |>
         expect_equal(res2)
+    res1_com |>
+      expect_equal(res2_com)
+    res1_lq |>
+      expect_equal(res2_lq)
+
+    expect_equal(res2_com$dist_stats$gini,
+                 res2_lq$dist_stats$gini)
+    expect_equal(res1_com$dist_stats$gini,
+                 res1_lq$dist_stats$gini)
 
     # Output type
     class(res2) |>
@@ -578,16 +707,29 @@ test_that("pipgd_gini works as expected", {
     res_lb$dist_stats$gini |>
         expect_equal(gini_wbpip_lb)
 
+    res_lb$dist_stats$lorenz |>
+      expect_equal("lb")
+
+    attributes(res_lb$dist_stats$gini) |>
+        expect_equal(NULL)
+
     gini_wbpip_lq <- 0.289017119340459
 
     res_lq$dist_stats$gini |>
         expect_equal(gini_wbpip_lq)
+
+    res_lq$dist_stats$lorenz |>
+        expect_equal("lq")
+
+    attributes(res_lb$dist_stats$gini) |>
+        expect_equal(NULL)
 
 })
 
 # Test pipgd_mld ####
 # Inputs -----------------------------------------------------------------
 test_that("pipgd_mld inputs works as expected", {
+
     pipgd_mld(welfare     = welfare,
               weight      = NULL) |>
         expect_error()
@@ -601,11 +743,6 @@ test_that("pipgd_mld inputs works as expected", {
               mean        = "invalid mean") |>
         expect_error()
 
-    #pipgd_mld(welfare     = welfare,
-    #          weight      = weight,
-    #          popshare    = 0.5) |>
-    #    expect_no_error()
-
     pipgd_mld(welfare     = welfare,
               weight      = weight,
               popshare    = 0.5,
@@ -617,29 +754,35 @@ test_that("pipgd_mld inputs works as expected", {
               times_mean  = "invalid times_mean") |>
         expect_error()
 
-    pipgd_params(welfare  = welfare,
-                 weight   = weight,
-                 popshare = "invalid popshare") |>
-        expect_error()
-
     pipgd_mld(welfare     = welfare,
               weight      = weight,
               lorenz      = "Neither NULL, lq or lb") |>
         expect_error()
+
+    pipgd_mld(welfare     = welfare,
+              weight      = weight,
+              lorenz      = NULL) |>
+      expect_no_error()
 
 })
 
 # Outputs -----------------------------------------------------------------
 test_that("pipgd_mld outputs work as expected", {
 
-    res          <- pipgd_mld(welfare  = welfare,
-                     weight            = weight)
+    res          <- pipgd_mld(welfare = welfare,
+                              weight  = weight)
+    res_params   <- pipgd_mld(params = params)
     res_complete <- pipgd_mld(welfare  = welfare,
                               weight   = weight,
                               complete = TRUE)
+    res |>
+      expect_equal(res_params)
 
     class(res) |>
         expect_equal("list")
+
+    class(res_complete) |>
+        expect_equal("pipgd_params")
 
     names(res) |>
         expect_equal("dist_stats")
@@ -709,6 +852,7 @@ test_that("pipgd_mld outputs work as expected", {
 })
 
 test_that("pipgd_mld calculates mld as expected", {
+
     mld_wbpip_lb <- 0.14055954382846
 
     mld_wbpip_lq <- 0.137680871901806
@@ -726,8 +870,20 @@ test_that("pipgd_mld calculates mld as expected", {
     res_lq$dist_stats$mld |>
         expect_equal(mld_wbpip_lq)
 
+    res_lq$dist_stats$lorenz |>
+        expect_equal("lq")
+
+    res_lb$dist_stats$lorenz |>
+      expect_equal("lb")
+
     res_lb$dist_stats$mld |>
         expect_equal(mld_wbpip_lb)
+
+    attributes(res_lb$dist_stats$mld) |>
+        expect_equal(NULL)
+
+    attributes(res_lq$dist_stats$mld) |>
+      expect_equal(NULL)
 
 })
 

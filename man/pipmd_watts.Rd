@@ -5,10 +5,9 @@
 \title{Calculate Watts index from microdata}
 \usage{
 pipmd_watts(
-  welfare = NULL,
-  weight = NULL,
-  povline = NULL,
-  mean = 1,
+  welfare,
+  weight = rep(1, length = length(welfare)),
+  povline = fmean(welfare, w = weight) * times_mean,
   times_mean = 1,
   format = c("dt", "list", "atomic")
 )
@@ -20,8 +19,6 @@ pipmd_watts(
 is used to give equal weight to each observation.}
 
 \item{povline}{numeric: Poverty line in international dollars, same units as welfare.}
-
-\item{mean}{numeric scalar of distribution mean. Default is 1.}
 
 \item{times_mean}{numeric factor that multiplies the mean to create a relative poverty line. Default is 1}
 

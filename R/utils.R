@@ -7,6 +7,9 @@
 #'   single numeric vector, whose names are corresponding selected Lorenz for
 #'   each value.  Default is "dt"
 #' @param var character: name of variable to be returned.
+#' @param povline numeric: poverty line
+#' @param complete logical: if `format = "list"` then `complete = TRUE` gives complete
+#' information output.
 #'
 #' @return data.table, list, or atomic vector
 #' @keywords internal
@@ -25,9 +28,9 @@ return_format <-
 
     #   ____________________________________________________
     #   Early returns                                   ####
-    if (FALSE) {
-      return()
-    }
+    # if (FALSE) {
+    #   return()
+    # }
 
     #   ____________________________________________________
     #   Computations                                     ####
@@ -61,6 +64,7 @@ return_format <-
 
     if (format == "atomic") {
       names(pg) <- sl
+      attr(pg,"povline") <- povline
       return(pg)
     }
 
@@ -92,9 +96,9 @@ return_format_md <- function(
 
   # ____________________________________________________________________________
   # Early Returns --------------------------------------------------------------
-  if (FALSE) {
-    return()
-  }
+  # if (FALSE) {
+  #   return()
+  # }
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
@@ -137,8 +141,31 @@ return_format_md <- function(
 
 
 
+return_format_md_dist <- \(){
+
+}
 
 
 
 
-
+#' return md dist data format
+#'
+#' @param p object from md_dist functions
+#' @param name character: name of the indicator
+#' @inheritParams pipmd_quantile
+#'
+#' @return depending on format.
+#' @keywords internal
+return_format_md_dist <- function(p, name, format = "atomic") {
+  if (format == "list") {
+    return(p |> as.list())
+  } else if (format == "atomic") {
+    return(p)
+  } else if (format == "dt") {
+    p <- data.table::data.table(
+      indicator = name,
+      value     = p
+    )
+    return(p)
+  }
+}

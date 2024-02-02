@@ -1,17 +1,22 @@
 Package: pipster
 Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9003
+Version: 0.0.1.9000
 Authors@R: c(
     person(
       "R.Andres", "Castaneda",
       email = "acastanedaa@worldbank.org",
       role = c("aut", "cre")
-      ))
+      ),
+      person(given = "Zander",
+            family = "Prinsloo",
+            role = "aut",
+            email = "zprinsloo@worldbank.org")
+            )
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.1
 Suggests: 
     knitr,
     rmarkdown,
@@ -23,11 +28,11 @@ Imports:
     cli,
     collapse (>= 2.0.9),
     data.table,
-    wbpip (>= 0.1.0.9011)
+    wbpip (>= 0.1.0.9012)
 Depends: 
     R (>= 2.10)
 LazyData: true
 URL: https://pip-technical-team.github.io/pipster/
 Remotes: 
-    github::PIP-Technical-Team/wbpip@refactor_consistency
+    github::PIP-Technical-Team/wbpip@dev_stage2
 VignetteBuilder: knitr

@@ -4,7 +4,11 @@
 \alias{pipmd_gini}
 \title{Gini coefficient}
 \usage{
-pipmd_gini(welfare = NULL, weight = NULL, format = c("dt", "list", "atomic"))
+pipmd_gini(
+  welfare,
+  weight = rep(1, length = length(welfare)),
+  format = c("dt", "list", "atomic")
+)
 }
 \arguments{
 \item{welfare}{welfare vector}

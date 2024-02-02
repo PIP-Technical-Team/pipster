@@ -56,8 +56,8 @@ class()
 
 # Example 3: Basic usage with gd data and explicit pip_type
 as_pip(dt = pip_gd,
-       welfare_var = "X",
-       weight_var = "W",
+       welfare_var = "L",
+       weight_var = "P",
        pip_type = "gd_1") |>
 class()
 

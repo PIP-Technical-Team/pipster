@@ -5,8 +5,8 @@
 \title{Get quantile at specified shared of population - micro data}
 \usage{
 pipmd_quantile(
-  welfare = NULL,
-  weight = NULL,
+  welfare,
+  weight = rep(1, length = length(welfare)),
   n = 10,
   popshare = seq(from = 1/n, to = 1, by = 1/n),
   format = c("dt", "list", "atomic")
@@ -56,8 +56,7 @@ pipmd_quantile(welfare = pip_md_s$welfare,
                n       = 10,
                format  = "dt")
 
-# Example 3: Calculating quantiles at specific population shares and format
-atomic.
+# Example 3: Calculating quantiles at specific population shares and format atomic.
 specific_popshares <- seq(from = 0, to = 1, length.out = 100)
 pipmd_quantile(welfare = pip_md_s$welfare,
                weight  = pip_md_s$weight,

@@ -8,10 +8,6 @@ pipgd_mld(
   params = NULL,
   welfare = NULL,
   weight = NULL,
-  mean = 1,
-  times_mean = 1,
-  popshare = NULL,
-  povline = ifelse(is.null(popshare), mean * times_mean, NA_real_),
   complete = getOption("pipster.return_complete"),
   lorenz = NULL
 )
@@ -22,16 +18,6 @@ pipgd_mld(
 \item{welfare}{numeric vector of cumulative share of welfare (income/consumption)}
 
 \item{weight}{numeric vector of cumulative share of the population}
-
-\item{mean}{numeric scalar of distribution mean. Default is 1}
-
-\item{times_mean}{numeric factor that multiplies the mean to create a
-relative poverty line. Default is 1}
-
-\item{popshare}{numeric: range (0,1). Share of population. Provide share of
-population instead of poverty line}
-
-\item{povline}{numeric: value of poverty line. Default is the \code{mean} value}
 
 \item{complete}{logical: If TRUE, returns a list a cumulative returns from
 previously used \code{get_gd} functions. Default is \code{FALSE}}
@@ -64,17 +50,5 @@ pipgd_mld(welfare = pip_gd$L,
 pipgd_mld(welfare = pip_gd$L,
           weight = pip_gd$P,
           complete = TRUE)
-
-# Example 4: Adjusting for a Specific Mean
-actual_mean <- 90  # Replace with the actual mean of your data
-pipgd_mld(welfare = pip_gd$L,
-          weight = pip_gd$P,
-          mean = actual_mean)
-
-
-# Example 5: MLD Focusing on Specific Poverty Line
-pipgd_mld(welfare = pip_gd$L,
-          weight = pip_gd$P,
-          povline = 50)
 
 }

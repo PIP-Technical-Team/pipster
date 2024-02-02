@@ -44,8 +44,7 @@
 #'                n       = 10,
 #'                format  = "dt")
 #'
-#' # Example 3: Calculating quantiles at specific population shares and format
-#' atomic.
+#' # Example 3: Calculating quantiles at specific population shares and format atomic.
 #' specific_popshares <- seq(from = 0, to = 1, length.out = 100)
 #' pipmd_quantile(welfare = pip_md_s$welfare,
 #'                weight  = pip_md_s$weight,
@@ -53,8 +52,8 @@
 #'                format  = "atomic")
 #'
 pipmd_quantile <- function(
-  welfare    = NULL,
-  weight     = NULL,
+  welfare    ,
+  weight     = rep(1, length = length(welfare)),
   n          = 10,
   popshare   = seq(from = 1/n, to = 1, by = 1/n),
   format     = c("dt", "list", "atomic")
@@ -62,25 +61,10 @@ pipmd_quantile <- function(
 
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
-  if (is.na(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
-  }
-  if (is.null(welfare)) {
-    cli::cli_abort("Welfare vector cannot be NULL")
-  }
-  if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
-  }
-  if (is.null(weight)) {
-    weight <- rep(1, length = length(welfare))
-    cli::cli_alert_warning(
-      text = "No weight vector specified, each observation assigned equal weight"
-    )
-  }
-  if (is.null(n) & is.null(popshare)) {
-    cli::cli_abort("Either `n` or `popshare` must be non-NULL")
-  }
   format <- match.arg(format)
+
+  # defenses ---------
+  check_pipmd_dist()
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
@@ -142,33 +126,18 @@ pipmd_quantile <- function(
 #'                        format = "atomic")
 #'
 pipmd_welfare_share_at <- function(
-    welfare    = NULL,
-    weight     = NULL,
+    welfare    ,
+    weight     = rep(1, length = length(welfare)),
     n          = 10,
     popshare   = seq(from = 1/n, to = 1, by = 1/n),
     format     = c("dt", "list", "atomic")
 ){
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
-  if (is.na(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
-  }
-  if (is.null(welfare)) {
-    cli::cli_abort("Welfare vector cannot be NULL")
-  }
-  if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
-  }
-  if (is.null(weight)) {
-    weight <- rep(1, length = length(welfare))
-    cli::cli_alert_warning(
-      text = "No weight vector specified, each observation assigned equal weight"
-    )
-  }
-  if (is.null(n) & is.null(popshare)) {
-    cli::cli_abort("Either `n` or `popshare` must be non-NULL")
-  }
   format <- match.arg(format)
+
+  # defenses ---------
+  check_pipmd_dist()
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
@@ -232,33 +201,18 @@ pipmd_welfare_share_at <- function(
 #'                              format = "atomic")
 #'
 pipmd_quantile_welfare_share <- function(
-    welfare    = NULL,
-    weight     = NULL,
+    welfare    ,
+    weight     = rep(1, length = length(welfare)),
     n          = 10,
     popshare   = seq(from = 1/n, to = 1, by = 1/n),
-    format     = c("dt", "list", "atomic")
-){
+    format     = c("dt", "list", "atomic"))
+  {
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
-  if (is.na(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
-  }
-  if (is.null(welfare)) {
-    cli::cli_abort("Welfare vector cannot be NULL")
-  }
-  if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
-  }
-  if (is.null(weight)) {
-    weight <- rep(1, length = length(welfare))
-    cli::cli_alert_warning(
-      text = "No weight vector specified, each observation assigned equal weight"
-    )
-  }
-  if (is.null(n) & is.null(popshare)) {
-    cli::cli_abort("Either `n` or `popshare` must be non-NULL")
-  }
   format <- match.arg(format)
+
+  # defenses ---------
+  check_pipmd_dist()
 
 
   # ____________________________________________________________________________
@@ -314,50 +268,29 @@ pipmd_quantile_welfare_share <- function(
 #'            format = "list")
 #'
 pipmd_gini <- function(
-    welfare = NULL,
-    weight  = NULL,
-    format  = c("dt", "list", "atomic")
-){
-  # ____________________________________________________________________________
-  # Arguments ------------------------------------------------------------------
-  if (is.na(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
-  }
-  if (is.null(welfare)) {
-    cli::cli_abort("Welfare vector cannot be NULL")
-  }
-  if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
-  }
-  if (is.null(weight)) {
-    weight <- rep(1, length = length(welfare))
-    cli::cli_alert_warning(
-      text = "No weight vector specified, each observation assigned equal weight"
-    )
-  }
+    welfare    ,
+    weight     = rep(1, length = length(welfare)),
+    format  = c("dt", "list", "atomic"))
+  {
+  # _____________________________________
+  # Arguments ---------------------------
   format <- match.arg(format)
 
-  # ____________________________________________________________________________
-  # Calculations ---------------------------------------------------------------
+  # defenses ---------
+  check_pipmd_dist()
+
+  # ______________________________________
+  # Calculations -------------------------
   gn <- wbpip::md_compute_gini(
     welfare = welfare,
     weight  = weight
   )
   names(gn) <- "gini"
 
-  # ____________________________________________________________________________
-  # Format & Return ------------------------------------------------------------
-  if (format == "list") {
-    return(gn |> as.list())
-  } else if (format == "atomic") {
-    return(gn)
-  } else if (format == "dt") {
-    gn <- data.table::data.table(
-      indicator = "gini",
-      value     = gn
-    )
-    return(gn)
-  }
+  # ________________________________________
+  # Format & Return ------------------------
+  return_format_md_dist(gn, name = "gini", format)
+
 }
 
 
@@ -410,8 +343,8 @@ pipmd_gini <- function(
 #'                    format = "atomic")
 #'
 pipmd_polarization <- function(
-    welfare = NULL,
-    weight  = NULL,
+    welfare    ,
+    weight     = rep(1, length = length(welfare)),
     gini    = NULL,
     mean    = NULL,
     median  = NULL,
@@ -419,22 +352,11 @@ pipmd_polarization <- function(
 ){
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
-  if (is.na(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
-  }
-  if (is.null(welfare)) {
-    cli::cli_abort("Welfare vector cannot be NULL")
-  }
-  if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
-  }
-  if (is.null(weight)) {
-    weight <- rep(1, length = length(welfare))
-    cli::cli_alert_warning(
-      text = "No weight vector specified, each observation assigned equal weight"
-    )
-  }
   format <- match.arg(format)
+
+  # defenses ---------
+  check_pipmd_dist()
+
   if (is.null(gini)) {
     gini <- pipmd_gini(
       welfare = welfare,
@@ -443,17 +365,12 @@ pipmd_polarization <- function(
     )
   }
   if (is.null(mean)) {
-    mean <- weighted.mean(
-      x = welfare,
-      w = weight
-    )
+    mean <- fmean(x = welfare, w = weight)
   }
   if (is.null(median)) {
-    median <- fquantile(
+    median <- fmedian(
       x     = welfare,
-      w     = weight,
-      probs = 0.5
-    )
+      w     = weight)
   }
 
   # ____________________________________________________________________________
@@ -469,17 +386,8 @@ pipmd_polarization <- function(
 
   # ____________________________________________________________________________
   # Format & Return ------------------------------------------------------------
-  if (format == "list") {
-    return(p |> as.list())
-  } else if (format == "atomic") {
-    return(p)
-  } else if (format == "dt") {
-    p <- data.table::data.table(
-      indicator = "polarization",
-      value     = p
-    )
-    return(p)
-  }
+  return_format_md_dist(p, name = "polarization", format)
+
 }
 
 
@@ -519,34 +427,20 @@ pipmd_polarization <- function(
 #'           format = "list")
 #'
 pipmd_mld <- function(
-    welfare = NULL,
-    weight  = NULL,
+    welfare    ,
+    weight     = rep(1, length = length(welfare)),
     mean    = NULL,
     format  = c("dt", "list", "atomic")
 ){
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
-  if (is.na(welfare) |> any()) {
-    cli::cli_abort("No elements in welfare vector can be NA")
-  }
-  if (is.null(welfare)) {
-    cli::cli_abort("Welfare vector cannot be NULL")
-  }
-  if (length(weight) > 1 & any(is.na(weight))) {
-    cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
-  }
-  if (is.null(weight)) {
-    weight <- rep(1, length = length(welfare))
-    cli::cli_alert_warning(
-      text = "No weight vector specified, each observation assigned equal weight"
-    )
-  }
   format <- match.arg(format)
+
+  # defenses ---------
+  check_pipmd_dist()
+
   if (is.null(mean)) {
-    mean <- weighted.mean(
-      x = welfare,
-      w = weight
-    )
+    mean <- fmean(x = welfare,w = weight)
   }
 
   # ____________________________________________________________________________
@@ -560,17 +454,8 @@ pipmd_mld <- function(
 
   # ____________________________________________________________________________
   # Format & Return ------------------------------------------------------------
-  if (format == "list") {
-    return(p |> as.list())
-  } else if (format == "atomic") {
-    return(p)
-  } else if (format == "dt") {
-    p <- data.table::data.table(
-      indicator = "mld",
-      value     = p
-    )
-    return(p)
-  }
+  return_format_md_dist(p, name = "mld", format)
+
 }
 
 
@@ -584,26 +469,5 @@ pipmd_mld <- function(
 
 
 
-
-
-
-#
-#
-# md_compute_quantiles # to compute specified quantiles
-#
-
-
-#
-#
-#
-# # welfare at xth percentile
-# return(list(
-#   mean = mean, # no vectorization
-#   median = median,
-#   gini = gini,
-#   polarization = polarization,
-#   mld = mld,
-#   quantiles = quantiles[["quantiles"]]
-# ))
 
 

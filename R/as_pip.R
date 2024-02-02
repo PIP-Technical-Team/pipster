@@ -32,8 +32,8 @@
 #'
 #' # Example 3: Basic usage with gd data and explicit pip_type
 #' as_pip(dt = pip_gd,
-#'        welfare_var = "X",
-#'        weight_var = "W",
+#'        welfare_var = "L",
+#'        weight_var = "P",
 #'        pip_type = "gd_1") |>
 #' class()
 #'
@@ -72,9 +72,10 @@ as_pip <- function(
   } else {
     identify_pip_type_check()
   }
-  pip_type <- match.arg(pip_type, c("md", "id", "gd_1", "gd_2", "gd_3", "gd_4", "gd_5"))
 
+  pip_type <- match.arg(pip_type, c("md", "id", "gd_1", "gd_2", "gd_3", "gd_4", "gd_5"))
   convert_to_pip_format_check()
+
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # set up   ---------
@@ -106,7 +107,7 @@ as_pip <- function(
     tp <- gsub("(gd_)([1-5])", "\\2", pip_type) |>
       as.numeric()
 
-    wbpip:::gd_clean_data(dt = dt,
+    wbpip::gd_clean_data(dt = dt,
                                 welfare = welfare_var,
                                 population = weight_var,
                                 gd_type = tp)
@@ -169,10 +170,10 @@ convert_to_pip_format_check <- function() {
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ## Defenses --------
-  stopifnot( exprs = {
-
-  }
-  )
+  # stopifnot( exprs = {
+  #
+  # }
+  # )
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ## Warnings --------

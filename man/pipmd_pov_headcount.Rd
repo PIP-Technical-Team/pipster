@@ -5,10 +5,9 @@
 \title{Calculate poverty headcount from microdata}
 \usage{
 pipmd_pov_headcount(
-  welfare = NULL,
-  weight = NULL,
-  povline = NULL,
-  mean = 1,
+  welfare,
+  weight = rep(1, length = length(welfare)),
+  povline = fmean(welfare, w = weight) * times_mean,
   times_mean = 1,
   format = c("dt", "list", "atomic")
 )
@@ -21,8 +20,6 @@ is used to give equal weight to each observation.}
 
 \item{povline}{numeric: Poverty line in international dollars, same units as welfare.}
 
-\item{mean}{numeric scalar of distribution mean. Default is 1.}
-
 \item{times_mean}{numeric factor that multiplies the mean to create a relative poverty line. Default is 1}
 
 \item{format}{atomic character vector: specifies the format of output, either
@@ -30,8 +27,8 @@ is used to give equal weight to each observation.}
 }
 \value{
 A \code{data.table} and \code{data.frame} object of length equal to the povline
-vector with variables \code{povline} and \code{pov_headcount}.
-See \code{format} to change the output format.
+vector with variables \code{povline} and \code{pov_headcount}. See \code{format} to change
+the output format.
 }
 \description{
 Calculate poverty headcount from microdata

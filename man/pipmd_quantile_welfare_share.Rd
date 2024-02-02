@@ -5,8 +5,8 @@
 \title{Quantile welfare share}
 \usage{
 pipmd_quantile_welfare_share(
-  welfare = NULL,
-  weight = NULL,
+  welfare,
+  weight = rep(1, length = length(welfare)),
   n = 10,
   popshare = seq(from = 1/n, to = 1, by = 1/n),
   format = c("dt", "list", "atomic")

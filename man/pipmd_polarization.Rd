@@ -5,8 +5,8 @@
 \title{Wolfson polarization index}
 \usage{
 pipmd_polarization(
-  welfare = NULL,
-  weight = NULL,
+  welfare,
+  weight = rep(1, length = length(welfare)),
   gini = NULL,
   mean = NULL,
   median = NULL,
