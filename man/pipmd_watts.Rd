@@ -5,10 +5,9 @@
 \title{Calculate Watts index from microdata}
 \usage{
 pipmd_watts(
-  welfare = NULL,
-  weight = NULL,
-  povline = NULL,
-  mean = 1,
+  welfare,
+  weight = rep(1, length = length(welfare)),
+  povline = fmean(welfare, w = weight) * times_mean,
   times_mean = 1,
   format = c("dt", "list", "atomic")
 )

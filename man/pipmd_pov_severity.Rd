@@ -5,10 +5,9 @@
 \title{Calculate poverty severity from microdata}
 \usage{
 pipmd_pov_severity(
-  welfare = NULL,
-  weight = NULL,
-  povline = NULL,
-  mean = 1,
+  welfare,
+  weight = rep(1, length = length(welfare)),
+  povline = fmean(welfare, w = weight) * times_mean,
   times_mean = 1,
   format = c("dt", "list", "atomic")
 )

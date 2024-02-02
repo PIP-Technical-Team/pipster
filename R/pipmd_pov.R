@@ -196,10 +196,9 @@ pipmd_pov_gap_nv <- function(
 #'               format  = "atomic")
 #'
 pipmd_pov_gap <- function(
-    welfare    = NULL,
-    weight     = NULL,
-    povline    = NULL,
-    mean       = 1,
+    welfare    ,
+    weight     = rep(1, length = length(welfare)),
+    povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1,
     format     = c("dt", "list", "atomic")
 ){
@@ -315,10 +314,9 @@ pipmd_pov_severity_nv <- function(
 #'                    format  = "atomic")
 #'
 pipmd_pov_severity <- function(
-    welfare    = NULL,
-    weight     = NULL,
-    povline    = NULL,
-    mean       = 1,
+    welfare    ,
+    weight     = rep(1, length = length(welfare)),
+    povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1,
     format     = c("dt", "list", "atomic")
 ){
@@ -430,10 +428,9 @@ pipmd_watts_nv <- function(
 #'             format  = "atomic")
 #'
 pipmd_watts <- function(
-    welfare    = NULL,
-    weight     = NULL,
-    povline    = NULL,
-    mean       = 1,
+    welfare    ,
+    weight     = rep(1, length = length(welfare)),
+    povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1,
     format     = c("dt", "list", "atomic")
 ){
