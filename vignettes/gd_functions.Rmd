@@ -20,14 +20,19 @@ library(pipster)
 
 ## Overview
 
-This vignette shows an overview of the `pipster` package functions for grouped data. Grouped data are consumption expenditure or income organized in intervals or bins, such as deciles or percentiles. In order to estimate poverty and inequality measures from grouped data, one has to derive a continuous Lorenz curve and use it together with mean welfare to build a full distribution.
-`pipster` provides a series of functions to estimate poverty and inequality measures, based on the methodology of [Datt (1998)](http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf):
+This vignette shows an overview of the `pipster` package functions for grouped data. Grouped data are consumption expenditure or income organized in intervals or bins, such as deciles or percentiles. In order to estimate poverty and inequality measures from grouped data, one has to derive a continuous Lorenz curve and use it together with mean welfare to build a full distribution. `pipster` provides a series of functions to estimate poverty and inequality measures, based on the methodology of [Datt (1998)](http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf):
 
 -   `pipgd_pov_headcount()` (FGT0)
 
 -   `pipgd_pov_gap()` (FGT1)
 
 -   `pipgd_pov_severity()` (FGT2)
+
+-   `pipgd_gini()`
+
+-   `pipgd_mld()`
+
+-   `pipgd_watts()`
 
 It also provides a series of functions to calculate distributional measures and to select and validate the best Lorenz curve for subsequent estimation:
 
@@ -42,13 +47,14 @@ It also provides a series of functions to calculate distributional measures and 
 -   `pipgd_select_lorenz()`
 
 ## Sample Grouped Data
+
 In this vignette, we will explore several typical scenarios in which the pipster package can be effectively utilized. In each of these scenario, we will use a sample dataset, `pip_gd`, available with the package and obtained from [Datt (1998)](http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf). The dataset shows the distribution of consumption expenditure in rural India in 1983. The variables are the following:
 
-  * **W**: Weights, share of population, sum up to 100.
-  * **X**: Welfare vector with mean welfare by group.
-  * **P**: Cumulative share of population.
-  * **L**: Cumulative share of welfare.
-  * **R**: Share of welfare, sum up to 1.
+-   **W**: Weights, share of population, sum up to 100.
+-   **X**: Welfare vector with mean welfare by group.
+-   **P**: Cumulative share of population.
+-   **L**: Cumulative share of welfare.
+-   **R**: Share of welfare, sum up to 1.
 
 ```{r data, echo=FALSE}
 pip_gd |>
@@ -56,8 +62,11 @@ pip_gd |>
 ```
 
 ## Case 1: Simple Welfare Analysis and Lorenz Curve
+
 ### 1.1 Welfare share at a given population share
+
 One simple use case is calculating the welfare share of a specific share of the population, which can be achieved using `pipgd_welfare_share_at()`:
+
 ```{r popshare}
 # Calculate the welfare share at a given population share
 selected_popshare <- 0.5
@@ -68,6 +77,7 @@ welfare_share_50 <- pipgd_welfare_share_at(welfare = pip_gd$L,
 ```
 
 When `complete = FALSE`, the output is a list. The results can be accessed like so:
+
 ```{r popshare-results}
 # Format the string with the given values
 formatted_message <- sprintf("%.0f%% of the population owns %.0f%% of welfare.",
@@ -76,7 +86,9 @@ formatted_message <- sprintf("%.0f%% of the population owns %.0f%% of welfare.",
 
 print(formatted_message)
 ```
+
 ### 1.2 Quantile share vs cumulative share
+
 `pipster` has a selection of functions to calculate welfare shares. When `n` is declared, `pipgd_quantile_welfare_share()` will calculate the share of welfare owned by a specific share of the population, while `pipgd_welfare_share_at()` will return the cumulative share:
 
 ```{r quantile-vs-cumulative}
@@ -100,12 +112,14 @@ df_combined <- data.frame(
 print(df_combined)
 
 ```
+
 ### 1.3 Estimate and Plot the Lorenz Curve
+
 `pister` can also be used to estimate a Lorenz curve for a dataset of grouped data. One hypothetical workflow:
 
-  1. First, generate the parameters using `pipgd_params()`
-  2. Validate the parameters using `pipgd_validate_lorenz()`
-  3. Generate the Lorenz curve using the validated parameters with `pipgd_lorenz_curve()`
+1.  First, generate the parameters using `pipgd_params()`
+2.  Validate the parameters using `pipgd_validate_lorenz()`
+3.  Generate the Lorenz curve using the validated parameters with `pipgd_lorenz_curve()`
 
 ```{r lorenz-validate}
 # Validate Lorenz curve.
@@ -126,7 +140,6 @@ formatted_message <- sprintf("%s used for distribution statistics and %s used fo
 print(formatted_message)
 ```
 
-
 ```{r lorenz-plot}
 # Plot the Lorenz Curve
 lorenz_curve_data <- pipgd_lorenz_curve(params = validated_lorenz)
@@ -143,45 +156,121 @@ plot(lorenz_curve_data$lorenz_curve$points,
 abline(0, 1, col = 'red', lty = 2)
 ```
 
+## Case 2: Poverty Profiling Manual vs Pipster
 
-## Case 2: Poverty Profiling
-### 2.1 Poverty Headcount
-First, we can apply the `pipgd_pov_headcount()` function to determine the proportion of the population living below a specified poverty line. According to Datt(1998), the 
-rural poverty line for India in 1983 is Rs. 89:
+`pipster` allows the user to estimate poverty measures quickly and accurately using the Lorenz curve. To demonstrate its use, we can manually calculate FGT(0), FGT(1), and FGT(2), and then replicate it using only `pipster` functions.
 
-```{r headcount}
-poverty_line <- 89 
-headcount1 <- pipgd_pov_headcount(welfare = pip_gd$L, 
-                                 weight = pip_gd$P,
-                                 mean = 109.9,
-                                 povline = poverty_line)
-print(headcount1)
+### 2.1 Manual parameters
+
+Following Datt(1998), we first derive the necessary parameters from the Lorenz curve using `pipgd_lorenz_curve()`:
+
+```{r manual-data}
+# STEP 0 : assign variables
+cum_welfare <- pip_gd$L
+cum_pop <- pip_gd$P
+
+# STEP 1: Estimate Lorenz Curve
+lorenz_curve_params <- pipgd_lorenz_curve(welfare = cum_welfare,
+                                          weight = cum_pop,
+                                          complete = TRUE)
+
+print(lorenz_curve_params$selected_lorenz$for_pov)
 ```
 
-However, one might want to calculate the poverty line using `povertyline = mean * times_mean` instead. When defining these parameters, it is important not to define a poverty line as well,
-otherwise the parameter `times_mean` will be ignored:
+`pipster` suggests to use `lb`, the Lorenz beta, for poverty measures estimation. We will use `lq` instead to compare our results with the ones reported in the article. We then retrieve the parameters and assign them to objects:
+
+```{r parameters}
+# parameters
+m <- lorenz_curve_params$gd_params$lq$key_values$m
+n <- lorenz_curve_params$gd_params$lq$key_values$n
+r <- lorenz_curve_params$gd_params$lq$key_values$r
+s1 <- lorenz_curve_params$gd_params$lq$key_values$s1
+s2 <- lorenz_curve_params$gd_params$lq$key_values$s2
+a <- lorenz_curve_params$gd_params$lq$reg_results$coef[[1]]
+b <- lorenz_curve_params$gd_params$lq$reg_results$coef[[2]]
+c <- lorenz_curve_params$gd_params$lq$reg_results$coef[[3]]
+
+z <- 89 # the poverty line for rural India, 1983.
+mu <- 109.9 # the actual mean of the sample.
+
+# helpful combinations
+z_div_mu <- z/mu
+mu_div_z <- mu/z
+```
+
+### 2.1 Poverty Headcount
+In `pipster`, we can apply the `pipgd_pov_headcount()` function to determine the proportion of the population living below a specified poverty line. The poverty headcount can be calculated manually as follows:
+
+$$H=-\frac{1}{2 m}\left[n+r(b+2 (z / \mu))\left\{(b+2 (z / \mu))^2-m\right\}^{-1 / 2}\right]$$
+Manually:
+```{r headcount-manual}
+H <- -(1/(2*m)) * (n + r*(b + 2*(z_div_mu)) * ((b + 2*z_div_mu)^2 - m)^(-1/2))
+print(paste0("The poverty headcount is ", round(H*100,2), "%"))
+```
+
+Using `pipster`, we simply do:
+```{r headcount-pipster}
+headcount1 <- pipgd_pov_headcount(welfare = pip_gd$L, 
+                                 weight = pip_gd$P,
+                                 mean = mu,
+                                 povline = z,
+                                 lorenz = 'lq')
+
+print((paste0("The poverty headcount is ", round(headcount1$headcount*100,2), "%")))
+```
+
+One might want to calculate the poverty line using `povertyline = mean * times_mean` instead. When defining these parameters, it is important not to define a poverty line as well, otherwise the parameter `times_mean` will be ignored:
 
 ```{r headcount-times}
 headcount2 <- pipgd_pov_headcount(welfare = pip_gd$L, 
                                  weight = pip_gd$P, 
-                                 mean = 109.9,
-                                 times_mean = 0.8)
+                                 mean = mu,
+                                 times_mean = 0.8,
+                                 lorenz = 'lq')
 
 print(headcount2)
 ```
+
 ### 2.2 Poverty Gap
-Next, we use the `pipgd_pov_gap()` function to calculate the poverty gap index. This index measures the average shortfall of the population from the poverty line, expressed as a percentage of the poverty line.
-```{r gap}
-poverty_line <- 89
+Next, we use the `pipgd_pov_gap()` function to calculate the poverty gap index. This index measures the average shortfall of the population from the poverty line, expressed as a percentage of the poverty line. It can be calculated as follows:
+
+$$PG = H - (\mu / z)  L(H)$$
+Manually:
+```{r gap-manual}
+# First we calculate the value of the Lorenz curve at H:
+L_at_H <- pipgd_welfare_share_at(welfare = cum_welfare,
+                                 weight = cum_pop,
+                                 popshare = H)$dist_stats$welfare_share_at
+
+# Then we calculate the poverty gap:
+PG = H - mu_div_z*L_at_H
+print(paste0("The poverty headcount is ", round(PG*100,2), "%"))
+```
+
+Using `pipster`, we simply do:
+```{r gap-pipster}
 gap <- pipgd_pov_gap(welfare = pip_gd$L, 
                      weight = pip_gd$P,
-                     mean = 109.9,
-                     povline = 89)
+                     mean = mu,
+                     povline = z,
+                     lorenz = 'lq')
 
-print(gap)
+print((paste0("The poverty headcount is ", round(gap$pov_gap*100,2), "%")))
 ```
+
 ### 2.3 Poverty Severity
 
+Finally, we utilize the `pipgd_pov_severity()` function to assess the poverty severity index. This index considers the squared poverty gap, placing more weight on the welfare of the poorest.
 
+```{r severity}
+poverty_line <- 89
+severity <- pipgd_pov_severity(welfare = pip_gd$L, 
+                          weight = pip_gd$P,
+                          mean = 109.9,
+                          povline = 89,
+                          lorenz = 'lq')
 
-## Case 3:
+print(severity)
+```
+
+## Case 3: Inequality Analysis
