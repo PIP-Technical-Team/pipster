@@ -191,6 +191,7 @@ pipgd_pov_gap_nv <- function(params     = NULL,
                                      weight   = weight,
                                      complete = TRUE,
                                      popshare = popshare,
+                                     mean = mean,
                                      povline  = povline,
                                      lorenz   = lorenz)
   } else {
