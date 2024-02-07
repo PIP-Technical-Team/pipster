@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   gd_functions: gd_functions.html
-last_built: 2024-02-07T16:01Z
+last_built: 2024-02-07T16:03Z
 urls:
   reference: https://pip-technical-team.github.io/pipster/reference
   article: https://pip-technical-team.github.io/pipster/articles

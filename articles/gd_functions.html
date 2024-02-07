@@ -265,17 +265,17 @@ in 1983 is Rs. 89:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">poverty_line</span> <span class="op">&lt;-</span> <span class="fl">89</span> </span>
 <span><span class="va">headcount1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_pov_headcount.html">pipgd_pov_headcount</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>, </span>
-<span>                                 weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>, </span>
+<span>                                 weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
+<span>                                 mean <span class="op">=</span> <span class="fl">109.9</span>,</span>
 <span>                                 povline <span class="op">=</span> <span class="va">poverty_line</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">headcount1</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    povline headcount lorenz</span></span>
 <span><span class="co">#&gt;      &lt;num&gt;     &lt;num&gt; &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1:      89    1.0044     lq</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:      89 0.4511816     lb</span></span></code></pre></div>
 <p>However, one might want to calculate the poverty line using
 <code>povertyline = mean * times_mean</code> instead. When defining
 these parameters, it is important not to define a poverty line as well,
-otherwise the parameters <code>mean</code> and <code>times_mean</code>
-will be ignored:</p>
+otherwise the parameter <code>times_mean</code> will be ignored:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">headcount2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_pov_headcount.html">pipgd_pov_headcount</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>, </span>
 <span>                                 weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>, </span>
@@ -289,6 +289,25 @@ will be ignored:</p>
 </div>
 <div class="section level3">
 <h3 id="poverty-gap">2.2 Poverty Gap<a class="anchor" aria-label="anchor" href="#poverty-gap"></a>
+</h3>
+<p>Next, we use the <code><a href="../reference/pipgd_pov_gap.html">pipgd_pov_gap()</a></code> function to calculate
+the poverty gap index. This index measures the average shortfall of the
+population from the poverty line, expressed as a percentage of the
+poverty line.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">poverty_line</span> <span class="op">&lt;-</span> <span class="fl">89</span></span>
+<span><span class="va">gap</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_pov_gap.html">pipgd_pov_gap</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>, </span>
+<span>                     weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
+<span>                     mean <span class="op">=</span> <span class="fl">109.9</span>,</span>
+<span>                     povline <span class="op">=</span> <span class="fl">89</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">gap</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    povline    pov_gap lorenz</span></span>
+<span><span class="co">#&gt;      &lt;num&gt;      &lt;num&gt; &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:      89 -0.2869342     lq</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="poverty-severity">2.3 Poverty Severity<a class="anchor" aria-label="anchor" href="#poverty-severity"></a>
 </h3>
 </div>
 </div>
