@@ -152,14 +152,14 @@ rural poverty line for India in 1983 is Rs. 89:
 ```{r headcount}
 poverty_line <- 89 
 headcount1 <- pipgd_pov_headcount(welfare = pip_gd$L, 
-                                 weight = pip_gd$P, 
+                                 weight = pip_gd$P,
+                                 mean = 109.9,
                                  povline = poverty_line)
 print(headcount1)
 ```
 
-However, one might want to calculate the poverty line using `povertyline = mean * times_mean` instead.
-When defining these parameters, it is important not to define a poverty line as well,
-otherwise the parameters `mean` and `times_mean` will be ignored:
+However, one might want to calculate the poverty line using `povertyline = mean * times_mean` instead. When defining these parameters, it is important not to define a poverty line as well,
+otherwise the parameter `times_mean` will be ignored:
 
 ```{r headcount-times}
 headcount2 <- pipgd_pov_headcount(welfare = pip_gd$L, 
@@ -170,6 +170,17 @@ headcount2 <- pipgd_pov_headcount(welfare = pip_gd$L,
 print(headcount2)
 ```
 ### 2.2 Poverty Gap
+Next, we use the `pipgd_pov_gap()` function to calculate the poverty gap index. This index measures the average shortfall of the population from the poverty line, expressed as a percentage of the poverty line.
+```{r gap}
+poverty_line <- 89
+gap <- pipgd_pov_gap(welfare = pip_gd$L, 
+                     weight = pip_gd$P,
+                     mean = 109.9,
+                     povline = 89)
+
+print(gap)
+```
+### 2.3 Poverty Severity
 
 
 
