@@ -267,7 +267,7 @@ $$\begin{aligned}
 \end{aligned}$$
 
 ```{r severity-manual}
-SPG = 2*PG - H - ((mu_div_z)^2) * (a*H + b*L_at_H_pipgd - (r/16) * log((1-(H/s1))/(1-(H/s2))))
+SPG = 2*PG - H - ((mu_div_z)^2) * (a*H + b*L_at_H - (r/16) * log((1-(H/s1))/(1-(H/s2))))
 
 print(paste0("The poverty severity is ", round(SPG*100,2), "%"))
 ```
