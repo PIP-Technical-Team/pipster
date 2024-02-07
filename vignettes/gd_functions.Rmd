@@ -169,6 +169,8 @@ headcount2 <- pipgd_pov_headcount(welfare = pip_gd$L,
 
 print(headcount2)
 ```
+### 2.2 Poverty Gap
+
 
 
 ## Case 3:
