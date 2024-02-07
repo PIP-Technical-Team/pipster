@@ -244,7 +244,7 @@ L_at_H <- pipgd_welfare_share_at(welfare = cum_welfare,
 
 # Then we calculate the poverty gap:
 PG = H - mu_div_z*L_at_H
-print(paste0("The poverty headcount is ", round(PG*100,2), "%"))
+print(paste0("The poverty gap is ", round(PG*100,2), "%"))
 ```
 
 Using `pipster`, we simply do:
@@ -255,22 +255,32 @@ gap <- pipgd_pov_gap(welfare = pip_gd$L,
                      povline = z,
                      lorenz = 'lq')
 
-print((paste0("The poverty headcount is ", round(gap$pov_gap*100,2), "%")))
+print((paste0("The poverty gap is ", round(gap$pov_gap*100,2), "%")))
 ```
 
 ### 2.3 Poverty Severity
+Finally, we utilize the `pipgd_pov_severity()` function to assess the poverty severity index. This index considers the squared poverty gap, placing more weight on the welfare of the poorest. It can be calculated as follows:
 
-Finally, we utilize the `pipgd_pov_severity()` function to assess the poverty severity index. This index considers the squared poverty gap, placing more weight on the welfare of the poorest.
+$$\begin{aligned}
+& P_2=2(P G)-H \\
+& -\left(\frac{\mu}{z}\right)^2\left[a H+b L(H)-\left(\frac{r}{16}\right) \ln \left(\frac{1-H / s_1}{1-H / s_2}\right)\right]
+\end{aligned}$$
 
+```{r severity-manual}
+SPG = 2*PG - H - ((mu_div_z)^2) * (a*H + b*L_at_H_pipgd - (r/16) * log((1-(H/s1))/(1-(H/s2))))
+
+print(paste0("The poverty severity is ", round(SPG*100,2), "%"))
+```
+
+Using `pipster`, we simply do:
 ```{r severity}
-poverty_line <- 89
 severity <- pipgd_pov_severity(welfare = pip_gd$L, 
                           weight = pip_gd$P,
-                          mean = 109.9,
-                          povline = 89,
+                          mean = mu,
+                          povline = z,
                           lorenz = 'lq')
 
-print(severity)
+print((paste0("The poverty severity is ", round(severity$pov_severity*100,2), "%")))
 ```
 
 ## Case 3: Inequality Analysis
