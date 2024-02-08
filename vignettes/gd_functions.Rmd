@@ -275,12 +275,43 @@ print(paste0("The poverty severity is ", round(SPG*100,2), "%"))
 Using `pipster`, we simply do:
 ```{r severity}
 severity <- pipgd_pov_severity(welfare = pip_gd$L, 
-                          weight = pip_gd$P,
-                          mean = mu,
-                          povline = z,
-                          lorenz = 'lq')
+                               weight = pip_gd$P,
+                               mean = mu,
+                               povline = z,
+                               lorenz = 'lq')
 
 print((paste0("The poverty severity is ", round(severity$pov_severity*100,2), "%")))
 ```
 
-## Case 3: Inequality Analysis
+## Case 3: Additional Inequality and Poverty Measures
+
+Finally, `pipster` can also be used to easily calculate additional inequality measures. 
+The Gini coefficient can be calculated using `pipgd_gini()` like so:
+```{r gini}
+gini <- pipgd_gini(welfare = pip_gd$L,
+                   weight = pip_gd$P,
+                   lorenz = 'lq')
+
+print((paste0("The gini index is ", round(gini$dist_stats$gini,2))))
+```
+
+The Watts Index can be calculated using `pipgd_watts()` like so:
+```{r watts}
+watts <- pipgd_watts(welfare = pip_gd$L,
+                     weight = pip_gd$P,
+                     mean = mu,
+                     povline = z,
+                     lorenz = 'lq')
+
+print((paste0("The Watts index is ", round(watts$watts, 2))))
+```
+
+And finally, the MLD (Mean Logarithmic Deviation) can be calculated using `pipgd_mld()` like so:
+```{r mld}
+mld <- pipgd_mld(welfare = pip_gd$L,
+                 weight = pip_gd$P,
+                 lorenz = 'lq')
+
+print((paste0("The MLD is ", round(mld$dist_stats$mld,2))))
+
+```
