@@ -20,7 +20,7 @@ library(pipster)
 
 ## Overview
 
-This vignette shows an overview of the `pipster` package functions for grouped data. Grouped data are consumption expenditure or income organized in intervals or bins, such as deciles or percentiles. In order to estimate poverty and inequality measures from grouped data, one has to derive a continuous Lorenz curve and use it together with mean welfare to build a full distribution. `pipster` provides a series of functions to estimate poverty and inequality measures, based on the methodology of [Datt (1998)](http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf):
+This vignette shows an overview of the `pipster` package functions for grouped data. Grouped data are consumption expenditure or income data organized in intervals or bins, such as deciles or percentiles. In order to estimate poverty and inequality measures from grouped data, one has to derive a continuous Lorenz curve and use it together with mean welfare to build a full distribution. `pipster` provides a series of functions to estimate poverty and inequality measures, based on the methodology of [Datt (1998)](http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf):
 
 -   `pipgd_pov_headcount()` (FGT0)
 
@@ -48,7 +48,7 @@ It also provides a series of functions to calculate distributional measures and 
 
 ## Sample Grouped Data
 
-In this vignette, we will explore several typical scenarios in which the pipster package can be effectively utilized. In each of these scenario, we will use a sample dataset, `pip_gd`, available with the package and obtained from [Datt (1998)](http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf). The dataset shows the distribution of consumption expenditure in rural India in 1983. The variables are the following:
+In this vignette, we will explore several typical scenarios in which the pipster package can be effectively utilized. In each of these scenario, we will use a sample dataset, `pip_gd`, available with this package and obtained from [Datt (1998)](http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf). The dataset shows the distribution of consumption expenditure in rural India in 1983. The variables are the following:
 
 -   **W**: Weights, share of population, sum up to 100.
 -   **X**: Welfare vector with mean welfare by group.
