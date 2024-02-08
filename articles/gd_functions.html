@@ -88,6 +88,9 @@ on the methodology of <a href="http://ebrary.ifpri.org/utils/getfile/collection/
 <li><p><code><a href="../reference/pipgd_pov_headcount.html">pipgd_pov_headcount()</a></code> (FGT0)</p></li>
 <li><p><code><a href="../reference/pipgd_pov_gap.html">pipgd_pov_gap()</a></code> (FGT1)</p></li>
 <li><p><code><a href="../reference/pipgd_pov_severity.html">pipgd_pov_severity()</a></code> (FGT2)</p></li>
+<li><p><code><a href="../reference/pipgd_gini.html">pipgd_gini()</a></code></p></li>
+<li><p><code><a href="../reference/pipgd_mld.html">pipgd_mld()</a></code></p></li>
+<li><p><code><a href="../reference/pipgd_watts.html">pipgd_watts()</a></code></p></li>
 </ul>
 <p>It also provides a series of functions to calculate distributional
 measures and to select and validate the best Lorenz curve for subsequent
@@ -253,39 +256,90 @@ dataset of grouped data. One hypothetical workflow:</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="case-2-poverty-profiling">Case 2: Poverty Profiling<a class="anchor" aria-label="anchor" href="#case-2-poverty-profiling"></a>
+<h2 id="case-2-poverty-profiling-manual-vs-pipster">Case 2: Poverty Profiling Manual vs Pipster<a class="anchor" aria-label="anchor" href="#case-2-poverty-profiling-manual-vs-pipster"></a>
 </h2>
+<p><code>pipster</code> allows the user to estimate poverty measures
+quickly and accurately using the Lorenz curve. To demonstrate its use,
+we can manually calculate FGT(0), FGT(1), and FGT(2), and then replicate
+it using only <code>pipster</code> functions.</p>
+<div class="section level3">
+<h3 id="manual-parameters">2.1 Manual parameters<a class="anchor" aria-label="anchor" href="#manual-parameters"></a>
+</h3>
+<p>Following Datt(1998), we first derive the necessary parameters from
+the Lorenz curve using <code><a href="../reference/pipgd_lorenz_curve.html">pipgd_lorenz_curve()</a></code>:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># STEP 0 : assign variables</span></span>
+<span><span class="va">cum_welfare</span> <span class="op">&lt;-</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span></span>
+<span><span class="va">cum_pop</span> <span class="op">&lt;-</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span></span>
+<span></span>
+<span><span class="co"># STEP 1: Estimate Lorenz Curve</span></span>
+<span><span class="va">lorenz_curve_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_lorenz_curve.html">pipgd_lorenz_curve</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">cum_welfare</span>,</span>
+<span>                                          weight <span class="op">=</span> <span class="va">cum_pop</span>,</span>
+<span>                                          complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">lorenz_curve_params</span><span class="op">$</span><span class="va">selected_lorenz</span><span class="op">$</span><span class="va">for_pov</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "lb"</span></span></code></pre></div>
+<p><code>pipster</code> suggests to use <code>lb</code>, the Lorenz
+beta, for poverty measures estimation. We will use <code>lq</code>
+instead to compare our results with the ones reported in the article. We
+then retrieve the parameters and assign them to objects:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># parameters</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="va">lorenz_curve_params</span><span class="op">$</span><span class="va">gd_params</span><span class="op">$</span><span class="va">lq</span><span class="op">$</span><span class="va">key_values</span><span class="op">$</span><span class="va">m</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="va">lorenz_curve_params</span><span class="op">$</span><span class="va">gd_params</span><span class="op">$</span><span class="va">lq</span><span class="op">$</span><span class="va">key_values</span><span class="op">$</span><span class="va">n</span></span>
+<span><span class="va">r</span> <span class="op">&lt;-</span> <span class="va">lorenz_curve_params</span><span class="op">$</span><span class="va">gd_params</span><span class="op">$</span><span class="va">lq</span><span class="op">$</span><span class="va">key_values</span><span class="op">$</span><span class="va">r</span></span>
+<span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="va">lorenz_curve_params</span><span class="op">$</span><span class="va">gd_params</span><span class="op">$</span><span class="va">lq</span><span class="op">$</span><span class="va">key_values</span><span class="op">$</span><span class="va">s1</span></span>
+<span><span class="va">s2</span> <span class="op">&lt;-</span> <span class="va">lorenz_curve_params</span><span class="op">$</span><span class="va">gd_params</span><span class="op">$</span><span class="va">lq</span><span class="op">$</span><span class="va">key_values</span><span class="op">$</span><span class="va">s2</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="va">lorenz_curve_params</span><span class="op">$</span><span class="va">gd_params</span><span class="op">$</span><span class="va">lq</span><span class="op">$</span><span class="va">reg_results</span><span class="op">$</span><span class="va">coef</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">lorenz_curve_params</span><span class="op">$</span><span class="va">gd_params</span><span class="op">$</span><span class="va">lq</span><span class="op">$</span><span class="va">reg_results</span><span class="op">$</span><span class="va">coef</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">c</span> <span class="op">&lt;-</span> <span class="va">lorenz_curve_params</span><span class="op">$</span><span class="va">gd_params</span><span class="op">$</span><span class="va">lq</span><span class="op">$</span><span class="va">reg_results</span><span class="op">$</span><span class="va">coef</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fl">89</span> <span class="co"># the poverty line for rural India, 1983.</span></span>
+<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fl">109.9</span> <span class="co"># the actual mean of the sample.</span></span>
+<span></span>
+<span><span class="co"># helpful combinations</span></span>
+<span><span class="va">z_div_mu</span> <span class="op">&lt;-</span> <span class="va">z</span><span class="op">/</span><span class="va">mu</span></span>
+<span><span class="va">mu_div_z</span> <span class="op">&lt;-</span> <span class="va">mu</span><span class="op">/</span><span class="va">z</span></span></code></pre></div>
+</div>
 <div class="section level3">
 <h3 id="poverty-headcount">2.1 Poverty Headcount<a class="anchor" aria-label="anchor" href="#poverty-headcount"></a>
 </h3>
-<p>First, we can apply the <code><a href="../reference/pipgd_pov_headcount.html">pipgd_pov_headcount()</a></code> function
-to determine the proportion of the population living below a specified
-poverty line. According to Datt(1998), the rural poverty line for India
-in 1983 is Rs. 89:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">poverty_line</span> <span class="op">&lt;-</span> <span class="fl">89</span> </span>
-<span><span class="va">headcount1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_pov_headcount.html">pipgd_pov_headcount</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>, </span>
+<p>In <code>pipster</code>, we can apply the
+<code><a href="../reference/pipgd_pov_headcount.html">pipgd_pov_headcount()</a></code> function to determine the proportion
+of the population living below a specified poverty line. The poverty
+headcount can be calculated manually as follows:</p>
+<p><span class="math display">\[H=-\frac{1}{2 m}\left[n+r(b+2 (z /
+\mu))\left\{(b+2 (z / \mu))^2-m\right\}^{-1 / 2}\right]\]</span>
+Manually:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">H</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">n</span> <span class="op">+</span> <span class="va">r</span><span class="op">*</span><span class="op">(</span><span class="va">b</span> <span class="op">+</span> <span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="va">z_div_mu</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="op">(</span><span class="va">b</span> <span class="op">+</span> <span class="fl">2</span><span class="op">*</span><span class="va">z_div_mu</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="va">m</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The poverty headcount is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">H</span><span class="op">*</span><span class="fl">100</span>,<span class="fl">2</span><span class="op">)</span>, <span class="st">"%"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The poverty headcount is 45.06%"</span></span></code></pre></div>
+<p>Using <code>pipster</code>, we simply do:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">headcount1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_pov_headcount.html">pipgd_pov_headcount</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>, </span>
 <span>                                 weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
-<span>                                 mean <span class="op">=</span> <span class="fl">109.9</span>,</span>
-<span>                                 povline <span class="op">=</span> <span class="va">poverty_line</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">headcount1</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    povline headcount lorenz</span></span>
-<span><span class="co">#&gt;      &lt;num&gt;     &lt;num&gt; &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1:      89 0.4511816     lb</span></span></code></pre></div>
-<p>However, one might want to calculate the poverty line using
+<span>                                 mean <span class="op">=</span> <span class="va">mu</span>,</span>
+<span>                                 povline <span class="op">=</span> <span class="va">z</span>,</span>
+<span>                                 lorenz <span class="op">=</span> <span class="st">'lq'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The poverty headcount is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">headcount1</span><span class="op">$</span><span class="va">headcount</span><span class="op">*</span><span class="fl">100</span>,<span class="fl">2</span><span class="op">)</span>, <span class="st">"%"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The poverty headcount is 45.06%"</span></span></code></pre></div>
+<p>One might want to calculate the poverty line using
 <code>povertyline = mean * times_mean</code> instead. When defining
 these parameters, it is important not to define a poverty line as well,
 otherwise the parameter <code>times_mean</code> will be ignored:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">headcount2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_pov_headcount.html">pipgd_pov_headcount</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>, </span>
 <span>                                 weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>, </span>
-<span>                                 mean <span class="op">=</span> <span class="fl">109.9</span>,</span>
-<span>                                 times_mean <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
+<span>                                 mean <span class="op">=</span> <span class="va">mu</span>,</span>
+<span>                                 times_mean <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>                                 lorenz <span class="op">=</span> <span class="st">'lq'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">headcount2</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    povline headcount lorenz</span></span>
 <span><span class="co">#&gt;      &lt;num&gt;     &lt;num&gt; &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1:   87.92 0.4416621     lb</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:   87.92 0.4403688     lq</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="poverty-gap">2.2 Poverty Gap<a class="anchor" aria-label="anchor" href="#poverty-gap"></a>
@@ -293,26 +347,62 @@ otherwise the parameter <code>times_mean</code> will be ignored:</p>
 <p>Next, we use the <code><a href="../reference/pipgd_pov_gap.html">pipgd_pov_gap()</a></code> function to calculate
 the poverty gap index. This index measures the average shortfall of the
 population from the poverty line, expressed as a percentage of the
-poverty line.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">poverty_line</span> <span class="op">&lt;-</span> <span class="fl">89</span></span>
-<span><span class="va">gap</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_pov_gap.html">pipgd_pov_gap</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>, </span>
-<span>                     weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
-<span>                     mean <span class="op">=</span> <span class="fl">109.9</span>,</span>
-<span>                     povline <span class="op">=</span> <span class="fl">89</span><span class="op">)</span></span>
+poverty line. It can be calculated as follows:</p>
+<p><span class="math display">\[PG = H - (\mu / z)  L(H)\]</span>
+Manually:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># First we calculate the value of the Lorenz curve at H:</span></span>
+<span><span class="va">L_at_H</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_welfare_share_at.html">pipgd_welfare_share_at</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">cum_welfare</span>,</span>
+<span>                                 weight <span class="op">=</span> <span class="va">cum_pop</span>,</span>
+<span>                                 popshare <span class="op">=</span> <span class="va">H</span><span class="op">)</span><span class="op">$</span><span class="va">dist_stats</span><span class="op">$</span><span class="va">welfare_share_at</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">gap</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    povline    pov_gap lorenz</span></span>
-<span><span class="co">#&gt;      &lt;num&gt;      &lt;num&gt; &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1:      89 -0.2869342     lq</span></span></code></pre></div>
+<span><span class="co"># Then we calculate the poverty gap:</span></span>
+<span><span class="va">PG</span> <span class="op">=</span> <span class="va">H</span> <span class="op">-</span> <span class="va">mu_div_z</span><span class="op">*</span><span class="va">L_at_H</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The poverty gap is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">PG</span><span class="op">*</span><span class="fl">100</span>,<span class="fl">2</span><span class="op">)</span>, <span class="st">"%"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The poverty gap is 12.47%"</span></span></code></pre></div>
+<p>Using <code>pipster</code>, we simply do:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">gap</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_pov_gap.html">pipgd_pov_gap</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>, </span>
+<span>                     weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
+<span>                     mean <span class="op">=</span> <span class="va">mu</span>,</span>
+<span>                     povline <span class="op">=</span> <span class="va">z</span>,</span>
+<span>                     lorenz <span class="op">=</span> <span class="st">'lq'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The poverty gap is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">gap</span><span class="op">$</span><span class="va">pov_gap</span><span class="op">*</span><span class="fl">100</span>,<span class="fl">2</span><span class="op">)</span>, <span class="st">"%"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The poverty gap is 12.47%"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="poverty-severity">2.3 Poverty Severity<a class="anchor" aria-label="anchor" href="#poverty-severity"></a>
 </h3>
+<p>Finally, we utilize the <code><a href="../reference/pipgd_pov_severity.html">pipgd_pov_severity()</a></code> function to
+assess the poverty severity index. This index considers the squared
+poverty gap, placing more weight on the welfare of the poorest. It can
+be calculated as follows:</p>
+<p><span class="math display">\[\begin{aligned}
+&amp; P_2=2(P G)-H \\
+&amp; -\left(\frac{\mu}{z}\right)^2\left[a H+b
+L(H)-\left(\frac{r}{16}\right) \ln \left(\frac{1-H / s_1}{1-H /
+s_2}\right)\right]
+\end{aligned}\]</span></p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">SPG</span> <span class="op">=</span> <span class="fl">2</span><span class="op">*</span><span class="va">PG</span> <span class="op">-</span> <span class="va">H</span> <span class="op">-</span> <span class="op">(</span><span class="op">(</span><span class="va">mu_div_z</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">a</span><span class="op">*</span><span class="va">H</span> <span class="op">+</span> <span class="va">b</span><span class="op">*</span><span class="va">L_at_H</span> <span class="op">-</span> <span class="op">(</span><span class="va">r</span><span class="op">/</span><span class="fl">16</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="op">(</span><span class="va">H</span><span class="op">/</span><span class="va">s1</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="op">(</span><span class="va">H</span><span class="op">/</span><span class="va">s2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The poverty severity is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">SPG</span><span class="op">*</span><span class="fl">100</span>,<span class="fl">2</span><span class="op">)</span>, <span class="st">"%"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The poverty severity is 4.75%"</span></span></code></pre></div>
+<p>Using <code>pipster</code>, we simply do:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">severity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_pov_severity.html">pipgd_pov_severity</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>, </span>
+<span>                          weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
+<span>                          mean <span class="op">=</span> <span class="va">mu</span>,</span>
+<span>                          povline <span class="op">=</span> <span class="va">z</span>,</span>
+<span>                          lorenz <span class="op">=</span> <span class="st">'lq'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The poverty severity is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">severity</span><span class="op">$</span><span class="va">pov_severity</span><span class="op">*</span><span class="fl">100</span>,<span class="fl">2</span><span class="op">)</span>, <span class="st">"%"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The poverty severity is 4.75%"</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="case-3">Case 3:<a class="anchor" aria-label="anchor" href="#case-3"></a>
+<h2 id="case-3-inequality-analysis">Case 3: Inequality Analysis<a class="anchor" aria-label="anchor" href="#case-3-inequality-analysis"></a>
 </h2>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
