@@ -56,3 +56,22 @@ In this vignette, we will explore several typical scenarios in which the pipster
 ## Case 1: Simple Welfare Analysis and Lorenz Curve
 
 ### 1.1 Welfare share at a given population share
+```{r popshare}
+# Calculate the welfare share at a given population share
+selected_popshare <- 0.5
+welfare_share_50 <- pipmd_welfare_share_at(welfare = pip_md$welfare,
+                                           weight = pip_md$weight,
+                                           n = 1,
+                                           popshare = selected_popshare)
+```
+
+When `complete = FALSE`, the output is a list. The results can be accessed like so:
+
+```{r popshare-results}
+# Format the string with the given values
+formatted_message <- sprintf("%.0f%% of the population owns %.0f%% of welfare.",
+                             selected_popshare * 100,
+                             welfare_share_50$dist_stats$welfare_share_at[[1]] * 100)
+
+print(formatted_message)
+```
