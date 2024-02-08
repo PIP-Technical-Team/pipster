@@ -42,6 +42,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/gd_functions.html">Grouped Data Functions</a>
+    <a class="dropdown-item" href="../articles/md_functions.html">Micro Data Functions</a>
   </div>
 </li>
       </ul>
@@ -77,12 +78,12 @@
 </h2>
 <p>This vignette shows an overview of the <code>pipster</code> package
 functions for grouped data. Grouped data are consumption expenditure or
-income organized in intervals or bins, such as deciles or percentiles.
-In order to estimate poverty and inequality measures from grouped data,
-one has to derive a continuous Lorenz curve and use it together with
-mean welfare to build a full distribution. <code>pipster</code> provides
-a series of functions to estimate poverty and inequality measures, based
-on the methodology of <a href="http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf" class="external-link">Datt
+income data organized in intervals or bins, such as deciles or
+percentiles. In order to estimate poverty and inequality measures from
+grouped data, one has to derive a continuous Lorenz curve and use it
+together with mean welfare to build a full distribution.
+<code>pipster</code> provides a series of functions to estimate poverty
+and inequality measures, based on the methodology of <a href="http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf" class="external-link">Datt
 (1998)</a>:</p>
 <ul>
 <li><p><code><a href="../reference/pipgd_pov_headcount.html">pipgd_pov_headcount()</a></code> (FGT0)</p></li>
@@ -109,7 +110,7 @@ estimation:</p>
 <p>In this vignette, we will explore several typical scenarios in which
 the pipster package can be effectively utilized. In each of these
 scenario, we will use a sample dataset, <code>pip_gd</code>, available
-with the package and obtained from <a href="http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf" class="external-link">Datt
+with this package and obtained from <a href="http://ebrary.ifpri.org/utils/getfile/collection/p15738coll2/id/125673/filename/125704.pdf" class="external-link">Datt
 (1998)</a>. The dataset shows the distribution of consumption
 expenditure in rural India in 1983. The variables are the following:</p>
 <ul>
@@ -392,18 +393,48 @@ s_2}\right)\right]
 <p>Using <code>pipster</code>, we simply do:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">severity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_pov_severity.html">pipgd_pov_severity</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>, </span>
-<span>                          weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
-<span>                          mean <span class="op">=</span> <span class="va">mu</span>,</span>
-<span>                          povline <span class="op">=</span> <span class="va">z</span>,</span>
-<span>                          lorenz <span class="op">=</span> <span class="st">'lq'</span><span class="op">)</span></span>
+<span>                               weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
+<span>                               mean <span class="op">=</span> <span class="va">mu</span>,</span>
+<span>                               povline <span class="op">=</span> <span class="va">z</span>,</span>
+<span>                               lorenz <span class="op">=</span> <span class="st">'lq'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The poverty severity is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">severity</span><span class="op">$</span><span class="va">pov_severity</span><span class="op">*</span><span class="fl">100</span>,<span class="fl">2</span><span class="op">)</span>, <span class="st">"%"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "The poverty severity is 4.75%"</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="case-3-inequality-analysis">Case 3: Inequality Analysis<a class="anchor" aria-label="anchor" href="#case-3-inequality-analysis"></a>
+<h2 id="case-3-additional-inequality-and-poverty-measures">Case 3: Additional Inequality and Poverty Measures<a class="anchor" aria-label="anchor" href="#case-3-additional-inequality-and-poverty-measures"></a>
 </h2>
+<p>Finally, <code>pipster</code> can also be used to easily calculate
+additional inequality measures. The Gini coefficient can be calculated
+using <code><a href="../reference/pipgd_gini.html">pipgd_gini()</a></code> like so:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">gini</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_gini.html">pipgd_gini</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span>
+<span>                   weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
+<span>                   lorenz <span class="op">=</span> <span class="st">'lq'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The gini index is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">gini</span><span class="op">$</span><span class="va">dist_stats</span><span class="op">$</span><span class="va">gini</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The gini index is 0.29"</span></span></code></pre></div>
+<p>The Watts Index can be calculated using <code><a href="../reference/pipgd_watts.html">pipgd_watts()</a></code>
+like so:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">watts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_watts.html">pipgd_watts</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span>
+<span>                     weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
+<span>                     mean <span class="op">=</span> <span class="va">mu</span>,</span>
+<span>                     povline <span class="op">=</span> <span class="va">z</span>,</span>
+<span>                     lorenz <span class="op">=</span> <span class="st">'lq'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The Watts index is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">watts</span><span class="op">$</span><span class="va">watts</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The Watts index is 0.43"</span></span></code></pre></div>
+<p>And finally, the MLD (Mean Logarithmic Deviation) can be calculated
+using <code><a href="../reference/pipgd_mld.html">pipgd_mld()</a></code> like so:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mld</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipgd_mld.html">pipgd_mld</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">L</span>,</span>
+<span>                 weight <span class="op">=</span> <span class="va">pip_gd</span><span class="op">$</span><span class="va">P</span>,</span>
+<span>                 lorenz <span class="op">=</span> <span class="st">'lq'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The MLD is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">mld</span><span class="op">$</span><span class="va">dist_stats</span><span class="op">$</span><span class="va">mld</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The MLD is 0.14"</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
