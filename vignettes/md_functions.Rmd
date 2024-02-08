@@ -1,0 +1,58 @@
+---
+title: "Micro Data Functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{md_functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(pipster)
+```
+## Overview
+
+This vignette shows an overview of the `pipster` package functions for micro data. Microdata consist of detailed records of individual welfare measures, such as consumption, expenditure, or income, where each observation corresponds to a unique individual, and is accompanied by a sample weight that represents the individual's proportion in the overall population.
+`pipster` provides a series of functions to estimate poverty and inequality measures using microdata:
+
+-   `pipmd_pov_headcount()` (FGT0)
+
+-   `pipmd_pov_gap()` (FGT1)
+
+-   `pipmd_pov_severity()` (FGT2)
+
+-   `pipmd_gini()`
+
+-   `pipmd_mld()`
+
+-   `pipmd_watts()`
+
+It also provides a series of functions to calculate distributional measures and to select and validate the best Lorenz curve for subsequent estimation:
+
+-   `pipmd_welfare_share_at()`
+
+-   `pipmd_quantile_welfare_share()`
+
+-   `pipmd_quantile()`
+
+-   `pipmd_validate_lorenz()`
+
+-   `pipmd_select_lorenz()`
+
+## Micro Data Sample
+
+In this vignette, we will explore several typical scenarios in which the pipster package can be effectively utilized. In each of these scenario, we will use a sample dataset with 1000 observations, `pip_md`, available with this package.  The variables are the following:
+
+-   **welfare**: welfare (income or consumption)
+-   **weight**: population weights.
+
+## Case 1: Simple Welfare Analysis and Lorenz Curve
+
+### 1.1 Welfare share at a given population share
