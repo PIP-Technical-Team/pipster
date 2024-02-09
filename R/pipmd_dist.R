@@ -126,10 +126,10 @@ pipmd_quantile <- function(
 #'                        format = "atomic")
 #'
 pipmd_welfare_share_at <- function(
-    welfare    ,
-    weight     = rep(1, length = length(welfare)),
-    n          = 10,
-    popshare   = seq(from = 1/n, to = 1, by = 1/n),
+    welfare    = NULL,
+    weight     = NULL,
+    n          = NULL,
+    popshare   = NULL,
     format     = c("dt", "list", "atomic")
 ){
   # ____________________________________________________________________________
