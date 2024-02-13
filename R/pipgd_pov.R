@@ -190,13 +190,16 @@ pipgd_pov_gap_nv <- function(params     = NULL,
     params <- pipgd_pov_headcount_nv(welfare  = welfare,
                                      weight   = weight,
                                      complete = TRUE,
-                                     popshare = popshare,
                                      mean = mean,
+                                     times_mean = times_mean,
+                                     popshare = popshare,
                                      povline  = povline,
                                      lorenz   = lorenz)
   } else {
     params <- pipgd_pov_headcount_nv(params   = params,
                                      complete = TRUE,
+                                     mean = mean,
+                                     times_mean = times_mean,
                                      popshare = popshare,
                                      povline  = povline,
                                      lorenz   = lorenz)
