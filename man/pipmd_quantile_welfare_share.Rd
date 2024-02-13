@@ -5,6 +5,7 @@
 \title{Quantile welfare share}
 \usage{
 pipmd_quantile_welfare_share(
+  pipster_object = NULL,
   welfare,
   weight = rep(1, length = length(welfare)),
   n = 10,
@@ -13,6 +14,8 @@ pipmd_quantile_welfare_share(
 )
 }
 \arguments{
+\item{pipster_object}{pipster object created using \link{create_pipster_object}}
+
 \item{welfare}{welfare vector}
 
 \item{weight}{population weight vector}

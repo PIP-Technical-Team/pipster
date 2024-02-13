@@ -5,7 +5,8 @@
 \title{Calculate poverty headcount using microdata}
 \usage{
 pipmd_pov_headcount_nv(
-  welfare,
+  pipster_object = NULL,
+  welfare = NULL,
   weight = rep(1, length = length(welfare)),
   povline = fmean(welfare, w = weight) * times_mean,
   times_mean = 1

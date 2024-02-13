@@ -5,6 +5,7 @@
 \title{Estimate poverty severity}
 \usage{
 pipgd_pov_severity(
+  pipster_object = NULL,
   params = NULL,
   welfare = NULL,
   weight = NULL,
@@ -19,6 +20,8 @@ pipgd_pov_severity(
 )
 }
 \arguments{
+\item{pipster_object}{pipster object created using \link{create_pipster_object}}
+
 \item{params}{list of parameters from \code{pipgd_validate_lorenz()}}
 
 \item{welfare}{numeric vector of cumulative share of welfare (income/consumption)}

@@ -5,7 +5,8 @@
 \title{Calculate Watts index using microdata}
 \usage{
 pipmd_watts_nv(
-  welfare,
+  pipster_object = NULL,
+  welfare = NULL,
   weight = rep(1, length = length(welfare)),
   povline = fmean(welfare, w = weight) * times_mean,
   times_mean = 1
