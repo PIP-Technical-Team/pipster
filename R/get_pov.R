@@ -407,7 +407,7 @@ get_watts.pipster_md <-
 #'
 #' @return list
 #' @export
-get_wattsy.default <-
+get_watts.default <-
   function(pipster_object,
            ...) {
 
