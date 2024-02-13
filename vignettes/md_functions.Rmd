@@ -127,7 +127,7 @@ FGT2 <- (1/N)*shortfall_squared
 print(paste0("The poverty severity index is ", round(FGT2*100,2), "%"))
 ```
 
-In `pipster`, we can simply use the `pipmd_pov_gap()` function:
+In `pipster`, we can simply use the `pipmd_pov_severity()` function:
 ```{r severity-pipster}
 pip_FGT2 <- pipmd_pov_severity(welfare = pip_md$welfare,
                                weight = pip_md$weight,
