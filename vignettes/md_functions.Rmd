@@ -83,7 +83,7 @@ print(paste0("The poverty headcount index is ", round(FGT0*100,2), "%"))
 ```
 In `pipster`, we can simply use the `pipmd_pov_headcount()` function:
 
-```{r headcount-pipster}
+```{r headcount-pipster warning = FALSE}
 pip_FGT0 <- pipmd_pov_headcount(welfare = pip_md$welfare,
                                 weight = pip_md$weight,
                                 povline = z)
@@ -136,3 +136,30 @@ pip_FGT2 <- pipmd_pov_severity(welfare = pip_md$welfare,
 
 print(paste0("The poverty severity index is ", round(pip_FGT2$pov_severity*100,2), "%"))
 ```
+
+## Case 2: Inequality Measures: Additional Inequality and Poverty Measures
+`pipster` can also be used to easily calculate additional inequality measures. 
+The Gini coefficient can be calculated using `pipmd_gini()` like so:
+```{r gini}
+gini <- pipmd_gini(welfare = pip_md$welfare,
+                   weight = pip_md$weight)
+
+print((paste0("The gini index is ", round(gini$value,2))))
+```
+
+The Watts Index can be calculated using `pipgd_watts()` like so:
+```{r watts}
+watts <- pipmd_watts(welfare = pip_md$welfare,
+                     weight = pip_md$weight,
+                     povline = z)
+print((paste0("The Watts index is ", round(watts$watts, 2))))
+```
+
+And finally, the MLD (Mean Logarithmic Deviation) can be calculated using `pipgd_mld()` like so:
+```{r mld}
+mld <- pipmd_mld(welfare = pip_md$welfare,
+                 weight = pip_md$weight)
+
+print((paste0("The MLD is ", round(mld$value,2))))
+```
+
