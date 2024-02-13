@@ -83,7 +83,7 @@ print(paste0("The poverty headcount index is ", round(FGT0*100,2), "%"))
 ```
 In `pipster`, we can simply use the `pipmd_pov_headcount()` function:
 
-```{r headcount-pipster warning = FALSE}
+```{r headcount-pipster}
 pip_FGT0 <- pipmd_pov_headcount(welfare = pip_md$welfare,
                                 weight = pip_md$weight,
                                 povline = z)

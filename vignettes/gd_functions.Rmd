@@ -273,7 +273,7 @@ print(paste0("The poverty severity is ", round(SPG*100,2), "%"))
 ```
 
 Using `pipster`, we simply do:
-```{r severity}
+```{r severity-pipster}
 severity <- pipgd_pov_severity(welfare = pip_gd$L, 
                           weight = pip_gd$P,
                           mean = mu,
