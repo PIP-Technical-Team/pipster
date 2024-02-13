@@ -80,11 +80,11 @@ create_pipster_object <-
 
   #_____________________________________________________________________________
   # Return----------------------------------------------------------------------
+  class_func <- paste0("new_pipster_", cl) |>
+    parse(text = _)
   ret <- list(
-    welfare = new_vctr(welfare,
-                       class = paste0("pipster_", cl)),
-    weight  = new_vctr(weight,
-                       class = paste0("pipster_", cl))
+    welfare = eval(class_func)(welfare),
+    weight  = eval(class_func)(weight)
   )
   if (cl == "gd") {
     ret$params <- params
