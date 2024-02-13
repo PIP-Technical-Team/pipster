@@ -530,7 +530,7 @@ get_polarization.pipster_md <-
   }
 
 
-#' Gini coefficient S3 default
+#' Wolfson polarization index S3 default
 #'
 #' This default S3 method returns an error when called
 #'
@@ -582,7 +582,7 @@ get_mld <-
 #' for more detail.
 #'
 #' @inheritParams get_mld
-#' @param ... additional arguments passed to pipgd_mld
+#' @param ... additional arguments passed to [pipgd_mld]
 #'
 #' @return list
 #' @export
@@ -603,15 +603,15 @@ get_mld.pipster_gd <-
   }
 
 
-#' Wolfson polarization index
+#'  Mean Log Deviation (MLD) for micro data
 #'
-#' This is a method to compute the Wolfson polarization index on micro data.
-#' Requires a pipster object of class `pipster_md` (micro data object).
-#' This is a wrapper over [pipmd_polarization], which should be viewed
+#' This is a method to compute the MLD on group data.
+#' Requires a pipster object of class `pipster_md` (grouped data object).
+#' This is a wrapper over [pipmd_mld], which should be viewed
 #' for more detail.
 #'
 #' @inheritParams get_mld
-#' @param ... additional arguments passed to [pipmd_polarization]
+#' @param ... additional arguments passed to [pipmd_mld]
 #'
 #' @return list
 #' @export
@@ -625,7 +625,7 @@ get_mld.pipster_md <-
   }
 
 
-#' Gini coefficient S3 default
+#' MLD S3 default
 #'
 #' This default S3 method returns an error when called
 #'
