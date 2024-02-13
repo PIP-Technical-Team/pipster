@@ -212,6 +212,36 @@ income, or <span class="math inline">\(y_i &lt;= z\)</span>).</p>
 <span><span class="co">#&gt; [1] "The poverty severity index is 23.29%"</span></span></code></pre></div>
 </div>
 </div>
+<div class="section level2">
+<h2 id="case-2-inequality-measures-additional-inequality-and-poverty-measures">Case 2: Inequality Measures: Additional Inequality and Poverty
+Measures<a class="anchor" aria-label="anchor" href="#case-2-inequality-measures-additional-inequality-and-poverty-measures"></a>
+</h2>
+<p><code>pipster</code> can also be used to easily calculate additional
+inequality measures. The Gini coefficient can be calculated using
+<code><a href="../reference/pipmd_gini.html">pipmd_gini()</a></code> like so:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">gini</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_gini.html">pipmd_gini</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
+<span>                   weight <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The gini index is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">gini</span><span class="op">$</span><span class="va">value</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The gini index is -0.29"</span></span></code></pre></div>
+<p>The Watts Index can be calculated using <code><a href="../reference/pipgd_watts.html">pipgd_watts()</a></code>
+like so:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">watts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_watts.html">pipmd_watts</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
+<span>                     weight <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span>,</span>
+<span>                     povline <span class="op">=</span> <span class="va">z</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The Watts index is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">watts</span><span class="op">$</span><span class="va">watts</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The Watts index is 0.48"</span></span></code></pre></div>
+<p>And finally, the MLD (Mean Logarithmic Deviation) can be calculated
+using <code><a href="../reference/pipgd_mld.html">pipgd_mld()</a></code> like so:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mld</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_mld.html">pipmd_mld</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
+<span>                 weight <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The MLD is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">mld</span><span class="op">$</span><span class="va">value</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The MLD is 4.57"</span></span></code></pre></div>
+</div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
 </div>
