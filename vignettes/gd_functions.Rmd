@@ -160,7 +160,7 @@ abline(0, 1, col = 'red', lty = 2)
 
 `pipster` allows the user to estimate poverty measures quickly and accurately using the Lorenz curve. To demonstrate its use, we can manually calculate FGT(0), FGT(1), and FGT(2), and then replicate it using only `pipster` functions.
 
-### 2.1 Manual parameters
+### 2.0 Manual parameters
 
 Following Datt(1998), we first derive the necessary parameters from the Lorenz curve using `pipgd_lorenz_curve()`:
 
