@@ -79,8 +79,7 @@ pipgd_welfare_share_at <- function(
   params <- validate_params(pipster_object = pipster_object,
                             welfare        = welfare,
                             weight         = weight,
-                            params         = params,
-                            popshare       = popshare)
+                            params         = params)
 
   if (is.null(lorenz)) {
     lorenz <- params$selected_lorenz$for_dist
@@ -184,8 +183,7 @@ pipgd_quantile_welfare_share <-
     params <- validate_params(pipster_object = pipster_object,
                               welfare        = welfare,
                               weight         = weight,
-                              params         = params,
-                              popshare       = popshare)
+                              params         = params)
 
     if (is.null(lorenz)) {
       lorenz <- params$selected_lorenz$for_dist
@@ -296,9 +294,7 @@ pipgd_quantile <-
     params <- validate_params(pipster_object = pipster_object,
                               welfare        = welfare,
                               weight         = weight,
-                              params         = params,
-                              popshare       = popshare,
-                              mean           = mean)
+                              params         = params)
 
     if (is.null(lorenz)) {
       lorenz <- params$selected_lorenz$for_dist
@@ -525,11 +521,11 @@ validate_params <- function(
     pipster_object,
     welfare,
     weight,
-    params,
-    mean       = 1,
-    times_mean = 1,
-    popshare   = NULL,
-    povline    = ifelse(is.null(popshare), mean * times_mean, NA_real_)
+    params
+    #mean       = 1,
+    #times_mean = 1,
+    #popshare   = NULL,
+    #povline    = ifelse(is.null(popshare), mean * times_mean, NA_real_)
 ){
 
   if (!is.null(pipster_object)) {
@@ -539,19 +535,19 @@ validate_params <- function(
   } else if (!is.null(welfare)) {
     params <- pipgd_select_lorenz(welfare    = welfare,
                                   weight     = weight,
-                                  complete   = TRUE,
-                                  mean       = mean,
-                                  times_mean = times_mean,
-                                  popshare   = popshare,
-                                  povline    = povline)
+                                  complete   = TRUE)
+                                  # mean       = mean,
+                                  # times_mean = times_mean,
+                                  # popshare   = popshare,
+                                  # povline    = povline)
   } else {
     params <- pipgd_select_lorenz(welfare    = params$data$welfare,
                                   weight     = params$data$weight,
-                                  complete   = TRUE,
-                                  mean       = mean,
-                                  times_mean = times_mean,
-                                  popshare   = popshare,
-                                  povline    = povline)
+                                  complete   = TRUE)
+                                  # mean       = mean,
+                                  # times_mean = times_mean,
+                                  # popshare   = popshare,
+                                  # povline    = povline)
   }
 
   params
