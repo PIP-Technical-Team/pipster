@@ -160,7 +160,7 @@ The **Gini coefficient** can be calculated using `pipmd_gini()` like so:
 gini <- pipmd_gini(welfare = pip_md$welfare,
                    weight = pip_md$weight)
 
-print((paste0("The gini index is ", round(gini$value, 2))))
+print((paste0("The Gini index is ", round(gini$value, 2))))
 ```
 
 
@@ -173,7 +173,7 @@ print((paste0("The MLD is ", round(mld$value,2))))
 ```
 
 And finally, the **Watts Index** can be calculated using `pipgd_watts()` specifying the poverty line (`povline`) like so:
-```{r watts}
+```{r watts-1}
 z <- 3 # set the poverty line
 watts <- pipmd_watts(welfare = pip_md$welfare,
                      weight = pip_md$weight,
@@ -184,7 +184,7 @@ print((paste0("The Watts index is ", round(watts$watts, 2))))
 
 In alternative, the user can specify the parameter `times_mean`. In this case, the poverty line will be calculated as the mean of the `welfare` vector multiplied by the `times_mean` parameter:
 
-```{r watts}
+```{r watts-2}
 watts <- pipmd_watts(welfare = pip_md$welfare,
                      weight = pip_md$weight,
                      times_mean = 0.8)
