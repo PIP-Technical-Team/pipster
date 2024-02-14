@@ -42,10 +42,6 @@ It also provides a series of functions to calculate distributional measures and 
 
 -   `pipmd_quantile()`
 
--   `pipmd_validate_lorenz()`
-
--   `pipmd_select_lorenz()`
-
 ## Micro Data Sample
 
 In this vignette, we will explore several typical scenarios in which the pipster package can be effectively utilized. In each of these scenario, we will use a sample dataset with 1000 observations, `pip_md`, available with this package.  The variables are the following:
@@ -144,7 +140,7 @@ The Gini coefficient can be calculated using `pipmd_gini()` like so:
 gini <- pipmd_gini(welfare = pip_md$welfare,
                    weight = pip_md$weight)
 
-print((paste0("The gini index is ", round(gini$value,2))))
+print((paste0("The gini index is ", round(gini$value, 2))))
 ```
 
 The Watts Index can be calculated using `pipgd_watts()` like so:
@@ -162,4 +158,53 @@ mld <- pipmd_mld(welfare = pip_md$welfare,
 
 print((paste0("The MLD is ", round(mld$value,2))))
 ```
+
+## Case 3: Welfare Shares
+
+### 3.1 Welfare share for a specific number of quantiles
+
+One simple use case is the calculation of welfare shares at a specific quantile or the cumulative welfare shares at a specific quantile by specifying `n`:
+
+```{r welfare-quantiles}
+quantiles <- 5
+quantile_welfare_share <- pipmd_quantile_welfare_share(welfare = pip_md$welfare,
+                                                       weight  = pip_md$weight,
+                                                       n = quantiles)
+
+quantile_welfare_share_at <- pipmd_welfare_share_at(welfare = pip_md$welfare,
+                                                    weight  = pip_md$weight,
+                                                    n = quantiles)
+  
+# Combine into a dataframe for practicality
+df_combined <- data.frame(
+  popshare = quantile_welfare_share$quantile,
+  quantile_share = quantile_welfare_share$share,
+  cumulative_share = quantile_welfare_share_at$share_at
+)
+
+# View the combined dataframe
+print(df_combined)
+```
+### 3.2 Welfare share at a given population share
+
+Another use case is calculating the welfare share of a specific share of the population, which can be achieved using `pipmd_welfare_share_at()` by setting `n = NULL` and specifying the `popshare`:
+
+```{r welfare-popshare}
+selected_popshare <- 0.8
+welfare_at_50 <- pipmd_welfare_share_at(welfare = pip_md$welfare,
+                                         weight  = pip_md$weight,
+                                         n= NULL,
+                                         popshare = selected_popshare)
+
+# Format the string with the given values
+formatted_message <- sprintf("The bottom %.0f%% of the population owns %.0f%% of welfare.",
+                             selected_popshare * 100,
+                             welfare_at_50$share_at * 100)
+
+print(formatted_message)
+
+```
+
+
+
 

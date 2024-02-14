@@ -80,7 +80,7 @@ When `complete = FALSE`, the output is a list. The results can be accessed like 
 
 ```{r popshare-results}
 # Format the string with the given values
-formatted_message <- sprintf("%.0f%% of the population owns %.0f%% of welfare.",
+formatted_message <- sprintf("The bottom %.0f%% of the population owns %.0f%% of welfare.",
                              selected_popshare * 100,
                              welfare_share_50$dist_stats$welfare_share_at[[1]] * 100)
 
