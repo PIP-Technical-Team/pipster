@@ -568,8 +568,6 @@ pipgd_mld <- function(
 #'                    weight   = pip_gd$P,
 #'                    complete = TRUE)
 #'
-
-
 pipgd_polarization <- function(
     params     = NULL,
     welfare    = NULL,
@@ -583,7 +581,6 @@ pipgd_polarization <- function(
   #   _________________________________________________________________
   #   Defenses
   #   _________________________________________________________________
-
   pl <- as.list(environment())
   check_pipgd_params(pl)
 
@@ -602,36 +599,30 @@ pipgd_polarization <- function(
   #   _________________________________________________________________
   #   Select Lorenz
   #   _________________________________________________________________
-
   if (is.null(lorenz)) {
     lorenz <- params$selected_lorenz$for_dist
   } else {
     match.arg(lorenz, c("lq", "lb"))
   }
 
-
   #   _________________________________________________________________
-  #   Set p0 and compute dcm
+  #   Set arguments
   #   _________________________________________________________________
 
-  # p0 - always 0.5
-  p0   = 0.5
-  mean = mean
-
-  # gini
-
+  # Gini
   if (is.null(gini)) {
     gini <- pipgd_gini(welfare = params$data$welfare,
                        weight  = params$data$weight,
                        lorenz  = lorenz)$dist_stats$gini
-  } else {
-    gini <- gini
   }
 
-  dcm = (1 - gini)*mean
+  # Set arguments
+  p0  <- 0.5 # constant
+  dcm <- (1 - gini)*mean
 
   # Compute polarization index
-  polarization_ <- paste0("wbpip:::gd_compute_polarization_", lorenz) |>
+  polarization_ <- paste0("wbpip::gd_compute_polarization_",
+                          lorenz) |>
     parse(text = _)
 
   polarization <- eval(polarization_)(
