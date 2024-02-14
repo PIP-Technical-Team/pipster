@@ -133,6 +133,25 @@ pip_FGT2 <- pipmd_pov_severity(welfare = pip_md$welfare,
 print(paste0("The poverty severity index is ", round(pip_FGT2$pov_severity*100,2), "%"))
 ```
 
+### 1.4 Alternatives
+For each of the previous poverty indexes functions, the user can specify the `mean` or a factor (`times_mean`) with which the function will calculate the poverty line. For example:
+
+```{r poverty-alternative-1}
+pip_FGT1_alt <- pipmd_pov_gap(welfare = pip_md$welfare,
+                              weight = pip_md$weight,
+                              times_mean = 0.2)
+
+print(paste0("The poverty gap index is ", round(pip_FGT1_alt$pov_gap*100,2), "%"))
+```
+
+Finally, `povline` can also take multiple values:
+```{r poverty-alternative-2}
+pip_FGT1_multiple <- pipmd_pov_gap(welfare = pip_md$welfare,
+                                          weight = pip_md$weight,
+                                          povline = c(1.4, 3, 4))
+
+print(pip_FGT1_multiple)
+```
 
 ## Case 2: Additional Inequality and Poverty Measures
 `pipster` can also be used to easily calculate additional inequality measures. 
