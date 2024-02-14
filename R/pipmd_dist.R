@@ -303,6 +303,11 @@ pipmd_gini <- function(
     weight  <- pipster_object$weight |> unclass()
   }
 
+  if (is.unsorted(welfare)) {
+    weight  <- weight[order(welfare)]
+    welfare <- welfare[order(welfare)]
+  }
+
   # defenses ---------
   check_pipmd_dist()
 
