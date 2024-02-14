@@ -92,9 +92,8 @@ microdata:</p>
 <li><p><code><a href="../reference/pipmd_mld.html">pipmd_mld()</a></code></p></li>
 <li><p><code><a href="../reference/pipmd_watts.html">pipmd_watts()</a></code></p></li>
 </ul>
-<p>It also provides a series of functions to calculate distributional
-measures and to select and validate the best Lorenz curve for subsequent
-estimation:</p>
+<p>It also provides a series of functions to calculate welfare shares,
+cumulative welfare shares and income thresholds for each quantile:</p>
 <ul>
 <li><p><code><a href="../reference/pipmd_welfare_share_at.html">pipmd_welfare_share_at()</a></code></p></li>
 <li><p><code><a href="../reference/pipmd_quantile_welfare_share.html">pipmd_quantile_welfare_share()</a></code></p></li>
@@ -105,24 +104,118 @@ estimation:</p>
 <h2 id="micro-data-sample">Micro Data Sample<a class="anchor" aria-label="anchor" href="#micro-data-sample"></a>
 </h2>
 <p>In this vignette, we will explore several typical scenarios in which
-the pipster package can be effectively utilized. In each of these
-scenario, we will use a sample dataset with 1000 observations,
+the <code>pipster</code> package can be effectively utilized. In each of
+these scenario, we will use a sample dataset with 1000 observations,
 <code>pip_md</code>, available with this package. The variables are the
 following:</p>
 <ul>
 <li>
-<strong>welfare</strong>: welfare (income or consumption)</li>
+<strong>welfare</strong>: welfare (income or consumption).</li>
 <li>
 <strong>weight</strong>: population weights.</li>
 </ul>
-<p>Here is a preview of the data:</p>
-<pre><code><span><span class="co">#&gt;        welfare weight</span></span>
-<span><span class="co">#&gt; 1   81.5864216   7941</span></span>
-<span><span class="co">#&gt; 2   61.4004171   7672</span></span>
-<span><span class="co">#&gt; 3  304.4441509   2617</span></span>
-<span><span class="co">#&gt; 4 1267.9985109   7912</span></span>
-<span><span class="co">#&gt; 5    3.9202884   8371</span></span>
-<span><span class="co">#&gt; 6    0.6881794   6819</span></span></code></pre>
+<p>Here is a preview of the first 10 observations:</p>
+<pre><code><span><span class="co">#&gt;          welfare weight</span></span>
+<span><span class="co">#&gt; 1   8.158642e+01   7941</span></span>
+<span><span class="co">#&gt; 2   6.140042e+01   7672</span></span>
+<span><span class="co">#&gt; 3   3.044442e+02   2617</span></span>
+<span><span class="co">#&gt; 4   1.267999e+03   7912</span></span>
+<span><span class="co">#&gt; 5   3.920288e+00   8371</span></span>
+<span><span class="co">#&gt; 6   6.881794e-01   6819</span></span>
+<span><span class="co">#&gt; 7   1.176799e+03   4229</span></span>
+<span><span class="co">#&gt; 8   5.582449e+00   4204</span></span>
+<span><span class="co">#&gt; 9   8.151431e+00   7863</span></span>
+<span><span class="co">#&gt; 10  1.394417e+00   4762</span></span>
+<span><span class="co">#&gt; 11  0.000000e+00    828</span></span>
+<span><span class="co">#&gt; 12  0.000000e+00   6511</span></span>
+<span><span class="co">#&gt; 13  1.416933e+01   6614</span></span>
+<span><span class="co">#&gt; 14  6.058623e+01   7542</span></span>
+<span><span class="co">#&gt; 15  8.183136e-01    777</span></span>
+<span><span class="co">#&gt; 16  3.842316e+00   1717</span></span>
+<span><span class="co">#&gt; 17  2.844786e-01   1386</span></span>
+<span><span class="co">#&gt; 18  1.133015e+00   2405</span></span>
+<span><span class="co">#&gt; 19  4.777032e+00   3391</span></span>
+<span><span class="co">#&gt; 20  1.170621e+01   9168</span></span>
+<span><span class="co">#&gt; 21  5.767410e+01   2203</span></span>
+<span><span class="co">#&gt; 22  2.655964e+01   3705</span></span>
+<span><span class="co">#&gt; 23  1.222839e+00   5343</span></span>
+<span><span class="co">#&gt; 24  1.029662e+02   1165</span></span>
+<span><span class="co">#&gt; 25  2.008138e+00    231</span></span>
+<span><span class="co">#&gt; 26  8.230406e+00   8415</span></span>
+<span><span class="co">#&gt; 27  7.295150e-01   9418</span></span>
+<span><span class="co">#&gt; 28  1.270052e+00   6493</span></span>
+<span><span class="co">#&gt; 29  2.721181e+01    988</span></span>
+<span><span class="co">#&gt; 30  2.163641e-01   9737</span></span>
+<span><span class="co">#&gt; 31  0.000000e+00   6734</span></span>
+<span><span class="co">#&gt; 32  3.044507e+01   4912</span></span>
+<span><span class="co">#&gt; 33  2.407384e+01   1093</span></span>
+<span><span class="co">#&gt; 34  1.068963e+00   7139</span></span>
+<span><span class="co">#&gt; 35  1.943926e-01    827</span></span>
+<span><span class="co">#&gt; 36  1.579914e+01   2873</span></span>
+<span><span class="co">#&gt; 37  1.175698e+03   8750</span></span>
+<span><span class="co">#&gt; 38  4.198047e+01   6733</span></span>
+<span><span class="co">#&gt; 39  3.176114e-01   7806</span></span>
+<span><span class="co">#&gt; 40  7.091606e-02   2677</span></span>
+<span><span class="co">#&gt; 41  3.197754e-01   1518</span></span>
+<span><span class="co">#&gt; 42  0.000000e+00   9170</span></span>
+<span><span class="co">#&gt; 43  3.578453e+00   5291</span></span>
+<span><span class="co">#&gt; 44  1.637269e+00   3951</span></span>
+<span><span class="co">#&gt; 45  4.673942e+03   2191</span></span>
+<span><span class="co">#&gt; 46  2.965992e-01   3425</span></span>
+<span><span class="co">#&gt; 47  3.207101e+01   8469</span></span>
+<span><span class="co">#&gt; 48  3.022271e+00   9577</span></span>
+<span><span class="co">#&gt; 49  1.329211e+01   3820</span></span>
+<span><span class="co">#&gt; 50  1.693685e+00   3770</span></span>
+<span><span class="co">#&gt; 51  4.954072e-01   3645</span></span>
+<span><span class="co">#&gt; 52  8.802034e-01   8509</span></span>
+<span><span class="co">#&gt; 53  4.736344e+01   1781</span></span>
+<span><span class="co">#&gt; 54  3.144582e+00   6428</span></span>
+<span><span class="co">#&gt; 55  3.196318e+00   1126</span></span>
+<span><span class="co">#&gt; 56  4.871130e+00   6045</span></span>
+<span><span class="co">#&gt; 57  2.400314e+00   9042</span></span>
+<span><span class="co">#&gt; 58  2.430313e+00   6145</span></span>
+<span><span class="co">#&gt; 59  5.845300e-01    267</span></span>
+<span><span class="co">#&gt; 60  1.999227e+01   7624</span></span>
+<span><span class="co">#&gt; 61  1.025184e+01   4466</span></span>
+<span><span class="co">#&gt; 62  1.416426e+00   8718</span></span>
+<span><span class="co">#&gt; 63  4.107216e+00   2312</span></span>
+<span><span class="co">#&gt; 64  3.829008e+01   8903</span></span>
+<span><span class="co">#&gt; 65  6.418920e+00   7359</span></span>
+<span><span class="co">#&gt; 66  4.378854e+02   6132</span></span>
+<span><span class="co">#&gt; 67  1.839200e+00   4159</span></span>
+<span><span class="co">#&gt; 68  5.827780e+01   2365</span></span>
+<span><span class="co">#&gt; 69  2.530724e+01   2992</span></span>
+<span><span class="co">#&gt; 70  8.770251e-01   7867</span></span>
+<span><span class="co">#&gt; 71  2.931065e+00   7530</span></span>
+<span><span class="co">#&gt; 72  1.356509e+00   2104</span></span>
+<span><span class="co">#&gt; 73  4.330709e-01   7549</span></span>
+<span><span class="co">#&gt; 74  7.013744e-01   2100</span></span>
+<span><span class="co">#&gt; 75  3.589389e+01   2121</span></span>
+<span><span class="co">#&gt; 76  1.163950e+02   5251</span></span>
+<span><span class="co">#&gt; 77  1.466977e+03   8634</span></span>
+<span><span class="co">#&gt; 78  1.069103e-01   3203</span></span>
+<span><span class="co">#&gt; 79  1.164450e+01    774</span></span>
+<span><span class="co">#&gt; 80  0.000000e+00   1128</span></span>
+<span><span class="co">#&gt; 81  1.894986e+00   8911</span></span>
+<span><span class="co">#&gt; 82  1.080995e+00   1873</span></span>
+<span><span class="co">#&gt; 83  1.323475e+02   5087</span></span>
+<span><span class="co">#&gt; 84  3.439387e+00     20</span></span>
+<span><span class="co">#&gt; 85  2.048862e+01   9315</span></span>
+<span><span class="co">#&gt; 86  1.628755e+00   5495</span></span>
+<span><span class="co">#&gt; 87  0.000000e+00   1936</span></span>
+<span><span class="co">#&gt; 88  7.379348e-01   1885</span></span>
+<span><span class="co">#&gt; 89  1.149148e+00   8773</span></span>
+<span><span class="co">#&gt; 90  3.970420e-01   3934</span></span>
+<span><span class="co">#&gt; 91  2.111269e+02   8988</span></span>
+<span><span class="co">#&gt; 92  6.706037e+00   5565</span></span>
+<span><span class="co">#&gt; 93  1.318380e+01   6165</span></span>
+<span><span class="co">#&gt; 94  1.561159e-02   4192</span></span>
+<span><span class="co">#&gt; 95  1.850580e-02   2175</span></span>
+<span><span class="co">#&gt; 96  6.802277e+01   6282</span></span>
+<span><span class="co">#&gt; 97  0.000000e+00   8980</span></span>
+<span><span class="co">#&gt; 98  9.713248e-02   7337</span></span>
+<span><span class="co">#&gt; 99  3.051879e-01   4399</span></span>
+<span><span class="co">#&gt; 100 6.611018e-02   8476</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="case-1-poverty-profiling">Case 1: Poverty Profiling<a class="anchor" aria-label="anchor" href="#case-1-poverty-profiling"></a>
@@ -136,7 +229,7 @@ values of the parameter <span class="math inline">\(\alpha\)</span> into
 the following equation:</p>
 <p><span class="math display">\[F G T_\alpha=\frac{1}{N}
 \sum_{i=1}^H\left(\frac{z-y_i}{z}\right)^\alpha\]</span> where <span class="math inline">\(z\)</span> is the povety line, <span class="math inline">\(N\)</span> the total population, and <span class="math inline">\(H\)</span> the number of poor individuals (with
-income, or <span class="math inline">\(y_i &lt;= z\)</span>).</p>
+income, or <span class="math inline">\(y_i\)</span>, <span class="math inline">\(&lt;= z\)</span>).</p>
 <div class="section level3">
 <h3 id="poverty-headcount">1.1 Poverty Headcount<a class="anchor" aria-label="anchor" href="#poverty-headcount"></a>
 </h3>
@@ -209,36 +302,75 @@ income, or <span class="math inline">\(y_i &lt;= z\)</span>).</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The poverty severity index is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">pip_FGT2</span><span class="op">$</span><span class="va">pov_severity</span><span class="op">*</span><span class="fl">100</span>,<span class="fl">2</span><span class="op">)</span>, <span class="st">"%"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "The poverty severity index is 23.29%"</span></span></code></pre></div>
 </div>
+<div class="section level3">
+<h3 id="alternatives">1.4 Alternatives<a class="anchor" aria-label="anchor" href="#alternatives"></a>
+</h3>
+<p>For each of the previous poverty indexes functions, the user can
+specify the <code>mean</code> or a factor (<code>times_mean</code>) with
+which the function will calculate the poverty line. For example:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pip_FGT1_alt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_pov_gap.html">pipmd_pov_gap</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
+<span>                              weight <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span>,</span>
+<span>                              times_mean <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The poverty gap index is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">pip_FGT1_alt</span><span class="op">$</span><span class="va">pov_gap</span><span class="op">*</span><span class="fl">100</span>,<span class="fl">2</span><span class="op">)</span>, <span class="st">"%"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The poverty gap index is 76.82%"</span></span></code></pre></div>
+<p>Finally, <code>povline</code> can also take multiple values:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pip_FGT1_multiple</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_pov_gap.html">pipmd_pov_gap</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
+<span>                                          weight <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span>,</span>
+<span>                                          povline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.4</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">pip_FGT1_multiple</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    povline   pov_gap</span></span>
+<span><span class="co">#&gt;      &lt;num&gt;     &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:     1.4 0.2747608</span></span>
+<span><span class="co">#&gt; 2:     3.0 0.3571872</span></span>
+<span><span class="co">#&gt; 3:     4.0 0.3955473</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
-<h2 id="case-2-inequality-measures-additional-inequality-and-poverty-measures">Case 2: Inequality Measures: Additional Inequality and Poverty
-Measures<a class="anchor" aria-label="anchor" href="#case-2-inequality-measures-additional-inequality-and-poverty-measures"></a>
+<h2 id="case-2-additional-inequality-and-poverty-measures">Case 2: Additional Inequality and Poverty Measures<a class="anchor" aria-label="anchor" href="#case-2-additional-inequality-and-poverty-measures"></a>
 </h2>
 <p><code>pipster</code> can also be used to easily calculate additional
-inequality measures. The Gini coefficient can be calculated using
-<code><a href="../reference/pipmd_gini.html">pipmd_gini()</a></code> like so:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+inequality measures. The <strong>Gini coefficient</strong> can be
+calculated using <code><a href="../reference/pipmd_gini.html">pipmd_gini()</a></code> like so:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gini</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_gini.html">pipmd_gini</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
 <span>                   weight <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The gini index is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">gini</span><span class="op">$</span><span class="va">value</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "The gini index is -0.29"</span></span></code></pre></div>
-<p>The Watts Index can be calculated using <code><a href="../reference/pipgd_watts.html">pipgd_watts()</a></code>
-like so:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">watts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_watts.html">pipmd_watts</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
-<span>                     weight <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span>,</span>
-<span>                     povline <span class="op">=</span> <span class="va">z</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The Watts index is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">watts</span><span class="op">$</span><span class="va">watts</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "The Watts index is 0.48"</span></span></code></pre></div>
-<p>And finally, the MLD (Mean Logarithmic Deviation) can be calculated
-using <code><a href="../reference/pipgd_mld.html">pipgd_mld()</a></code> like so:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The Gini index is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">gini</span><span class="op">$</span><span class="va">value</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The Gini index is -0.29"</span></span></code></pre></div>
+<p>The <strong>MLD (Mean Logarithmic Deviation)</strong> can be
+calculated using <code><a href="../reference/pipgd_mld.html">pipgd_mld()</a></code> like so:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mld</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_mld.html">pipmd_mld</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
 <span>                 weight <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The MLD is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">mld</span><span class="op">$</span><span class="va">value</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "The MLD is 4.57"</span></span></code></pre></div>
+<p>And finally, the <strong>Watts Index</strong> can be calculated using
+<code><a href="../reference/pipgd_watts.html">pipgd_watts()</a></code> specifying the poverty line
+(<code>povline</code>) like so:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fl">3</span> <span class="co"># set the poverty line</span></span>
+<span><span class="va">watts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_watts.html">pipmd_watts</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
+<span>                     weight <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span>,</span>
+<span>                     povline <span class="op">=</span> <span class="va">z</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The Watts index is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">watts</span><span class="op">$</span><span class="va">watts</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The Watts index is 0.74"</span></span></code></pre></div>
+<p>In alternative, the user can specify the parameter
+<code>times_mean</code>. In this case, the poverty line will be
+calculated as the mean of the <code>welfare</code> vector multiplied by
+the <code>times_mean</code> parameter:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">watts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_watts.html">pipmd_watts</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
+<span>                     weight <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span>,</span>
+<span>                     times_mean <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"The Watts index is "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">watts</span><span class="op">$</span><span class="va">watts</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The Watts index is 3.96"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="case-3-welfare-shares">Case 3: Welfare Shares<a class="anchor" aria-label="anchor" href="#case-3-welfare-shares"></a>
@@ -249,7 +381,7 @@ using <code><a href="../reference/pipgd_mld.html">pipgd_mld()</a></code> like so
 <p>One simple use case is the calculation of welfare shares at a
 specific quantile or the cumulative welfare shares at a specific
 quantile by specifying <code>n</code>:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">quantiles</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span><span class="va">quantile_welfare_share</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_quantile_welfare_share.html">pipmd_quantile_welfare_share</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
 <span>                                                       weight  <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span>,</span>
@@ -258,22 +390,27 @@ quantile by specifying <code>n</code>:</p>
 <span><span class="va">quantile_welfare_share_at</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_welfare_share_at.html">pipmd_welfare_share_at</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
 <span>                                                    weight  <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span>,</span>
 <span>                                                    n <span class="op">=</span> <span class="va">quantiles</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">quantile_threshold</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_quantile.html">pipmd_quantile</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
+<span>                                     weight  <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span>,</span>
+<span>                                     n <span class="op">=</span> <span class="va">quantiles</span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="co"># Combine into a dataframe for practicality</span></span>
 <span><span class="va">df_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  popshare <span class="op">=</span> <span class="va">quantile_welfare_share</span><span class="op">$</span><span class="va">quantile</span>,</span>
 <span>  quantile_share <span class="op">=</span> <span class="va">quantile_welfare_share</span><span class="op">$</span><span class="va">share</span>,</span>
-<span>  cumulative_share <span class="op">=</span> <span class="va">quantile_welfare_share_at</span><span class="op">$</span><span class="va">share_at</span></span>
+<span>  cumulative_share <span class="op">=</span> <span class="va">quantile_welfare_share_at</span><span class="op">$</span><span class="va">share_at</span>,</span>
+<span>  income_threshold <span class="op">=</span> <span class="va">quantile_threshold</span><span class="op">$</span><span class="va">values</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># View the combined dataframe</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">df_combined</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   popshare quantile_share cumulative_share</span></span>
-<span><span class="co">#&gt; 1    q_20%   3.168918e-05        0.2010610</span></span>
-<span><span class="co">#&gt; 2    q_40%   4.331949e-04        0.4015349</span></span>
-<span><span class="co">#&gt; 3    q_60%   1.833667e-03        0.6013513</span></span>
-<span><span class="co">#&gt; 4    q_80%   9.426906e-03        0.8004222</span></span>
-<span><span class="co">#&gt; 5   q_100%   9.882745e-01        1.0000000</span></span></code></pre></div>
+<span><span class="co">#&gt;   popshare quantile_share cumulative_share income_threshold</span></span>
+<span><span class="co">#&gt; 1    q_20%   3.168918e-05        0.2010610     2.523813e-01</span></span>
+<span><span class="co">#&gt; 2    q_40%   4.331949e-04        0.4015349     1.794095e+00</span></span>
+<span><span class="co">#&gt; 3    q_60%   1.833667e-03        0.6013513     6.789944e+00</span></span>
+<span><span class="co">#&gt; 4    q_80%   9.426906e-03        0.8004222     4.445397e+01</span></span>
+<span><span class="co">#&gt; 5   q_100%   9.882745e-01        1.0000000     1.233918e+05</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="welfare-share-at-a-given-population-share">3.2 Welfare share at a given population share<a class="anchor" aria-label="anchor" href="#welfare-share-at-a-given-population-share"></a>
@@ -282,7 +419,7 @@ quantile by specifying <code>n</code>:</p>
 of the population, which can be achieved using
 <code><a href="../reference/pipmd_welfare_share_at.html">pipmd_welfare_share_at()</a></code> by setting <code>n = NULL</code>
 and specifying the <code>popshare</code>:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">selected_popshare</span> <span class="op">&lt;-</span> <span class="fl">0.8</span></span>
 <span><span class="va">welfare_at_50</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipmd_welfare_share_at.html">pipmd_welfare_share_at</a></span><span class="op">(</span>welfare <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">welfare</span>,</span>
 <span>                                         weight  <span class="op">=</span> <span class="va">pip_md</span><span class="op">$</span><span class="va">weight</span>,</span>
