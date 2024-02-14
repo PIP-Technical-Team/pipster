@@ -34,7 +34,7 @@ This vignette shows an overview of the `pipster` package functions for micro dat
 
 -   `pipmd_watts()`
 
-It also provides a series of functions to calculate distributional measures and to select and validate the best Lorenz curve for subsequent estimation:
+It also provides a series of functions to calculate welfare shares, cumulative welfare shares and income thresholds for each quantile:
 
 -   `pipmd_welfare_share_at()`
 
@@ -44,16 +44,16 @@ It also provides a series of functions to calculate distributional measures and 
 
 ## Micro Data Sample
 
-In this vignette, we will explore several typical scenarios in which the pipster package can be effectively utilized. In each of these scenario, we will use a sample dataset with 1000 observations, `pip_md`, available with this package.  The variables are the following:
+In this vignette, we will explore several typical scenarios in which the `pipster` package can be effectively utilized. In each of these scenario, we will use a sample dataset with 1000 observations, `pip_md`, available with this package.  The variables are the following:
 
--   **welfare**: welfare (income or consumption)
+-   **welfare**: welfare (income or consumption).
 -   **weight**: population weights.
 
-Here is a preview of the data:
+Here is a preview of the first 10 observations:
 
 ```{r data, echo=FALSE}
 pip_md |>
-  head() |>
+  head(n=100) |>
   print()
 ```
 
@@ -61,7 +61,7 @@ pip_md |>
 `pipster` allows the user to estimate poverty measures quickly and accurately. To demonstrate its use, we can manually calculate FGT(0), FGT(1), and FGT(2), and then replicate it using only `pipster` functions. The Foster-Greer-Thorbecke indices are a family of poverty metrics which can be derived by substituting different values of the parameter $\alpha$ into the following equation:
 
 $$F G T_\alpha=\frac{1}{N} \sum_{i=1}^H\left(\frac{z-y_i}{z}\right)^\alpha$$
-where $z$ is the povety line, $N$ the total population, and $H$ the number of poor individuals (with income, or $y_i <= z$).
+where $z$ is the povety line, $N$ the total population, and $H$ the number of poor individuals (with income, or $y_i$, $<= z$).
 
 ### 1.1 Poverty Headcount
 The poverty headcount, or FGT(1) can be calculated as follows:
@@ -134,7 +134,7 @@ print(paste0("The poverty severity index is ", round(pip_FGT2$pov_severity*100,2
 ```
 
 
-## Case 2: Inequality Measures: Additional Inequality and Poverty Measures
+## Case 2: Additional Inequality and Poverty Measures
 `pipster` can also be used to easily calculate additional inequality measures. 
 The **Gini coefficient** can be calculated using `pipmd_gini()` like so:
 ```{r gini}
@@ -144,15 +144,8 @@ gini <- pipmd_gini(welfare = pip_md$welfare,
 print((paste0("The gini index is ", round(gini$value, 2))))
 ```
 
-The **Watts Index** can be calculated using `pipgd_watts()` like so:
-```{r watts}
-watts <- pipmd_watts(welfare = pip_md$welfare,
-                     weight = pip_md$weight,
-                     povline = z)
-print((paste0("The Watts index is ", round(watts$watts, 2))))
-```
 
-And finally, the **MLD (Mean Logarithmic Deviation)** can be calculated using `pipgd_mld()` like so:
+The **MLD (Mean Logarithmic Deviation)** can be calculated using `pipgd_mld()` like so:
 ```{r mld}
 mld <- pipmd_mld(welfare = pip_md$welfare,
                  weight = pip_md$weight)
@@ -160,6 +153,25 @@ mld <- pipmd_mld(welfare = pip_md$welfare,
 print((paste0("The MLD is ", round(mld$value,2))))
 ```
 
+And finally, the **Watts Index** can be calculated using `pipgd_watts()` specifying the poverty line (`povline`) like so:
+```{r watts}
+z <- 3 # set the poverty line
+watts <- pipmd_watts(welfare = pip_md$welfare,
+                     weight = pip_md$weight,
+                     povline = z)
+
+print((paste0("The Watts index is ", round(watts$watts, 2))))
+```
+
+In alternative, the user can specify the parameter `times_mean`. In this case, the poverty line will be calculated as the mean of the `welfare` vector multiplied by the `times_mean` parameter.
+
+```{r watts}
+watts <- pipmd_watts(welfare = pip_md$welfare,
+                     weight = pip_md$weight,
+                     times_mean = 0.8)
+
+print((paste0("The Watts index is ", round(watts$watts, 2))))
+```
 ## Case 3: Welfare Shares
 
 ### 3.1 Welfare share for a specific number of quantiles
