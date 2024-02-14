@@ -110,7 +110,6 @@ df_combined <- data.frame(
 
 # View the combined dataframe
 print(df_combined)
-
 ```
 
 ### 1.3 Estimate and Plot the Lorenz Curve
