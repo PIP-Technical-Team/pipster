@@ -182,7 +182,7 @@ watts <- pipmd_watts(welfare = pip_md$welfare,
 print((paste0("The Watts index is ", round(watts$watts, 2))))
 ```
 
-In alternative, the user can specify the parameter `times_mean`. In this case, the poverty line will be calculated as the mean of the `welfare` vector multiplied by the `times_mean` parameter.
+In alternative, the user can specify the parameter `times_mean`. In this case, the poverty line will be calculated as the mean of the `welfare` vector multiplied by the `times_mean` parameter:
 
 ```{r watts}
 watts <- pipmd_watts(welfare = pip_md$welfare,
