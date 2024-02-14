@@ -133,9 +133,10 @@ pip_FGT2 <- pipmd_pov_severity(welfare = pip_md$welfare,
 print(paste0("The poverty severity index is ", round(pip_FGT2$pov_severity*100,2), "%"))
 ```
 
+
 ## Case 2: Inequality Measures: Additional Inequality and Poverty Measures
 `pipster` can also be used to easily calculate additional inequality measures. 
-The Gini coefficient can be calculated using `pipmd_gini()` like so:
+The **Gini coefficient** can be calculated using `pipmd_gini()` like so:
 ```{r gini}
 gini <- pipmd_gini(welfare = pip_md$welfare,
                    weight = pip_md$weight)
@@ -143,7 +144,7 @@ gini <- pipmd_gini(welfare = pip_md$welfare,
 print((paste0("The gini index is ", round(gini$value, 2))))
 ```
 
-The Watts Index can be calculated using `pipgd_watts()` like so:
+The **Watts Index** can be calculated using `pipgd_watts()` like so:
 ```{r watts}
 watts <- pipmd_watts(welfare = pip_md$welfare,
                      weight = pip_md$weight,
@@ -151,7 +152,7 @@ watts <- pipmd_watts(welfare = pip_md$welfare,
 print((paste0("The Watts index is ", round(watts$watts, 2))))
 ```
 
-And finally, the MLD (Mean Logarithmic Deviation) can be calculated using `pipgd_mld()` like so:
+And finally, the **MLD (Mean Logarithmic Deviation)** can be calculated using `pipgd_mld()` like so:
 ```{r mld}
 mld <- pipmd_mld(welfare = pip_md$welfare,
                  weight = pip_md$weight)
@@ -174,17 +175,23 @@ quantile_welfare_share <- pipmd_quantile_welfare_share(welfare = pip_md$welfare,
 quantile_welfare_share_at <- pipmd_welfare_share_at(welfare = pip_md$welfare,
                                                     weight  = pip_md$weight,
                                                     n = quantiles)
+
+quantile_threshold <- pipmd_quantile(welfare = pip_md$welfare,
+                                     weight  = pip_md$weight,
+                                     n = quantiles)
   
 # Combine into a dataframe for practicality
 df_combined <- data.frame(
   popshare = quantile_welfare_share$quantile,
   quantile_share = quantile_welfare_share$share,
-  cumulative_share = quantile_welfare_share_at$share_at
+  cumulative_share = quantile_welfare_share_at$share_at,
+  income_threshold = quantile_threshold$values
 )
 
 # View the combined dataframe
 print(df_combined)
 ```
+
 ### 3.2 Welfare share at a given population share
 
 Another use case is calculating the welfare share of a specific share of the population, which can be achieved using `pipmd_welfare_share_at()` by setting `n = NULL` and specifying the `popshare`:
@@ -202,7 +209,6 @@ formatted_message <- sprintf("The bottom %.0f%% of the population owns %.0f%% of
                              welfare_at_50$share_at * 100)
 
 print(formatted_message)
-
 ```
 
 
