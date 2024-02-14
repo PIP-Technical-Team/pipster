@@ -41,8 +41,7 @@ pipgd_pov_headcount_nv <-
     weight  <- params$data$weight
   }
 
-  params <- pipgd_select_lorenz(params     = params,
-                                welfare    = welfare,
+  params <- pipgd_select_lorenz(welfare    = welfare,
                                 weight     = weight,
                                 mean       = mean,
                                 times_mean = times_mean,
@@ -369,7 +368,7 @@ pipgd_pov_gap <- function(pipster_object = NULL,
 #' also returns all params.
 #' @keywords internal
 pipgd_pov_severity_nv <- function(
-    pipster_object = pipster_object,
+    pipster_object = NULL,
     params         = NULL,
     welfare        = NULL,
     weight         = NULL,
@@ -628,7 +627,7 @@ pipgd_pov_severity <- function(
 #'
 #' @keywords internal
 pipgd_watts_nv <- function(
-    pipster_object = pipster_object,
+    pipster_object = NULL,
     params         = NULL,
     welfare        = NULL,
     weight         = NULL,
@@ -677,8 +676,8 @@ pipgd_watts_nv <- function(
                            params$gd_params[[lorenz]]$reg_results$coef[["A"]],
                            params$gd_params[[lorenz]]$reg_results$coef[["B"]],
                            params$gd_params[[lorenz]]$reg_results$coef[["C"]])
-  }
 
+  }
 
   # __________________________________________________________________________
   #   Calculate Watts -----------------------------------------------------
@@ -689,9 +688,9 @@ pipgd_watts_nv <- function(
   wr <- eval(watts_)(mean      = mean,
                      povline   = povline,
                      headcount = params$pov_stats$headcount,
-                     A         = params$gd_params$lb$reg_results$coef[["A"]],
-                     B         = params$gd_params$lb$reg_results$coef[["B"]],
-                     C         = params$gd_params$lb$reg_results$coef[["C"]])
+                     A         = params$gd_params[[lorenz]]$reg_results$coef[["A"]],
+                     B         = params$gd_params[[lorenz]]$reg_results$coef[["B"]],
+                     C         = params$gd_params[[lorenz]]$reg_results$coef[["C"]])
 
   attributes(wr) <- NULL
 
@@ -759,7 +758,7 @@ pipgd_watts_nv <- function(
 #'             times_mean = 1.5)
 #'
 pipgd_watts <- function(
-    pipster_object = pipster_object,
+    pipster_object = NULL,
     params         = NULL,
     welfare        = NULL,
     weight         = NULL,
