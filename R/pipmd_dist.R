@@ -244,6 +244,9 @@ pipmd_quantile_welfare_share <- function(
     popshare   = popshare,
     format     = format
   )
+  if (is.null(n)) {
+    output <- output[1]
+  }
 
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------

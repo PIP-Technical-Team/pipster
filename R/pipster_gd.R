@@ -32,7 +32,7 @@ is_pipster_gd <- function(x) {
 
 #' @export
 #' @rdname pipster_gd
-as_percent <- function(x) {
+as_pipster_gd <- function(x) {
   vec_cast(x, new_pipster_gd())
 }
 

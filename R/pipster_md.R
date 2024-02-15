@@ -7,7 +7,7 @@ new_pipster_md <- function(x = double(), ...) {
 
 #' `pipster_md` vector
 #'
-#' This creates a double vector of group pipster data.
+#' This creates a double vector of pipster micro data.
 #'
 #' @param x
 #'  * For `pipster_md`: numeric vector
@@ -32,7 +32,7 @@ is_pipster_md <- function(x) {
 
 #' @export
 #' @rdname pipster_md
-as_percent <- function(x) {
+as_pipster_md <- function(x) {
   vec_cast(x, new_pipster_md())
 }
 
@@ -93,7 +93,7 @@ vec_cast.pipster_md.double     <- function(x, to, ...) {
 
 #' @export
 vec_cast.double.pipster_md     <- function(x, to, ...) {
-  vec_data(x)
+  as.numeric(vec_data(x))
 }
 
 

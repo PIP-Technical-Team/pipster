@@ -177,7 +177,6 @@ pipgd_quantile_welfare_share <-
     pl <- as.list(environment())
     check_pipgd_params(pl)
 
-
     #   ____________________________________________________
     #   Computations                              ####
     params <- validate_params(pipster_object = pipster_object,
@@ -194,7 +193,8 @@ pipgd_quantile_welfare_share <-
     # get shares ------------------------
     shr <- pipgd_welfare_share_at(params   = params,
                                   complete = FALSE,
-                                  n        = n)
+                                  n        = n,
+                                  popshare = popshare)
     shr <- c(shr$dist_stats$welfare_share_at[1],
              diff(shr$dist_stats$welfare_share_at))
 
