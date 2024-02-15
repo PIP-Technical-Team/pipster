@@ -33,7 +33,7 @@ create_pipster_object <-
   }
   if (length(weight) > 1 & any(is.na(weight))) {
     cli::cli_abort("No elements in weight vector can be NA -
-                   leave empty to give equal weighting")
+                   leave argument empty to give equal weighting")
   }
 
   #_____________________________________________________________________________
@@ -55,7 +55,9 @@ create_pipster_object <-
     "md"   = {
       imputation_id <- rep(1, length(welfare))
     },
-    "id"   = invisible(TRUE),
+    "id"   = {
+      cl <- "md"
+    },
     "gd_1" = invisible(TRUE),
     "gd_2" = {
       welfare <- fcumsum(welfare)/fsum(welfare)
