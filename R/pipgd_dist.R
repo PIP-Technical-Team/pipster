@@ -588,11 +588,13 @@ pipgd_polarization <- function(
   #   Params
   #   _________________________________________________________________
 
+  # If the user supplies welfare and weight vectors
   if (!is.null(welfare)) {
-    params <- pipgd_select_lorenz(
+    params <- pipgd_gini(
       welfare  = welfare,
       weight   = weight,
-      complete = TRUE
+      complete = TRUE,
+      lorenz   = lorenz
     )
   }
 
@@ -609,19 +611,38 @@ pipgd_polarization <- function(
   #   Set arguments
   #   _________________________________________________________________
 
-  # Gini
-  if (is.null(gini)) {
-    gini <- pipgd_gini(welfare = params$data$welfare,
-                       weight  = params$data$weight,
-                       lorenz  = lorenz)$dist_stats$gini
+
+  # Calculations ------------------------------------------------
+  # TODO: combine this with the case !is.null(welfare)
+  if (is.null(gini) | is.null(params$dist_stats$gini)) {
+    params <-  pipgd_gini(
+      welfare  = params$data$welfare,
+      weight   = params$data$weight,
+      complete = TRUE,
+      lorenz   = lorenz
+    )
+  }
+
+
+  # Getting the gini ------------------------------------------------
+
+  if (!is.null(gini)) {
+    gini <- gini
+  } else {
+    gini <- params$dist_stats$gini
   }
 
   # Set arguments
   p0  <- 0.5 # constant
+
+  # Mean
+  # TODO
+  mean = mean
+
   dcm <- (1 - gini)*mean
 
   # Compute polarization index
-  polarization_ <- paste0("wbpip::gd_compute_polarization_",
+  polarization_ <- paste0("wbpip:::gd_compute_polarization_",
                           lorenz) |>
     parse(text = _)
 
@@ -644,6 +665,7 @@ pipgd_polarization <- function(
     params <- vector("list")
   }
 
+  params$dist_stats$gini <- gini
   params$dist_stats$polarization  <- polarization
   params$dist_stats$lorenz        <- lorenz
 
