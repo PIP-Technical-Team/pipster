@@ -452,11 +452,11 @@ pipgd_gini <- function(
 #'
 pipgd_mld <- function(
     pipster_object = NULL,
-    params     = NULL,
-    welfare    = NULL,
-    weight     = NULL,
-    complete   = getOption("pipster.return_complete"),
-    lorenz     = NULL
+    params         = NULL,
+    welfare        = NULL,
+    weight         = NULL,
+    complete       = getOption("pipster.return_complete"),
+    lorenz         = NULL
 ){
 
   #   _________________________________________________________________
@@ -549,13 +549,14 @@ pipgd_mld <- function(
 #'                    complete = TRUE)
 #'
 pipgd_polarization <- function(
-    params     = NULL,
-    welfare    = NULL,
-    weight     = NULL,
-    mean       = 1,
-    gini       = NULL,
-    complete   = getOption("pipster.return_complete"),
-    lorenz     = NULL
+    pipster_object = NULL,
+    params         = NULL,
+    welfare        = NULL,
+    weight         = NULL,
+    mean           = 1,
+    gini           = NULL,
+    complete       = getOption("pipster.return_complete"),
+    lorenz         = NULL
 ){
 
   #   _________________________________________________________________
@@ -568,15 +569,31 @@ pipgd_polarization <- function(
   #   Params
   #   _________________________________________________________________
 
-  # If the user supplies welfare and weight vectors
-  if (!is.null(welfare)) {
-    params <- pipgd_gini(
-      welfare  = welfare,
-      weight   = weight,
-      complete = TRUE,
-      lorenz   = lorenz
-    )
+  if (!is.null(pipster_object)) {
+    params <- pipgd_gini(pipster_object = pipster_object,
+                         complete       = TRUE,
+                         lorenz         = lorenz)
+  } else if (!is.null(welfare)) {
+    params <- pipgd_gini(welfare    = welfare,
+                         weight     = weight,
+                         complete   = TRUE,
+                         lorenz     = lorenz)
+  } else {
+    params <- pipgd_gini(welfare    = params$data$welfare,
+                         weight     = params$data$weight,
+                         complete   = TRUE,
+                         lorenz     = lorenz)
   }
+
+  # # If the user supplies welfare and weight vectors
+  # if (!is.null(welfare)) {
+  #   params <- pipgd_gini(
+  #     welfare  = welfare,
+  #     weight   = weight,
+  #     complete = TRUE,
+  #     lorenz   = lorenz
+  #   )
+  # }
 
   #   _________________________________________________________________
   #   Select Lorenz
@@ -587,39 +604,11 @@ pipgd_polarization <- function(
     match.arg(lorenz, c("lq", "lb"))
   }
 
-  #   _________________________________________________________________
-  #   Set arguments
-  #   _________________________________________________________________
-
-
-  # Calculations ------------------------------------------------
-  # TODO: combine this with the case !is.null(welfare)
-  if (is.null(gini) | is.null(params$dist_stats$gini)) {
-    params <-  pipgd_gini(
-      welfare  = params$data$welfare,
-      weight   = params$data$weight,
-      complete = TRUE,
-      lorenz   = lorenz
-    )
-  }
-
-
-  # Getting the gini ------------------------------------------------
-
-  if (!is.null(gini)) {
-    gini <- gini
-  } else {
-    gini <- params$dist_stats$gini
-  }
 
   # Set arguments
-  p0  <- 0.5 # constant
-
-  # Mean
-  # TODO
-  mean = mean
-
-  dcm <- (1 - gini)*mean
+  p0   <- 0.5 # constant
+  mean <- params$data$mean
+  dcm  <- (1 - params$dist_stats$gini)*mean
 
   # Compute polarization index
   polarization_ <- paste0("wbpip:::gd_compute_polarization_",
