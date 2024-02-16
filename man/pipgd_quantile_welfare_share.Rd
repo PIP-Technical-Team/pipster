@@ -12,7 +12,8 @@ pipgd_quantile_welfare_share(
   complete = getOption("pipster.return_complete"),
   lorenz = NULL,
   n = 10,
-  popshare = seq(from = 1/n, to = 1, by = 1/n)
+  popshare = seq(from = 1/n, to = 1, by = 1/n),
+  ...
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ Lorenz Quadratic or "lb" for Lorenz Beta}
 \item{n}{numeric scalar for the number of quantiles to be used in \code{popshare}}
 
 \item{popshare}{numeric: vector of share of population. Default is \code{seq(from = 1/n, to = 1, by = 1/n)}}
+
+\item{...}{additional arguments for \link{pipgd_select_lorenz}}
 }
 \value{
 Returns a nested list containing distribution statistics:

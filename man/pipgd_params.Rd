@@ -4,7 +4,7 @@
 \alias{pipgd_params}
 \title{Get Group Data Parameters}
 \usage{
-pipgd_params(welfare, weight, mean = NULL, population = NULL)
+pipgd_params(welfare, weight, mean = 1, population = NULL)
 }
 \arguments{
 \item{welfare}{numeric vector of cumulative share of welfare (income/consumption)}

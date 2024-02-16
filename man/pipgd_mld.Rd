@@ -10,7 +10,8 @@ pipgd_mld(
   welfare = NULL,
   weight = NULL,
   complete = getOption("pipster.return_complete"),
-  lorenz = NULL
+  lorenz = NULL,
+  ...
 )
 }
 \arguments{
@@ -27,6 +28,8 @@ previously used \code{get_gd} functions. Default is \code{FALSE}}
 
 \item{lorenz}{character or NULL. Lorenz curve selected. It could be "lq" for
 Lorenz Quadratic or "lb" for Lorenz Beta}
+
+\item{...}{additional arguments for \link{pipgd_select_lorenz}}
 }
 \value{
 Returns a nested list containing distribution statistics:

@@ -4,7 +4,16 @@
 \alias{validate_params}
 \title{Validate group data parameters}
 \usage{
-validate_params(pipster_object, welfare, weight, params)
+validate_params(
+  pipster_object,
+  welfare,
+  weight,
+  params,
+  mean = 1,
+  times_mean = 1,
+  popshare = NULL,
+  povline = ifelse(is.null(popshare), mean * times_mean, NA_real_)
+)
 }
 \arguments{
 \item{pipster_object}{pipster object created using \link{create_pipster_object}}
@@ -14,6 +23,8 @@ validate_params(pipster_object, welfare, weight, params)
 \item{weight}{numeric vector of cumulative share of the population}
 
 \item{params}{list of parameters from \code{pipgd_validate_lorenz()}}
+
+\item{popshare}{numeric: vector of share of population. Default is \code{seq(from = 1/n, to = 1, by = 1/n)}}
 }
 \value{
 list: \code{params} to be used in gd functions
