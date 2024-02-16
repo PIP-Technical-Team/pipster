@@ -82,7 +82,6 @@ pipgd_welfare_share_at <- function(
                             welfare        = welfare,
                             weight         = weight,
                             params         = params,
-                            popshare       = popshare,
                             ...
                             )
 
@@ -190,7 +189,6 @@ pipgd_quantile_welfare_share <-
                               welfare        = welfare,
                               weight         = weight,
                               params         = params,
-                              popshare       = popshare,
                               ...)
 
     if (is.null(lorenz)) {
@@ -304,9 +302,8 @@ pipgd_quantile <-
                               welfare        = welfare,
                               weight         = weight,
                               params         = params,
-                              times_mean     = times_mean,
-                              popshare       = popshare,
                               ...)
+    mean <- params$data$mean
 
     if (is.null(lorenz)) {
       lorenz <- params$selected_lorenz$for_dist
@@ -659,7 +656,7 @@ pipgd_polarization <- function(
     params <- vector("list")
   }
 
-  params$dist_stats$gini <- gini
+  params$dist_stats$gini          <- gini
   params$dist_stats$polarization  <- polarization
   params$dist_stats$lorenz        <- lorenz
 
@@ -710,14 +707,6 @@ validate_params <- function(
 
   params
 }
-
-
-
-
-
-
-
-
 
 
 

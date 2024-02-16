@@ -235,10 +235,10 @@ test_that("get_mld works", {
   out1_gd <- get_mld(pipster_object = gd_object)
   out1_md <- get_mld(pipster_object = md_object)
   out2_gd <- pipgd_mld(welfare      = welfare_gd,
-                        weight       = weight_gd)
+                        weight      = weight_gd)
   out2_md <- pipmd_mld(welfare      = welfare_md,
-                        weight       = weight_md,
-                        format       = "list")
+                        weight      = weight_md,
+                        format      = "list")
 
   expect_equal(out1_gd$mld ,
                out2_gd$dist_stats$mld)

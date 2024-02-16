@@ -994,7 +994,8 @@ test_that("pipgd_polarization outputs work as expected", {
     expect_equal("dist_stats")
 
   names(res$dist_stats) |>
-    expect_equal(c("polarization",
+    expect_equal(c("gini",
+                   "polarization",
                    "lorenz"))
 
   # Names in output list when complete = TRUE
@@ -1043,7 +1044,8 @@ test_that("pipgd_polarization outputs work as expected", {
 
   names(res_complete$data) |>
     expect_equal(c("welfare",
-                   "weight"))
+                   "weight",
+                   "mean"))
 
   names(res_complete$selected_lorenz) |>
     expect_equal(c( "for_dist",
@@ -1052,8 +1054,9 @@ test_that("pipgd_polarization outputs work as expected", {
                     "use_lq_for_pov" ))
 
   names(res_complete$dist_stats) |>
-    expect_equal(c("polarization",
-                   "lorenz"))
+    expect_equal(c("gini",
+                   "lorenz",
+                   "polarization"))
 
 })
 
