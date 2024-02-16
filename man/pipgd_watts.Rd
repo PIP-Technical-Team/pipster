@@ -5,7 +5,7 @@
 \title{Estimate Watts poverty index}
 \usage{
 pipgd_watts(
-  pipster_object = pipster_object,
+  pipster_object = NULL,
   params = NULL,
   welfare = NULL,
   weight = NULL,

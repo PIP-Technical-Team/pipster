@@ -5,7 +5,7 @@
 \title{Estimate Watts poverty index (non-vectorized)}
 \usage{
 pipgd_watts_nv(
-  pipster_object = pipster_object,
+  pipster_object = NULL,
   params = NULL,
   welfare = NULL,
   weight = NULL,

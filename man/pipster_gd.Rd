@@ -3,14 +3,14 @@
 \name{pipster_gd}
 \alias{pipster_gd}
 \alias{is_pipster_gd}
-\alias{as_percent}
+\alias{as_pipster_gd}
 \title{\code{pipster_gd} vector}
 \usage{
 pipster_gd(x = double())
 
 is_pipster_gd(x)
 
-as_percent(x)
+as_pipster_gd(x)
 }
 \arguments{
 \item{x}{\itemize{

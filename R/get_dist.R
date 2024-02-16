@@ -8,6 +8,7 @@
 #'
 #' @param pipster_object pipster object created using [create_pipster_object]
 #' @inheritParams pipgd_quantile
+#' @param ... additional arguments passed to methods
 #'
 #' @return list
 #' @export
@@ -119,6 +120,7 @@ get_quantile.default <-
 #'
 #' @param pipster_object pipster object created using [create_pipster_object]
 #' @inheritParams pipgd_welfare_share_at
+#' @param ... additional arguments passed to methods
 #'
 #' @return list
 #' @export
@@ -243,6 +245,7 @@ get_welfare_share_at.default <-
 #'
 #' @param pipster_object pipster object created using [create_pipster_object]
 #' @inheritParams pipgd_quantile_welfare_share
+#' @param ... additional arguments passed to methods
 #'
 #' @return list
 #' @export
@@ -369,7 +372,7 @@ get_quantile_welfare_share.default <-
 #' This is a generic function calculating the gini coefficient.
 #'
 #' @param pipster_object pipster object created using [create_pipster_object]
-#' @inheritParams pipgd_gini
+#' @param ... additional arguments passed to methods
 #'
 #' @return list
 #' @export
@@ -463,7 +466,7 @@ get_gini.default <-
 #' This is a generic function to compute the Wolfson polarization index.
 #'
 #' @param pipster_object pipster object created using [create_pipster_object]
-#' @inheritParams pipmd_polarization
+#' @param ... additional arguments passed to methods
 #'
 #' @return list
 #' @export
@@ -558,7 +561,7 @@ get_polarization.default <-
 #' Mean Log Deviation (MLD).
 #'
 #' @param pipster_object pipster object created using [create_pipster_object]
-#' @inheritParams pipmd_mld
+#' @param ... additional arguments passed to methods
 #'
 #' @return list
 #' @export

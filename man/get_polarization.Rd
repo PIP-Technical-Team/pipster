@@ -8,6 +8,8 @@ get_polarization(pipster_object, ...)
 }
 \arguments{
 \item{pipster_object}{pipster object created using \link{create_pipster_object}}
+
+\item{...}{additional arguments passed to methods}
 }
 \value{
 list

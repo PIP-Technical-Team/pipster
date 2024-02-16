@@ -8,6 +8,7 @@
 #' Non-vectorized poverty headcount microdata function. Use the vectorized
 #' function [pipmd_pov_headcount]
 #'
+#' @param pipster_object pipster object created using [create_pipster_object]
 #' @param welfare numeric: A vector of income or consumption values
 #' @param weight 	numeric: A vector of population weights. If NULL, a vector of 1s
 #' is used to give equal weight to each observation.
@@ -19,9 +20,9 @@
 pipmd_pov_headcount_nv <- function(
   pipster_object = NULL,
   welfare        = NULL,
-  weight     = rep(1, length = length(welfare)),
-  povline    = fmean(welfare, w = weight)*times_mean,
-  times_mean = 1
+  weight         = rep(1, length = length(welfare)),
+  povline        = fmean(welfare, w = weight)*times_mean,
+  times_mean     = 1
 ){
 
   #   Defenses -------------
@@ -177,6 +178,7 @@ pipmd_pov_gap_nv <- function(
 
 #' Calculate poverty gap from microdata
 #'
+#' @param pipster_object pipster object created using [create_pipster_object]
 #' @inheritParams pipmd_pov_gap_nv
 #' @param format atomic character vector: specifies the format of output, either
 #' "dt", "list", or "atomic"

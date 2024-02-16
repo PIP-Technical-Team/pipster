@@ -10,6 +10,8 @@ get_pov_severity(pipster_object, povline, ...)
 \item{pipster_object}{pipster object created using \link{create_pipster_object}}
 
 \item{povline}{numeric: Poverty line in international dollars, same units as welfare.}
+
+\item{...}{additional arguments passed to methods}
 }
 \value{
 list

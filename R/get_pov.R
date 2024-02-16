@@ -10,6 +10,7 @@
 #'
 #' @param pipster_object pipster object created using [create_pipster_object]
 #' @inheritParams pipmd_pov_headcount
+#' @param ... additional arguments passed to methods
 #'
 #' @return list
 #' @export
@@ -130,6 +131,7 @@ get_pov_headcount.default <-
 #'
 #' @param pipster_object pipster object created using [create_pipster_object]
 #' @inheritParams pipmd_pov_gap
+#' @param ... additional arguments passed to methods
 #'
 #' @return list
 #' @export
@@ -229,6 +231,7 @@ get_pov_gap.default <-
 #'
 #' @param pipster_object pipster object created using [create_pipster_object]
 #' @inheritParams pipmd_pov_severity
+#' @param ... additional arguments passed to methods
 #'
 #' @return list
 #' @export
@@ -328,6 +331,7 @@ get_pov_severity.default <-
 #'
 #' @param pipster_object pipster object created using [create_pipster_object]
 #' @inheritParams pipmd_watts
+#' @param ... additional arguments passed to methods
 #'
 #' @return list
 #' @export

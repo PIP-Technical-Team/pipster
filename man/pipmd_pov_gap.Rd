@@ -14,6 +14,8 @@ pipmd_pov_gap(
 )
 }
 \arguments{
+\item{pipster_object}{pipster object created using \link{create_pipster_object}}
+
 \item{welfare}{numeric: A vector of income or consumption values}
 
 \item{weight}{numeric: A vector of population weights. If NULL, a vector of 1s

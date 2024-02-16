@@ -3,14 +3,14 @@
 \name{pipster_md}
 \alias{pipster_md}
 \alias{is_pipster_md}
-\alias{as_percent}
+\alias{as_pipster_md}
 \title{\code{pipster_md} vector}
 \usage{
 pipster_md(x = double())
 
 is_pipster_md(x)
 
-as_percent(x)
+as_pipster_md(x)
 }
 \arguments{
 \item{x}{\itemize{
@@ -23,7 +23,7 @@ as_percent(x)
 an S3 vector of class \code{pipster_md}
 }
 \description{
-This creates a double vector of group pipster data.
+This creates a double vector of pipster micro data.
 }
 \examples{
 pipster_md(c(0.1, 0.5, 0.9, 1))

@@ -17,6 +17,8 @@ get_quantile_welfare_share(
 \item{n}{numeric scalar for the number of quantiles to be used in \code{popshare}}
 
 \item{popshare}{numeric: vector of share of population. Default is \code{seq(from = 1/n, to = 1, by = 1/n)}}
+
+\item{...}{additional arguments passed to methods}
 }
 \value{
 list
