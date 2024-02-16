@@ -509,6 +509,150 @@ pipgd_mld <- function(
 }
 
 
+#' Compute polarization index
+#'
+#' This function computes polarization index of the distribution (for grouped data)
+#'
+#'
+#' @inheritParams pipgd_gini
+#' @param gini numeric scalar of gini index, from `pipgd_gini()` or user supplied
+#' @param mean numeric scalar of distribution mean. Default is 1
+#'
+#' @return Returns a nested list containing:
+#' `$dist_stats$polarization` a numeric vector containing the index of polarization of the distribution;
+#' `$dist_stats$lorenz` a character vector specifying which Lorenz curve is used.
+#' If `complete = TRUE`, it returns a `pipgd_params` object with additional
+#' details and intermediate calculations.
+#'
+#' @export
+#'
+#' @examples
+#' # Example with welfare and weight vectors
+#' pipgd_polarization(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P)
+#'
+#' # Example with list of params
+#' # Params from `pipgd_select_lorenz()`
+#' params = pipgd_select_lorenz(welfare  = pip_gd$L,
+#'                              weight   = pip_gd$P,
+#'                              complete = TRUE)
+#' pipgd_polarization(params = params)
+#'
+#' # Example with a specific Lorenz
+#' pipgd_polarization(welfare = pip_gd$L,
+#'                    weight  = pip_gd$P,
+#'                    lorenz  = "lb")
+#'
+#' # Example with complete output
+#' pipgd_polarization(welfare  = pip_gd$L,
+#'                    weight   = pip_gd$P,
+#'                    complete = TRUE)
+#'
+pipgd_polarization <- function(
+    params     = NULL,
+    welfare    = NULL,
+    weight     = NULL,
+    mean       = 1,
+    gini       = NULL,
+    complete   = getOption("pipster.return_complete"),
+    lorenz     = NULL
+){
+
+  #   _________________________________________________________________
+  #   Defenses
+  #   _________________________________________________________________
+  pl <- as.list(environment())
+  check_pipgd_params(pl)
+
+  #   _________________________________________________________________
+  #   Params
+  #   _________________________________________________________________
+
+  # If the user supplies welfare and weight vectors
+  if (!is.null(welfare)) {
+    params <- pipgd_gini(
+      welfare  = welfare,
+      weight   = weight,
+      complete = TRUE,
+      lorenz   = lorenz
+    )
+  }
+
+  #   _________________________________________________________________
+  #   Select Lorenz
+  #   _________________________________________________________________
+  if (is.null(lorenz)) {
+    lorenz <- params$selected_lorenz$for_dist
+  } else {
+    match.arg(lorenz, c("lq", "lb"))
+  }
+
+  #   _________________________________________________________________
+  #   Set arguments
+  #   _________________________________________________________________
+
+
+  # Calculations ------------------------------------------------
+  # TODO: combine this with the case !is.null(welfare)
+  if (is.null(gini) | is.null(params$dist_stats$gini)) {
+    params <-  pipgd_gini(
+      welfare  = params$data$welfare,
+      weight   = params$data$weight,
+      complete = TRUE,
+      lorenz   = lorenz
+    )
+  }
+
+
+  # Getting the gini ------------------------------------------------
+
+  if (!is.null(gini)) {
+    gini <- gini
+  } else {
+    gini <- params$dist_stats$gini
+  }
+
+  # Set arguments
+  p0  <- 0.5 # constant
+
+  # Mean
+  # TODO
+  mean = mean
+
+  dcm <- (1 - gini)*mean
+
+  # Compute polarization index
+  polarization_ <- paste0("wbpip:::gd_compute_polarization_",
+                          lorenz) |>
+    parse(text = _)
+
+  polarization <- eval(polarization_)(
+    mean      = mean,
+    p0        = p0,
+    dcm       = dcm,
+    A         = params$gd_params[[lorenz]]$reg_results$coef[["A"]],
+    B         = params$gd_params[[lorenz]]$reg_results$coef[["B"]],
+    C         = params$gd_params[[lorenz]]$reg_results$coef[["C"]]
+  )
+
+  attributes(polarization) <- NULL
+
+  #   ____________________________________________________
+  #   Return                                           ####
+
+
+  if (isFALSE(complete)) {
+    params <- vector("list")
+  }
+
+  params$dist_stats$gini <- gini
+  params$dist_stats$polarization  <- polarization
+  params$dist_stats$lorenz        <- lorenz
+
+  params
+
+}
+
 
 
 #' Validate group data parameters
