@@ -40,132 +40,6 @@
     <loc>https://pip-technical-team.github.io/pipster/reference/convert_to_pip_md.html</loc>
   </url>
   <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/create_pipster_object.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/default_warning_message.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_gini.default.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_gini.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_gini.pipster_gd.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_gini.pipster_md.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_mld.default.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_mld.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_mld.pipster_gd.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_mld.pipster_md.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_polarization.default.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_polarization.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_polarization.pipster_gd.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_polarization.pipster_md.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_pov_gap.default.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_pov_gap.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_pov_gap.pipster_gd.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_pov_gap.pipster_md.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_pov_headcount.default.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_pov_headcount.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_pov_headcount.pipster_gd.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_pov_headcount.pipster_md.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_pov_severity.default.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_pov_severity.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_pov_severity.pipster_gd.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_pov_severity.pipster_md.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_quantile.default.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_quantile.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_quantile.pipster_gd.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_quantile.pipster_md.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_quantile_welfare_share.default.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_quantile_welfare_share.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_quantile_welfare_share.pipster_gd.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_quantile_welfare_share.pipster_md.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_watts.default.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_watts.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_watts.pipster_gd.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_watts.pipster_md.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_welfare_share_at.default.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_welfare_share_at.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_welfare_share_at.pipster_gd.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/get_welfare_share_at.pipster_md.html</loc>
-  </url>
-  <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/identify_pip_type.html</loc>
   </url>
   <url>
@@ -197,9 +71,6 @@
   </url>
   <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_params.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_polarization.html</loc>
   </url>
   <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/pipgd_pov_gap.html</loc>
@@ -286,12 +157,6 @@
     <loc>https://pip-technical-team.github.io/pipster/reference/pipster.html</loc>
   </url>
   <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/pipster_gd.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/pipster_md.html</loc>
-  </url>
-  <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/return_format.html</loc>
   </url>
   <url>
@@ -302,8 +167,5 @@
   </url>
   <url>
     <loc>https://pip-technical-team.github.io/pipster/reference/sum_up_to_one.html</loc>
-  </url>
-  <url>
-    <loc>https://pip-technical-team.github.io/pipster/reference/validate_params.html</loc>
   </url>
 </urlset>

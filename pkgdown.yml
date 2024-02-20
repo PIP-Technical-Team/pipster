@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   gd_functions: gd_functions.html
   md_functions: md_functions.html
-last_built: 2024-02-20T23:29Z
+last_built: 2024-02-20T23:35Z
 urls:
   reference: https://pip-technical-team.github.io/pipster/reference
   article: https://pip-technical-team.github.io/pipster/articles

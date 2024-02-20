@@ -53,8 +53,7 @@ function <a href="pipmd_pov_headcount.html">pipmd_pov_headcount</a></p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pipmd_pov_headcount_nv</span><span class="op">(</span></span>
-<span>  pipster_object <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  welfare <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">welfare</span>,</span>
 <span>  weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">welfare</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  povline <span class="op">=</span> <span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/fmean.html" class="external-link">fmean</a></span><span class="op">(</span><span class="va">welfare</span>, w <span class="op">=</span> <span class="va">weight</span><span class="op">)</span> <span class="op">*</span> <span class="va">times_mean</span>,</span>
 <span>  times_mean <span class="op">=</span> <span class="fl">1</span></span>
@@ -63,11 +62,7 @@ function <a href="pipmd_pov_headcount.html">pipmd_pov_headcount</a></p>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>pipster_object</dt>
-<dd><p>pipster object created using <a href="create_pipster_object.html">create_pipster_object</a></p></dd>
-
-
-<dt>welfare</dt>
+    <dl><dt>welfare</dt>
 <dd><p>numeric: A vector of income or consumption values</p></dd>
 
 
