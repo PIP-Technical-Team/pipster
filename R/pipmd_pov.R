@@ -8,6 +8,7 @@
 #' Non-vectorized poverty headcount microdata function. Use the vectorized
 #' function [pipmd_pov_headcount]
 #'
+#' @param pipster_object pipster object created using [create_pipster_object]
 #' @param welfare numeric: A vector of income or consumption values
 #' @param weight 	numeric: A vector of population weights. If NULL, a vector of 1s
 #' is used to give equal weight to each observation.
@@ -17,14 +18,18 @@
 #' @return numeric: Poverty headcount ratio
 #' @keywords internal
 pipmd_pov_headcount_nv <- function(
-  welfare    ,
-  weight     = rep(1, length = length(welfare)),
-  povline    = fmean(welfare, w = weight)*times_mean,
-  times_mean = 1
+  pipster_object = NULL,
+  welfare        = NULL,
+  weight         = rep(1, length = length(welfare)),
+  povline        = fmean(welfare, w = weight)*times_mean,
+  times_mean     = 1
 ){
 
-
   #   Defenses -------------
+  if (!is.null(pipster_object)) {
+    welfare <- pipster_object$welfare |> unclass()
+    weight <- pipster_object$weight |> unclass()
+  }
   check_pipmd_pov()
 
   # Computations ------------
@@ -76,7 +81,8 @@ pipmd_pov_headcount_nv <- function(
 #'                     format  = "atomic")
 #'
 pipmd_pov_headcount <- function(
-    welfare    ,
+    pipster_object = NULL,
+    welfare    = NULL,
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1,
@@ -95,6 +101,7 @@ pipmd_pov_headcount <- function(
     SIMPLIFY       = FALSE
   )
   list_headcount <- pipmd_pov_headcount_v(
+    pipster_object = pipster_object,
     welfare    = welfare,
     weight     = weight,
     povline    = povline
@@ -137,12 +144,17 @@ pipmd_pov_headcount <- function(
 #' @return numeric: Poverty gap
 #' @keywords internal
 pipmd_pov_gap_nv <- function(
-    welfare    ,
+    pipster_object = NULL,
+    welfare        = NULL,
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1)
   {
   #   Defenses -------------
+  if (!is.null(pipster_object)) {
+    welfare <- pipster_object$welfare |> unclass()
+    weight <- pipster_object$weight |> unclass()
+  }
   check_pipmd_pov()
 
   # ____________________________________________________________________________
@@ -166,6 +178,7 @@ pipmd_pov_gap_nv <- function(
 
 #' Calculate poverty gap from microdata
 #'
+#' @param pipster_object pipster object created using [create_pipster_object]
 #' @inheritParams pipmd_pov_gap_nv
 #' @param format atomic character vector: specifies the format of output, either
 #' "dt", "list", or "atomic"
@@ -196,7 +209,8 @@ pipmd_pov_gap_nv <- function(
 #'               format  = "atomic")
 #'
 pipmd_pov_gap <- function(
-    welfare    ,
+    pipster_object = NULL,
+    welfare    = NULL,
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1,
@@ -215,6 +229,7 @@ pipmd_pov_gap <- function(
     SIMPLIFY       = FALSE
   )
   list_pov_gap <- pipmd_pov_gap_v(
+    pipster_object = pipster_object,
     welfare    = welfare,
     weight     = weight,
     povline    = povline
@@ -255,12 +270,17 @@ pipmd_pov_gap <- function(
 #' @return numeric: Poverty severity
 #' @keywords internal
 pipmd_pov_severity_nv <- function(
-    welfare    ,
+    pipster_object = NULL,
+    welfare    = NULL,
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1)
   {
   #   Defenses -------------
+  if (!is.null(pipster_object)) {
+    welfare <- pipster_object$welfare |> unclass()
+    weight <- pipster_object$weight |> unclass()
+  }
   check_pipmd_pov()
 
   # ____________________________________________________________________________
@@ -314,7 +334,8 @@ pipmd_pov_severity_nv <- function(
 #'                    format  = "atomic")
 #'
 pipmd_pov_severity <- function(
-    welfare    ,
+    pipster_object = NULL,
+    welfare    = NULL,
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1,
@@ -333,6 +354,7 @@ pipmd_pov_severity <- function(
     SIMPLIFY       = FALSE
   )
   list_pov_severity <- pipmd_pov_severity_v(
+    pipster_object = pipster_object,
     welfare    = welfare,
     weight     = weight,
     povline    = povline
@@ -370,12 +392,17 @@ pipmd_pov_severity <- function(
 #' @return numeric: Watts index
 #' @keywords internal
 pipmd_watts_nv <- function(
-    welfare    ,
+    pipster_object = NULL,
+    welfare    = NULL,
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1
 ){
   #   Defenses -------------
+  if (!is.null(pipster_object)) {
+    welfare <- pipster_object$welfare |> unclass()
+    weight  <- pipster_object$weight |> unclass()
+  }
   check_pipmd_pov()
 
   # ____________________________________________________________________________
@@ -428,7 +455,8 @@ pipmd_watts_nv <- function(
 #'             format  = "atomic")
 #'
 pipmd_watts <- function(
-    welfare    ,
+    pipster_object = NULL,
+    welfare    = NULL,
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1,
@@ -447,6 +475,7 @@ pipmd_watts <- function(
     SIMPLIFY       = FALSE
   )
   list_watts <- pipmd_watts_v(
+    pipster_object = pipster_object,
     welfare    = welfare,
     weight     = weight,
     povline    = povline

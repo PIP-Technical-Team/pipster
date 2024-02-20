@@ -54,7 +54,7 @@
 #'
 pipgd_params <- function(welfare,
                          weight,
-                         mean = NULL,
+                         mean = 1,
                          population = NULL) {
 
   #   ____________________________________________________________________________
