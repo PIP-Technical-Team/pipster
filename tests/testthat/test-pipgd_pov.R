@@ -1,8 +1,8 @@
 #_______________________________________________________________________________
 # Define Objects----------------------------------------------------------------
 #_______________________________________________________________________________
-welfare <- pip_gd$L |> as.numeric()
-weight  <- pip_gd$P |> as.numeric()
+welfare <- pip_gd$L
+weight  <- pip_gd$P
 params  <- pipgd_select_lorenz(welfare  = welfare,
                                weight   = weight,
                                complete = TRUE)
@@ -227,8 +227,8 @@ test_that("pipgd_pov_gap_nv works as expected", {
 
   pov_gap_lq_bm <- 0.18981108366762
 
-  round(out_lq$pov_stats$pov_gap, 5) |>
-      expect_equal(round(pov_gap_lq_bm, 5))
+  out_lq$pov_stats$pov_gap |>
+      expect_equal(pov_gap_lq_bm)
 
   pov_gap_lb_bm <- 0.196668019926771
 
@@ -333,8 +333,7 @@ test_that("pipgd_pov_gap_nv works as expected", {
 
   names(res_params_complete$data) |>
       expect_equal(c("welfare",
-                     "weight",
-                     "mean"))
+                     "weight"))
 
   names(res_params_complete$selected_lorenz) |>
       expect_equal(c("for_dist",
@@ -551,7 +550,7 @@ test_that("pipgd_pov_severity_nv() -pov_gap works", {
 
 })
 
-test_that("pipgd_pov_severity_nv() -complete & popsahre works", {
+test_that("pipgd_pov_severity_nv() -complete works", {
   res_complete     <- pipgd_pov_severity_nv(welfare  = welfare,
                                             weight   = weight,
                                             complete = TRUE)
@@ -560,12 +559,15 @@ test_that("pipgd_pov_severity_nv() -complete & popsahre works", {
 
   # Checking popshare and povline arguments
 
+test_that("pipgd_pov_severity_nv() -popshare works", {
 
     popshare = 0.4
     pipgd_pov_severity_nv(welfare = welfare,
                           weight  = weight,
                           popshare = popshare) |>
       expect_no_error()
+
+  })
 
 
   # Output--------------------------------------
@@ -623,8 +625,7 @@ test_that("pipgd_pov_severity_nv() -complete & popsahre works", {
 
   names(res_complete$data) |>
       expect_equal(c("welfare",
-                     "weight",
-                     "mean"))
+                     "weight"))
 
   names(res_complete$selected_lorenz) |>
       expect_equal(c("for_dist",
@@ -981,8 +982,7 @@ test_that("pipgd_watts_nv outputs work as expected", {
 
   names(res_complete$data) |>
     expect_equal(c("welfare",
-                   "weight",
-                   "mean"))
+                   "weight"))
 
   names(res_complete$selected_lorenz) |>
     expect_equal(c( "for_dist",
@@ -1005,23 +1005,21 @@ test_that("pipgd_watts_nv watts output is as expected", {
                                        complete = TRUE)
   res_with_lb      <- pipgd_watts_nv(welfare    = welfare,
                                      weight     = weight,
-                                     lorenz     = "lb",
-                                     complete   = F)
+                                     lorenz     = "lb")
   res_with_lq      <- pipgd_watts_nv(welfare    = welfare,
                                      weight     = weight,
-                                     lorenz     = "lq",
-                                     complete   = F)
+                                     lorenz     = "lq")
 
   res_lb_benchmark <- list(pov_stats = list(watts = 0.277580116426276,
                                             lorenz = "lb"))
-  res_lq_benchmark <- list(pov_stats = list(watts = 0.28045418,
+  res_lq_benchmark <- list(pov_stats = list(watts = 0.60555598,
                                             lorenz = "lq"))
 
-  round(res_with_lb$pov_stats$watts, 5) |>
-    expect_equal(round(res_lb_benchmark$pov_stats$watts, 5))
+  res_with_lb |>
+    expect_equal(res_lb_benchmark)
 
-  round(res_with_lq$pov_stats$watts, 5) |>
-    expect_equal(round(res_lq_benchmark$pov_stats$watts, 5))
+  res_with_lq |>
+    expect_equal(res_lq_benchmark)
 })
 
 

@@ -5,18 +5,14 @@
 \title{Compute MLD}
 \usage{
 pipgd_mld(
-  pipster_object = NULL,
   params = NULL,
   welfare = NULL,
   weight = NULL,
   complete = getOption("pipster.return_complete"),
-  lorenz = NULL,
-  ...
+  lorenz = NULL
 )
 }
 \arguments{
-\item{pipster_object}{pipster object created using \link{create_pipster_object}}
-
 \item{params}{list of parameters from \code{pipgd_validate_lorenz()}}
 
 \item{welfare}{numeric vector of cumulative share of welfare (income/consumption)}
@@ -28,8 +24,6 @@ previously used \code{get_gd} functions. Default is \code{FALSE}}
 
 \item{lorenz}{character or NULL. Lorenz curve selected. It could be "lq" for
 Lorenz Quadratic or "lb" for Lorenz Beta}
-
-\item{...}{additional arguments for \link{pipgd_select_lorenz}}
 }
 \value{
 Returns a nested list containing distribution statistics:
