@@ -5,15 +5,12 @@
 \title{Gini coefficient}
 \usage{
 pipmd_gini(
-  pipster_object = NULL,
   welfare,
   weight = rep(1, length = length(welfare)),
   format = c("dt", "list", "atomic")
 )
 }
 \arguments{
-\item{pipster_object}{pipster object created using \link{create_pipster_object}}
-
 \item{welfare}{welfare vector}
 
 \item{weight}{population weight vector}

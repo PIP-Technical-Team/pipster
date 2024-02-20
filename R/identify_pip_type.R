@@ -79,7 +79,7 @@ identify_pip_type <- function(welfare,
     if (verbose) {
       cli::cli_alert_warning("vectors not sorted")
     }
-    o       <- order(welfare)
+    o <- order(welfare)
     welfare <- welfare[o]
     weight  <- weight[o]
   }
@@ -108,6 +108,7 @@ identify_pip_type <- function(welfare,
   } else {
     weight_is_cum <- is_cumulative(weight)
   }
+
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ## First identification of group data --------

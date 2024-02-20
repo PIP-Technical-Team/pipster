@@ -5,7 +5,6 @@
 \title{Mean Log Deviation}
 \usage{
 pipmd_mld(
-  pipster_object = NULL,
   welfare,
   weight = rep(1, length = length(welfare)),
   mean = NULL,
@@ -13,8 +12,6 @@ pipmd_mld(
 )
 }
 \arguments{
-\item{pipster_object}{pipster object created using \link{create_pipster_object}}
-
 \item{welfare}{welfare vector}
 
 \item{weight}{population weight vector}

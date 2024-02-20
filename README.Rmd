@@ -41,10 +41,10 @@ library(collapse)
 ### Group Data
 
 ```{r build-group-data}
-# W: Weights, share of population, sum up to 100
-# X: welfare vector with mean welfare by decile
-# P:Cumulative share of population
-# L: Cumulative share of welfare
+# W: Weights, share of population, sum up to 100.
+# X: welfare vector with mean welfare by group.
+# P:Cumulative share of population.
+# L: Cumulative share of welfare.
 # R: share of welfare, sum up to 1.
 
 W = c(0.92, 2.47, 5.11, 7.9, 9.69, 15.24, 13.64, 16.99, 10, 9.78, 3.96, 1.81, 2.49)
@@ -121,7 +121,7 @@ identify_pip_type(welfare = Y,
 ### Group Data
 
 Convert Group Data Type-2  to Group Data Type-1 . 
-Notice that the whole dataframe is parsed to the function because we need the whole dataframe back. It is not enough with parsing just the welfare and weight vetors. 
+Notice that the whole data.frame is parsed to the function because we need the whole dataframe back. It is not enough with parsing just the welfare and weight vetors. 
 ```{r convert-gd}
 pip_gd |> 
   fselect(R,W)

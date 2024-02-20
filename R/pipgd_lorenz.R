@@ -60,11 +60,9 @@ pipgd_validate_lorenz <-
   #   Computations                                                            ####
   if (!is.null(welfare) & !is.null(weight)) {
     params <- pipgd_params(welfare = welfare,
-                           weight  = weight,
-                           mean    = mean)
+                           weight  = weight)
   } else if (is.null(params$gd_params$lq$reg_results$coef)) {
-
-    cli::cli_abort(
+    stop(
       "Either `welfare` and `weights` should be specified or `params`
       should be output from `pipster::pipgd_params()`"
     )

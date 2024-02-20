@@ -1,0 +1,247 @@
+---
+title: "Micro Data Functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{md_functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(pipster)
+```
+## Overview
+
+This vignette shows an overview of the `pipster` package functions for micro data. Microdata consist of detailed records of individual welfare measures, such as consumption, expenditure, or income, where each observation corresponds to a unique individual, and is accompanied by a sample weight that represents the individual's proportion in the overall population.
+`pipster` provides a series of functions to estimate poverty and inequality measures using microdata:
+
+-   `pipmd_pov_headcount()` (FGT0)
+
+-   `pipmd_pov_gap()` (FGT1)
+
+-   `pipmd_pov_severity()` (FGT2)
+
+-   `pipmd_gini()`
+
+-   `pipmd_mld()`
+
+-   `pipmd_watts()`
+
+It also provides a series of functions to calculate welfare shares, cumulative welfare shares and income thresholds for each quantile:
+
+-   `pipmd_welfare_share_at()`
+
+-   `pipmd_quantile_welfare_share()`
+
+-   `pipmd_quantile()`
+
+## Micro Data Sample
+
+In this vignette, we will explore several typical scenarios in which the `pipster` package can be effectively utilized. In each of these scenario, we will use a sample dataset with 1000 observations, `pip_md`, available with this package.  The variables are the following:
+
+-   **welfare**: welfare (income or consumption).
+-   **weight**: population weights.
+
+Here is a preview of the first 10 observations:
+
+```{r data, echo=FALSE}
+pip_md |>
+  head(n=10) |>
+  print()
+```
+
+## Case 1: Poverty Profiling
+`pipster` allows the user to estimate poverty measures quickly and accurately. To demonstrate its use, we can manually calculate FGT(0), FGT(1), and FGT(2), and then replicate it using only `pipster` functions. The Foster-Greer-Thorbecke indices are a family of poverty metrics which can be derived by substituting different values of the parameter $\alpha$ into the following equation:
+
+$$F G T_\alpha=\frac{1}{N} \sum_{i=1}^H\left(\frac{z-y_i}{z}\right)^\alpha$$
+where $z$ is the povety line, $N$ the total population, and $H$ the number of poor individuals (with income, or $y_i$, $<= z$).
+
+### 1.1 Poverty Headcount
+The poverty headcount, or FGT(1) can be calculated as follows:
+$$F G T_0=\frac{1}{N} \sum_{i=1}^H\left(\frac{z-y_i}{z}\right)^0 = \frac{H}{N}$$
+
+
+```{r headcount-manual}
+z = 1.4 # set the poverty line
+N = sum(pip_md$weight)
+H = sum(pip_md$weight[pip_md$welfare <= z])
+
+FGT0 = H/N
+
+print(paste0("The poverty headcount index is ", round(FGT0*100,2), "%"))
+```
+In `pipster`, we can simply use the `pipmd_pov_headcount()` function:
+
+```{r headcount-pipster}
+pip_FGT0 <- pipmd_pov_headcount(welfare = pip_md$welfare,
+                                weight = pip_md$weight,
+                                povline = z)
+
+print(paste0("The poverty headcount index is ", round(pip_FGT0$pov_headcount*100,2), "%"))
+```
+
+### 1.2 Poverty Gap
+The poverty gap, or FGT(1), can be calculated as follows:
+$$F G T_1=\frac{1}{N} \sum_{i=1}^H\left(\frac{z-y_i}{z}\right)$$
+
+
+```{r gap-manual}
+# Calculate the shortfall: the distance between the poverty line and the income of the poor, for each poor.
+shortfall <- sum((z - pip_md$welfare[pip_md$welfare <= z]) * pip_md$weight[pip_md$welfare <= z])/z
+
+FGT1 <- (1/N)*(shortfall)
+
+print(paste0("The poverty gap index is ", round(FGT1*100,2), "%"))
+```
+
+
+In `pipster`, we can simply use the `pipmd_pov_gap()` function:
+```{r gap-pipster}
+pip_FGT1 <- pipmd_pov_gap(welfare = pip_md$welfare,
+                          weight = pip_md$weight,
+                          povline = z)
+
+print(paste0("The poverty gap index is ", round(pip_FGT1$pov_gap*100,2), "%"))
+```
+
+### 1.3 Poverty Severity
+The poverty severity, or FGT(2), can be calculated as follows:
+$$F G T_2=\frac{1}{N} \sum_{i=1}^H\left(\frac{z-y_i}{z}\right)^2$$
+
+```{r severity-manual}
+shortfall_squared <- sum(((z - pip_md$welfare[pip_md$welfare <= z]) / z)^2 * pip_md$weight[pip_md$welfare <= z])
+
+FGT2 <- (1/N)*shortfall_squared
+
+print(paste0("The poverty severity index is ", round(FGT2*100,2), "%"))
+```
+
+In `pipster`, we can simply use the `pipmd_pov_severity()` function:
+```{r severity-pipster}
+pip_FGT2 <- pipmd_pov_severity(welfare = pip_md$welfare,
+                               weight = pip_md$weight,
+                               povline = z)
+
+
+print(paste0("The poverty severity index is ", round(pip_FGT2$pov_severity*100,2), "%"))
+```
+
+### 1.4 Alternatives
+For each of the previous poverty indexes functions, the user can specify the `mean` or a factor (`times_mean`) with which the function will calculate the poverty line. For example:
+
+```{r poverty-alternative-1}
+pip_FGT1_alt <- pipmd_pov_gap(welfare = pip_md$welfare,
+                              weight = pip_md$weight,
+                              times_mean = 0.2)
+
+print(paste0("The poverty gap index is ", round(pip_FGT1_alt$pov_gap*100,2), "%"))
+```
+
+Finally, `povline` can also take multiple values:
+```{r poverty-alternative-2}
+pip_FGT1_multiple <- pipmd_pov_gap(welfare = pip_md$welfare,
+                                          weight = pip_md$weight,
+                                          povline = c(1.4, 3, 4))
+
+print(pip_FGT1_multiple)
+```
+
+## Case 2: Additional Inequality and Poverty Measures
+`pipster` can also be used to easily calculate additional inequality measures. 
+The **Gini coefficient** can be calculated using `pipmd_gini()` like so:
+```{r gini}
+gini <- pipmd_gini(welfare = pip_md$welfare,
+                   weight = pip_md$weight)
+
+print((paste0("The Gini index is ", round(gini$value, 2))))
+```
+
+
+The **MLD (Mean Logarithmic Deviation)** can be calculated using `pipgd_mld()` like so:
+```{r mld}
+mld <- pipmd_mld(welfare = pip_md$welfare,
+                 weight = pip_md$weight)
+
+print((paste0("The MLD is ", round(mld$value,2))))
+```
+
+And finally, the **Watts Index** can be calculated using `pipgd_watts()` specifying the poverty line (`povline`) like so:
+```{r watts-1}
+z <- 3 # set the poverty line
+watts <- pipmd_watts(welfare = pip_md$welfare,
+                     weight = pip_md$weight,
+                     povline = z)
+
+print((paste0("The Watts index is ", round(watts$watts, 2))))
+```
+
+In alternative, the user can specify the parameter `times_mean`. In this case, the poverty line will be calculated as the mean of the `welfare` vector multiplied by the `times_mean` parameter:
+
+```{r watts-2}
+watts <- pipmd_watts(welfare = pip_md$welfare,
+                     weight = pip_md$weight,
+                     times_mean = 0.8)
+
+print((paste0("The Watts index is ", round(watts$watts, 2))))
+```
+## Case 3: Welfare Shares
+
+### 3.1 Welfare share for a specific number of quantiles
+
+One simple use case is the calculation of welfare shares at a specific quantile or the cumulative welfare shares at a specific quantile by specifying `n`:
+
+```{r welfare-quantiles}
+quantiles <- 5
+quantile_welfare_share <- pipmd_quantile_welfare_share(welfare = pip_md$welfare,
+                                                       weight  = pip_md$weight,
+                                                       n = quantiles)
+
+quantile_welfare_share_at <- pipmd_welfare_share_at(welfare = pip_md$welfare,
+                                                    weight  = pip_md$weight,
+                                                    n = quantiles)
+
+quantile_threshold <- pipmd_quantile(welfare = pip_md$welfare,
+                                     weight  = pip_md$weight,
+                                     n = quantiles)
+  
+# Combine into a dataframe for practicality
+df_combined <- data.frame(
+  popshare = quantile_welfare_share$quantile,
+  quantile_share = quantile_welfare_share$share,
+  cumulative_share = quantile_welfare_share_at$share_at,
+  income_threshold = quantile_threshold$values
+)
+
+# View the combined dataframe
+print(df_combined)
+```
+
+### 3.2 Welfare share at a given population share
+
+Another use case is calculating the welfare share of a specific share of the population, which can be achieved using `pipmd_welfare_share_at()` by setting `n = NULL` and specifying the `popshare`:
+
+```{r welfare-popshare}
+selected_popshare <- 0.8
+welfare_at_50 <- pipmd_welfare_share_at(welfare = pip_md$welfare,
+                                         weight  = pip_md$weight,
+                                         n= NULL,
+                                         popshare = selected_popshare)
+
+# Format the string with the given values
+formatted_message <- sprintf("The bottom %.0f%% of the population owns %.0f%% of welfare.",
+                             selected_popshare * 100,
+                             welfare_at_50$share_at * 100)
+
+print(formatted_message)
+```
+
+
+
+

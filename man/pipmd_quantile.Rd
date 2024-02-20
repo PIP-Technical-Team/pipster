@@ -5,8 +5,7 @@
 \title{Get quantile at specified shared of population - micro data}
 \usage{
 pipmd_quantile(
-  pipster_object = NULL,
-  welfare = NULL,
+  welfare,
   weight = rep(1, length = length(welfare)),
   n = 10,
   popshare = seq(from = 1/n, to = 1, by = 1/n),
@@ -14,8 +13,6 @@ pipmd_quantile(
 )
 }
 \arguments{
-\item{pipster_object}{pipster object created using \link{create_pipster_object}}
-
 \item{welfare}{welfare vector}
 
 \item{weight}{population weight vector}
