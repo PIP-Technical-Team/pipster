@@ -13,11 +13,11 @@ Authors@R: c(
             email = "zprinsloo@worldbank.org"),
       person(given = "Rossana",
             family = "Tatulli",
-            role = "ctb",
+            role = "aut",
             email = "rtatulli@worldbank.org"),
       person(given = "Giorgia",
             family = "Cecchinato",
-            role = "ctb",
+            role = "aut",
             email = "gcecchinato@worldbank.org")
             )
 Description: What the package does (one paragraph).
