@@ -17,6 +17,7 @@
 #' default, the mean is equal to 1, which implies that, if no mean value if
 #' provided, the return value is equal to `x`.
 #'
+#' @param pipster_object pipster object created using [create_pipster_object]
 #' @param welfare welfare vector
 #' @param weight population weight vector
 #' @param n numeric: number of equi-spaced quantiles
@@ -29,7 +30,6 @@
 #' `quantile` and `value`.  Check `format` argument to change the output format.
 #'
 #' @export
-#'
 #'
 #' @examples
 #' # Example 1: Calculating quintiles.
@@ -52,16 +52,23 @@
 #'                format  = "atomic")
 #'
 pipmd_quantile <- function(
-  welfare    ,
-  weight     = rep(1, length = length(welfare)),
-  n          = 10,
-  popshare   = seq(from = 1/n, to = 1, by = 1/n),
-  format     = c("dt", "list", "atomic")
+  pipster_object = NULL,
+  welfare        = NULL,
+  weight         = rep(1, length = length(welfare)),
+  n              = 10,
+  popshare       = seq(from = 1/n, to = 1, by = 1/n),
+  format         = c("dt", "list", "atomic")
 ){
 
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
+
+  # Use pipster_object
+  if (!is.null(pipster_object)) {
+    welfare <- pipster_object$welfare |> unclass()
+    weight  <- pipster_object$weight |> unclass()
+  }
 
   # defenses ---------
   check_pipmd_dist()
@@ -126,15 +133,22 @@ pipmd_quantile <- function(
 #'                        format = "atomic")
 #'
 pipmd_welfare_share_at <- function(
-    welfare    ,
-    weight     = rep(1, length = length(welfare)),
-    n          = 10,
-    popshare   = seq(from = 1/n, to = 1, by = 1/n),
-    format     = c("dt", "list", "atomic")
+    pipster_object = NULL,
+    welfare        = NULL,
+    weight         = rep(1, length = length(welfare)),
+    n              = 10,
+    popshare       = seq(from = 1/n, to = 1, by = 1/n),
+    format         = c("dt", "list", "atomic")
 ){
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
+
+  # Use pipster_object
+  if (!is.null(pipster_object)) {
+    welfare <- pipster_object$welfare |> unclass()
+    weight  <- pipster_object$weight |> unclass()
+  }
 
   # defenses ---------
   check_pipmd_dist()
@@ -201,19 +215,25 @@ pipmd_welfare_share_at <- function(
 #'                              format = "atomic")
 #'
 pipmd_quantile_welfare_share <- function(
+    pipster_object = NULL,
     welfare    ,
-    weight     = rep(1, length = length(welfare)),
-    n          = 10,
-    popshare   = seq(from = 1/n, to = 1, by = 1/n),
-    format     = c("dt", "list", "atomic"))
+    weight         = rep(1, length = length(welfare)),
+    n              = 10,
+    popshare       = seq(from = 1/n, to = 1, by = 1/n),
+    format         = c("dt", "list", "atomic"))
   {
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
 
+  # Use pipster_object
+  if (!is.null(pipster_object)) {
+    welfare <- pipster_object$welfare |> unclass()
+    weight  <- pipster_object$weight |> unclass()
+  }
+
   # defenses ---------
   check_pipmd_dist()
-
 
   # ____________________________________________________________________________
   # Calculations ---------------------------------------------------------------
@@ -224,6 +244,9 @@ pipmd_quantile_welfare_share <- function(
     popshare   = popshare,
     format     = format
   )
+  if (is.null(n)) {
+    output <- output[1]
+  }
 
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------
@@ -268,13 +291,25 @@ pipmd_quantile_welfare_share <- function(
 #'            format = "list")
 #'
 pipmd_gini <- function(
-    welfare    ,
-    weight     = rep(1, length = length(welfare)),
-    format  = c("dt", "list", "atomic"))
+    pipster_object = NULL,
+    welfare,
+    weight         = rep(1, length = length(welfare)),
+    format         = c("dt", "list", "atomic"))
   {
   # _____________________________________
   # Arguments ---------------------------
   format <- match.arg(format)
+
+  # Use pipster_object
+  if (!is.null(pipster_object)) {
+    welfare <- pipster_object$welfare |> unclass()
+    weight  <- pipster_object$weight |> unclass()
+  }
+
+  if (is.unsorted(welfare)) {
+    weight  <- weight[order(welfare)]
+    welfare <- welfare[order(welfare)]
+  }
 
   # defenses ---------
   check_pipmd_dist()
@@ -343,16 +378,23 @@ pipmd_gini <- function(
 #'                    format = "atomic")
 #'
 pipmd_polarization <- function(
-    welfare    ,
-    weight     = rep(1, length = length(welfare)),
-    gini    = NULL,
-    mean    = NULL,
-    median  = NULL,
-    format  = c("dt", "list", "atomic")
+    pipster_object = NULL,
+    welfare,
+    weight         = rep(1, length = length(welfare)),
+    gini           = NULL,
+    mean           = NULL,
+    median         = NULL,
+    format         = c("dt", "list", "atomic")
 ){
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
+
+  # Use pipster_object
+  if (!is.null(pipster_object)) {
+    welfare <- pipster_object$welfare |> unclass()
+    weight  <- pipster_object$weight |> unclass()
+  }
 
   # defenses ---------
   check_pipmd_dist()
@@ -397,7 +439,6 @@ pipmd_polarization <- function(
 #' Given a vector of weights and welfare, this functions computes the
 #' Mean Log Deviation (MLD).
 #'
-#'
 #' @inheritParams pipmd_polarization
 #'
 #' @return Returns a `data.table` and `data.frame` object with two variables:
@@ -427,21 +468,28 @@ pipmd_polarization <- function(
 #'           format = "list")
 #'
 pipmd_mld <- function(
+    pipster_object = NULL,
     welfare    ,
-    weight     = rep(1, length = length(welfare)),
-    mean    = NULL,
-    format  = c("dt", "list", "atomic")
+    weight         = rep(1, length = length(welfare)),
+    mean           = NULL,
+    format         = c("dt", "list", "atomic")
 ){
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
 
-  # defenses ---------
-  check_pipmd_dist()
+  # Use pipster_object
+  if (!is.null(pipster_object)) {
+    welfare <- pipster_object$welfare |> unclass()
+    weight  <- pipster_object$weight |> unclass()
+  }
 
   if (is.null(mean)) {
     mean <- fmean(x = welfare,w = weight)
   }
+
+  # defenses ---------
+  check_pipmd_dist()
 
   # ____________________________________________________________________________
   # Calculations ---------------------------------------------------------------
