@@ -10,7 +10,15 @@ Authors@R: c(
       person(given = "Zander",
             family = "Prinsloo",
             role = "aut",
-            email = "zprinsloo@worldbank.org")
+            email = "zprinsloo@worldbank.org"),
+      person(given = "Rossana",
+            family = "Tatulli",
+            role = "ctb",
+            email = "rtatulli@worldbank.org"),
+      person(given = "Giorgia",
+            family = "Cecchinato",
+            role = "ctb",
+            email = "gcecchinato@worldbank.org")
             )
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
