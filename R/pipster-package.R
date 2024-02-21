@@ -11,7 +11,8 @@
 #'
 #' @docType package
 #' @name pipster
-#' @import collapse
+#' @rawNamespace import(collapse, except = fdroplevels)
+#' @rawNamespace import(data.table, except = fdroplevels)
 
 # Make sure data.table knows we know we're using it
 .datatable.aware = TRUE
