@@ -107,7 +107,7 @@ test_that("check_pipgd_params aborts on invalid params", {
   lp <- list(
     params     = structure(c(1, 2, 3), class = "pipgd_params"),
     welfare    = NULL,
-    population = c(1, 2, 3) # This can be omitted or included
+    weight = c(1, 2, 3) # This can be omitted or included
   )
   expect_error(check_pipgd_params(lp))
 

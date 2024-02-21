@@ -5,7 +5,8 @@
 \title{Calculate poverty headcount from microdata}
 \usage{
 pipmd_pov_headcount(
-  welfare,
+  pipster_object = NULL,
+  welfare = NULL,
   weight = rep(1, length = length(welfare)),
   povline = fmean(welfare, w = weight) * times_mean,
   times_mean = 1,
@@ -13,6 +14,8 @@ pipmd_pov_headcount(
 )
 }
 \arguments{
+\item{pipster_object}{pipster object created using \link{create_pipster_object}}
+
 \item{welfare}{numeric: A vector of income or consumption values}
 
 \item{weight}{numeric: A vector of population weights. If NULL, a vector of 1s

@@ -1,12 +1,54 @@
 # Test functions related to distributional measures for group data ####
 
-# Test pipgd_welfare_share_at function ####
-
-welfare <- pip_gd$L
-weight  <- pip_gd$P
+welfare <- pip_gd$L |> as.numeric()
+weight  <- pip_gd$P |> as.numeric()
 params  <- pipgd_select_lorenz(welfare  = welfare,
                                weight   = weight,
                                complete = TRUE)
+pipster_object <- create_pipster_object(welfare = pip_gd$L,
+                                        weight  = pip_gd$P)
+
+
+# Test validate_params
+test_that("validate_params is equiv for all input types", {
+
+  ob1 <- validate_params(pipster_object = pipster_object,
+                         welfare        = NULL,
+                         weight         = NULL,
+                         params         = NULL)
+  ob2 <- validate_params(pipster_object = NULL,
+                         welfare        = welfare,
+                         weight         = weight,
+                         params         = NULL)
+  ob3 <- validate_params(pipster_object = NULL,
+                         welfare        = NULL,
+                         weight         = NULL,
+                         params         = params)
+
+  expect_equal(ob1, ob2)
+  expect_equal(ob1, ob3)
+
+  # does `mean` arg work?
+  # ob2 <- validate_params_dist(pipster_object = NULL,
+  #                        welfare        = welfare,
+  #                        weight         = weight,
+  #                        mean           = 1,
+  #                        params         = NULL)
+  # ob3 <- validate_params(pipster_object = NULL,
+  #                        welfare        = welfare,
+  #                        weight         = weight,
+  #                        mean           = 2,
+  #                        params         = NULL)
+  # expect_failure(
+  #   expect_equal(ob2, ob3)
+  # )
+
+})
+
+
+# Test pipgd_welfare_share_at function ####
+
+
 
 # Inputs ------------------------------------------------------------------------------
 
@@ -22,6 +64,7 @@ test_that("pipgd_welfare_share_at inputs work as expected", {
                                         weight   = weight,
                                         complete = TRUE,
                                         lorenz   = "lq")
+    res3      <- pipgd_welfare_share_at(pipster_object = pipster_object)
 
     expect_equal(res1, res2)
     expect_equal(res1_full$dist_stats,
@@ -227,7 +270,8 @@ test_that("pipgd_welfare_share_at outputs work as expected", {
 
     names(res_complete$data) |>
         expect_equal(c("welfare",
-                       "weight"))
+                       "weight",
+                       "mean"))
 
     names(res_complete$selected_lorenz) |>
         expect_equal(c( "for_dist",
@@ -398,7 +442,8 @@ test_that("pipgd_quantile_welfare_share outputs work as expected", {
 
     names(res_complete$data) |>
         expect_equal(c("welfare",
-                       "weight"))
+                       "weight",
+                       "mean"))
 
     names(res_complete$selected_lorenz) |>
         expect_equal(c( "for_dist",
@@ -592,7 +637,8 @@ test_that("pipgd_quantile outputs work as expected", {
 
     names(res_complete$data) |>
         expect_equal(c("welfare",
-                       "weight"))
+                       "weight",
+                       "mean"))
 
     names(res_complete$selected_lorenz) |>
         expect_equal(c( "for_dist",
@@ -837,7 +883,8 @@ test_that("pipgd_mld outputs work as expected", {
 
     names(res_complete$data) |>
         expect_equal(c("welfare",
-                       "weight"))
+                       "weight",
+                       "mean"))
 
     names(res_complete$selected_lorenz) |>
         expect_equal(c( "for_dist",
@@ -886,5 +933,169 @@ test_that("pipgd_mld calculates mld as expected", {
       expect_equal(NULL)
 
 })
+
+# Test pipgd_polarization ####
+# Inputs -----------------------------------------------------------------
+test_that("pipgd_polarization inputs works as expected", {
+
+  pipgd_polarization(welfare     = welfare,
+                     weight      = NULL) |>
+    expect_error()
+
+  pipgd_polarization(welfare     = NULL,
+                     weight      = weight) |>
+    expect_error()
+
+  pipgd_polarization(welfare     = welfare,
+                     weight      = weight,
+                     mean        = "invalid mean") |>
+    expect_error()
+
+  pipgd_polarization(welfare     = welfare,
+                     weight      = weight,
+                     gini        = "invalid gini") |>
+    expect_error()
+
+  pipgd_polarization(welfare     = welfare,
+                     weight      = weight,
+                     lorenz      = "Neither NULL, lq or lb") |>
+    expect_error()
+
+  pipgd_polarization(welfare     = welfare,
+                     weight      = weight,
+                     lorenz      = NULL) |>
+    expect_no_error()
+
+  pipgd_polarization(params  = params,
+                     lorenz  = NULL) |>
+    expect_no_error()
+
+})
+
+# Outputs -----------------------------------------------------------------
+test_that("pipgd_polarization outputs work as expected", {
+
+  res          <- pipgd_polarization(welfare = welfare,
+                                     weight  = weight)
+  res_params   <- pipgd_polarization(params  = params)
+  res_complete <- pipgd_polarization(welfare  = welfare,
+                                     weight   = weight,
+                                     complete = TRUE)
+  res |>
+    expect_equal(res_params)
+
+  class(res) |>
+    expect_equal("list")
+
+  class(res_complete) |>
+    expect_equal("pipgd_params")
+
+  names(res) |>
+    expect_equal("dist_stats")
+
+  names(res$dist_stats) |>
+    expect_equal(c("gini",
+                   "polarization",
+                   "lorenz"))
+
+  # Names in output list when complete = TRUE
+  names(res_complete) |>
+    expect_equal(c("gd_params",
+                   "data",
+                   "selected_lorenz",
+                   "dist_stats"))
+
+  names(res_complete$gd_params) |>
+    expect_equal(c("lq",
+                   "lb"))
+
+  names(res_complete$gd_params$lq) |>
+    expect_equal(names(res_complete$gd_params$lb))
+
+  names(res_complete$gd_params$lq) |>
+    expect_equal(c("reg_results",
+                   "key_values",
+                   "validity"))
+
+  names(res_complete$gd_params$lq$reg_results) |>
+    expect_equal(c("ymean",
+                   "sst",
+                   "coef",
+                   "sse",
+                   "r2",
+                   "mse",
+                   "se"))
+
+  names(res_complete$gd_params$lq$key_values) |>
+    expect_equal(c("e",
+                   "m",
+                   "n",
+                   "r",
+                   "s1",
+                   "s2"))
+
+  names(res_complete$gd_params$lq$validity) |>
+    expect_equal(c("is_normal",
+                   "is_valid",
+                   "headcount"))
+
+  names(res_complete$gd_params$lb$key_values) |>
+    expect_equal(NULL)
+
+  names(res_complete$data) |>
+    expect_equal(c("welfare",
+                   "weight",
+                   "mean"))
+
+  names(res_complete$selected_lorenz) |>
+    expect_equal(c( "for_dist",
+                    "for_pov",
+                    "use_lq_for_dist",
+                    "use_lq_for_pov" ))
+
+  names(res_complete$dist_stats) |>
+    expect_equal(c("gini",
+                   "lorenz",
+                   "polarization"))
+
+})
+
+test_that("pipgd_polarization calculates polarization as expected", {
+
+  pol_benchmark_lb <- 0.242583101350098
+
+  pol_benchmark_lq <- 0.234947626306501
+
+  res_lq       <- pipgd_polarization(welfare  = welfare,
+                            weight   = weight,
+                            lorenz   = "lq")
+  res_lb       <- pipgd_polarization(welfare  = welfare,
+                            weight  = weight,
+                            lorenz = "lb")
+  res_complete <- pipgd_polarization(welfare  = welfare,
+                            weight   = weight,
+                            complete = FALSE)
+
+  res_lq$dist_stats$polarization |>
+    expect_equal(pol_benchmark_lq)
+
+  res_lq$dist_stats$lorenz |>
+    expect_equal("lq")
+
+  res_lb$dist_stats$lorenz |>
+    expect_equal("lb")
+
+  res_lb$dist_stats$polarization |>
+    expect_equal(pol_benchmark_lb)
+
+  attributes(res_lb$dist_stats$polarization) |>
+    expect_equal(NULL)
+
+  attributes(res_lq$dist_stats$polarization) |>
+    expect_equal(NULL)
+
+})
+
+
 
 
