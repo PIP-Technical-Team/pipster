@@ -1,11 +1,29 @@
+
+rmv_attr <-  \(x) {
+  y <- attributes(x) |>
+    names()
+
+  for ( i in seq_along(y)) {
+    attr(x, y[i]) <- NULL
+  }
+  x
+}
+
 gd_object <- create_pipster_object(welfare = pip_gd$L,
                                    weight  = pip_gd$P)
 md_object <- create_pipster_object(welfare = pip_md_s$welfare,
                                    weight  = pip_md_s$weight)
-welfare_gd <- pip_gd$L
-weight_gd  <- pip_gd$P
-welfare_md <- pip_md_s$welfare
-weight_md  <- pip_md_s$weight
+
+welfare_gd <- pip_gd$L |>
+  rmv_attr()
+
+weight_gd  <- pip_gd$P |>
+  rmv_attr()
+welfare_md <- pip_md_s$welfare |>
+  rmv_attr()
+weight_md  <- pip_md_s$weight |>
+  rmv_attr()
+
 
 #_______________________________________________________________________________
 # Tests
@@ -70,7 +88,7 @@ test_that("get_quantile works", {
 
 
 test_that("get_welfare_share_at works", {
-
+  # skip()
   # standard
   out1_gd <- get_welfare_share_at(pipster_object = gd_object)
   out1_md <- get_welfare_share_at(pipster_object = md_object)
@@ -127,7 +145,7 @@ test_that("get_welfare_share_at works", {
 
 
 test_that("get_quantile_welfare_share works", {
-
+  # skip()
   # standard
   out1_gd <- get_quantile_welfare_share(pipster_object = gd_object)
   out1_md <- get_quantile_welfare_share(pipster_object = md_object)
