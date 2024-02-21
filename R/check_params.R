@@ -22,13 +22,12 @@ check_pipgd_params <- function(lp) {
 
   ## welfare -----------
 
-
   ## welfare and params -----------
   if ( all(c("params", "welfare") %in% nlp)) {
     if (!is.null(lp$params) &&
-        (!is.null(lp$welfare)  || !is.null(lp$population))) {
+        (!is.null(lp$welfare)  || !is.null(lp$weight))) {
       cli::cli_abort("You must specify either {.field params} or
-                {.field welfare} and {.field population}")
+                {.field welfare} and {.field weight}")
     }
   }
 

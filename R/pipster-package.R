@@ -12,6 +12,7 @@
 #' @docType package
 #' @name pipster
 #' @import collapse
+#' @import vctrs
 
 # Make sure data.table knows we know we're using it
 .datatable.aware = TRUE
@@ -32,7 +33,6 @@ if (getRversion() >= "2.15.1") {
     package = utils::packageName()
   )
 }
-
 
 
 NULL
