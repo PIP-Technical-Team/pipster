@@ -7,6 +7,7 @@ weight_md  <- pip_md_s$weight
 # Tests
 #_______________________________________________________________________________
 
+## Valid Input
 test_that("create_pipster_object - errors", {
 
   expect_error(
@@ -29,7 +30,7 @@ test_that("create_pipster_object - errors", {
 
 })
 
-
+## Correct Class
 test_that("create_pipster_object - correct class identified", {
 
   obj1 <- create_pipster_object(welfare = welfare_gd,
@@ -61,5 +62,28 @@ test_that("create_pipster_object - correct class identified", {
 
 
 
+## Correct Class with NULL weight
+test_that("create_pipster_object - correct class identified - null weight for md", {
 
+  obj21 <- create_pipster_object(welfare = welfare_md,
+                                weight  = NULL)
+  obj31 <- create_pipster_object(welfare = welfare_md,
+                                weight  = NULL,
+                                imputation_id = rep(c(1, 2),
+                                                    length(weight_md)/2))
+
+  expect_equal(obj21$welfare |> class(),
+               c("pipster_md",
+                 "vctrs_vctr"))
+  expect_equal(obj31$welfare |> class(),
+               c("pipster_md",
+                 "vctrs_vctr"))
+  expect_true(
+    length(obj31$imputation_id |>
+             funique()) ==   # imputation id works
+      2*length(obj21$imputation_id |>
+                 funique()))
+
+
+})
 
