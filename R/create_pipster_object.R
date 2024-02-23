@@ -42,6 +42,15 @@ create_pipster_object <-
                           weight        = weight,
                           imputation_id = imputation_id)
   cl <- substr(tp, start = 1, stop = 2)
+
+
+  #_____________________________________________________________________________
+  # treat NULL weights -----------
+
+  if (is.null(weight)) {
+    weight        <- rep(1, length(welfare))
+  }
+
   #_____________________________________________________________________________
   # Convert format--------------------------------------------------------------
   weight  <- weight[order(welfare)]
