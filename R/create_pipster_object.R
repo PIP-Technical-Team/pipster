@@ -20,7 +20,7 @@
 #' p
 create_pipster_object <-
   function(welfare,
-           weight        = rep(1, length(welfare)),
+           weight        = NULL,
            imputation_id = NULL) {
 
   #_____________________________________________________________________________
