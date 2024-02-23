@@ -4,11 +4,7 @@
 \alias{create_pipster_object}
 \title{Create Pipster Object}
 \usage{
-create_pipster_object(
-  welfare,
-  weight = rep(1, length(welfare)),
-  imputation_id = NULL
-)
+create_pipster_object(welfare, weight = NULL, imputation_id = NULL)
 }
 \arguments{
 \item{welfare}{numeric: welfare vector}
@@ -19,17 +15,32 @@ create_pipster_object(
 Default is NULL}
 }
 \value{
-list: pipster object containing welfare and weights,
-params if grouped data, imputation_id if imputed data
+list: pipster object containing welfare and weights for micro data,
+params if grouped data, imputation_id if imputed data.
 }
 \description{
 The first step in using the \code{pipster} package is to create a pipster object.
 It creates the appropriate classes for welfare and weights, reformats the
 data if necessary, and, for grouped data, it estimates and selects the lorenz
 curves to be used for the estimation of poverty and distributional measures.
+Note: Group Data must always come with a weight variable specified, or they
+will be classified as micro data.
 }
 \examples{
-p <- create_pipster_object(welfare = pip_gd$L,
-                           weight  = pip_gd$P)
-p
+
+# Example 1 - Group data
+p_gd <- create_pipster_object(welfare = pip_gd$L,
+                              weight  = pip_gd$P)
+p_gd
+
+# Example 2 - Micro data
+p_md <- create_pipster_object(welfare = pip_md$welfare,
+                              weight  = pip_md$weight)
+p_md
+
+# Example 3 - Micro data - NULL weight
+
+p_md_no_w <- create_pipster_object(welfare = pip_md$welfare)
+
+p_md_no_w
 }

@@ -4,20 +4,35 @@
 #' It creates the appropriate classes for welfare and weights, reformats the
 #' data if necessary, and, for grouped data, it estimates and selects the lorenz
 #' curves to be used for the estimation of poverty and distributional measures.
+#' Note: Group Data must always come with a weight variable specified, or they
+#' will be classified as micro data.
 #'
 #' @param welfare numeric: welfare vector
 #' @param weight numeric: weight vector
 #' @param imputation_id numeric: vector of ids for multiply imputed data.
 #' Default is NULL
 #'
-#' @return list: pipster object containing welfare and weights,
-#' params if grouped data, imputation_id if imputed data
+#' @return list: pipster object containing welfare and weights for micro data,
+#' params if grouped data, imputation_id if imputed data.
 #' @export
 #'
 #' @examples
-#' p <- create_pipster_object(welfare = pip_gd$L,
-#'                            weight  = pip_gd$P)
-#' p
+#'
+#' # Example 1 - Group data
+#' p_gd <- create_pipster_object(welfare = pip_gd$L,
+#'                               weight  = pip_gd$P)
+#' p_gd
+#'
+#' # Example 2 - Micro data
+#' p_md <- create_pipster_object(welfare = pip_md$welfare,
+#'                               weight  = pip_md$weight)
+#' p_md
+#'
+#' # Example 3 - Micro data - NULL weight
+#'
+#' p_md_no_w <- create_pipster_object(welfare = pip_md$welfare)
+#'
+#' p_md_no_w
 create_pipster_object <-
   function(welfare,
            weight        = NULL,
