@@ -410,10 +410,12 @@ pipgd_gini <- function(
         A         = params$gd_params$lq$reg_results$coef[["A"]],
         B         = params$gd_params$lq$reg_results$coef[["B"]],
         C         = params$gd_params$lq$reg_results$coef[["C"]],
-        e         = params$gd_params$lq$key_values$e,
-        m         = params$gd_params$lq$key_values$m,
-        n         = params$gd_params$lq$key_values$n,
-        r         = params$gd_params$lq$key_values$r
+        key_values = c(
+              e         = params$gd_params$lq$key_values$e,
+              m         = params$gd_params$lq$key_values$m,
+              n         = params$gd_params$lq$key_values$n,
+              r         = params$gd_params$lq$key_values$r
+        )
       )
   }
 
