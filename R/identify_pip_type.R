@@ -61,20 +61,34 @@
 #' identify_pip_type(welfare = Y, weight  = Q)
 #' identify_pip_type(welfare = Y, weight  = Q, imputation_id = I)
 identify_pip_type <- function(welfare,
-                              weight              = rep(1, length(welfare)),
+                              weight              = NULL,
                               imputation_id       = NULL,
                               groupdata_threshold = getOption("pipster.gd_threshold"),
                               verbose             = getOption("pipster.verbose")
                               ){
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Sort data   ---------
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  #
+  ## treat NULL weights -----------
+
+  if (is.null(weight)) {
+    weight        <- rep(1, length(welfare))
+    weight_to_one <- FALSE
+    weight_is_cum <- FALSE
+  } else {
+    weight_to_one <- NULL
+    weight_is_cum <- NULL
+  }
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # defenses   ---------
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   identify_pip_type_check()
 
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Sort data   ---------
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ## unsorted welfare --------------
+
   if (is.unsorted(welfare)) {
     if (verbose) {
       cli::cli_alert_warning("vectors not sorted")
@@ -89,24 +103,22 @@ identify_pip_type <- function(welfare,
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ## check if welfare and weight sum up to one --------
+  ## check if welfare sum up to one or is cumulative --------
 
   welfare_to_one <- sum_up_to_one(welfare)
-  weight_to_one  <- sum_up_to_one(weight)
+  welfare_is_cum <-
+    if (welfare_to_one) FALSE else is_cumulative(welfare)
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ## check if it is cumulative --------
+  ## check if weight sum up to one or is cumulative --------
 
-  if (welfare_to_one) {
-    welfare_is_cum <- FALSE
-  } else {
-    welfare_is_cum <- is_cumulative(welfare)
-  }
+  if (is.null(weight_to_one))
+      weight_to_one  <- sum_up_to_one(weight)
 
-  if (weight_to_one) {
-    weight_is_cum <- FALSE
-  } else {
-    weight_is_cum <- is_cumulative(weight)
+  if (is.null(weight_is_cum))  {
+
+    weight_is_cum <-
+      if (weight_to_one) FALSE else  is_cumulative(weight)
   }
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
