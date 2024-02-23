@@ -6,7 +6,7 @@
 \usage{
 identify_pip_type(
   welfare,
-  weight = rep(1, length(welfare)),
+  weight = NULL,
   imputation_id = NULL,
   groupdata_threshold = getOption("pipster.gd_threshold"),
   verbose = getOption("pipster.verbose")
