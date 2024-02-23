@@ -7,8 +7,8 @@
 #' Note: Group Data must always come with a weight variable specified, or they
 #' will be classified as micro data.
 #'
-#' @param welfare numeric: welfare vector
-#' @param weight numeric: weight vector
+#' @param welfare numeric: welfare vector (monetary or shares, also cumulative)
+#' @param weight numeric: weight vector (count or shares, also cumulative)
 #' @param imputation_id numeric: vector of ids for multiply imputed data.
 #' Default is NULL
 #'
@@ -70,6 +70,7 @@ create_pipster_object <-
   # Convert format--------------------------------------------------------------
   weight  <- weight[order(welfare)]
   welfare <- welfare[order(welfare)]
+
   if (tp %in% c("gd_2", "gd_3", "gd_5")) {
     welfare_original <- welfare
     weight_original  <- weight

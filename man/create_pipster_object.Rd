@@ -7,9 +7,9 @@
 create_pipster_object(welfare, weight = NULL, imputation_id = NULL)
 }
 \arguments{
-\item{welfare}{numeric: welfare vector}
+\item{welfare}{numeric: welfare vector (monetary or shares, also cumulative)}
 
-\item{weight}{numeric: weight vector}
+\item{weight}{numeric: weight vector (count or shares, also cumulative)}
 
 \item{imputation_id}{numeric: vector of ids for multiply imputed data.
 Default is NULL}
