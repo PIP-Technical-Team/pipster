@@ -7,7 +7,7 @@ weight_md  <- pip_md_s$weight
 # Tests
 #_______________________________________________________________________________
 
-## Valid Input
+## Valid Inputs
 test_that("create_pipster_object - errors", {
 
   expect_error(
@@ -57,6 +57,85 @@ test_that("create_pipster_object - correct class identified", {
       2*length(obj2$imputation_id |>
                  funique()))
 
+
+})
+
+## Correct Class - Complete - One per Type
+test_that("create_pipster_object - correct class identified - gd_1", {
+
+  # gd_1
+  gd_1 <- create_pipster_object(welfare = pip_gd$L,
+                                weight = pip_gd$P)
+  gd_1_100 <- create_pipster_object(welfare = pip_gd$L*100,
+                                    weight = pip_gd$P)
+
+
+  expect_equal(gd_1$welfare |> class(),
+               c("pipster_gd",
+                 "vctrs_vctr"))
+
+  expect_equal(gd_1_100$welfare |> class(),
+               c("pipster_gd",
+                 "vctrs_vctr"))
+
+})
+
+test_that("create_pipster_object - correct class identified - gd_2", {
+
+  # gd_2
+  gd_2 <- create_pipster_object(welfare = pip_gd$R,
+                                weight = pip_gd$W/100)
+  gd_2_100 <- create_pipster_object(welfare = pip_gd$R*100,
+                                    weight = pip_gd$W)
+
+
+  expect_equal(gd_2$welfare |> class(),
+               c("pipster_gd",
+                 "vctrs_vctr"))
+
+  expect_equal(gd_2_100$welfare |> class(),
+               c("pipster_gd",
+                 "vctrs_vctr"))
+
+})
+
+
+
+test_that("create_pipster_object - correct class identified - gd_3", {
+
+  # gd_3
+  gd_3 <- create_pipster_object(welfare = pip_gd$X,
+                                weight  = pip_gd$P)
+  gd_3_100 <- create_pipster_object(welfare = pip_gd$X,
+                                    weight = pip_gd$P*100)
+
+
+  expect_equal(gd_3$welfare |> class(),
+               c("pipster_gd",
+                 "vctrs_vctr"))
+
+  expect_equal(gd_3_100$welfare |> class(),
+               c("pipster_gd",
+                 "vctrs_vctr"))
+
+})
+
+test_that("create_pipster_object - correct class identified - gd_5", {
+
+  # gd_5
+  gd_5 <- create_pipster_object(welfare = pip_gd$X,
+                                weight = pip_gd$W/100)
+  gd_5_100 <- create_pipster_object(welfare = pip_gd$X,
+                                    weight = pip_gd$P*100)
+
+
+  expect_equal(gd_5$welfare |> class(),
+               c("pipster_gd",
+                 "vctrs_vctr"))
+
+  expect_equal(gd_5_100$welfare |> class(),
+               c("pipster_gd",
+                 "vctrs_vctr"))
 
 })
 
