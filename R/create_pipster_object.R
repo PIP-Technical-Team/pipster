@@ -83,7 +83,11 @@ create_pipster_object <-
     "id"   = {
       cl <- "md"
     },
-    "gd_1" = invisible(TRUE),
+    "gd_1" = {
+      if (flast(welfare) == 100) {
+        welfare <- welfare/100
+      }
+    },
     "gd_2" = {
       welfare <- fcumsum(welfare)/fsum(welfare)
       weight  <- fcumsum(weight)/fsum(weight)

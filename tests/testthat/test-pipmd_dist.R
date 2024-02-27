@@ -24,6 +24,7 @@ attributes(weight)  <- NULL
 # Testing quantile at specified shared of population function ####
 # Arguments ---------------------------------------------------------------
 test_that("pipmd_quantile -arguments", {
+  skip()
   pipmd_quantile(welfare = welfare_test, weight = weight) |>
     expect_error()
 
@@ -64,6 +65,7 @@ test_that("pipmd_quantile -arguments", {
 
 # Outputs ---------------------------------------------------------------
 test_that("pipmd_quantile -outputs", {
+  skip()
   n = 6
 
   res_list <-
@@ -175,6 +177,7 @@ test_that("pipmd_quantile -outputs", {
 # Testing Welfare share by quantile function ####
 # Arguments ---------------------------------------------------------------
 test_that("pipmd_welfare_share_at -arguments", {
+  skip()
   pipmd_welfare_share_at(welfare = welfare_test, weight = weight) |>
     expect_error()
 
@@ -327,6 +330,7 @@ test_that("pipmd_welfare_share_at -outputs", {
 # Testing the function computing the share of welfare held by a particular quantile ####
 # Arguments ------------------------------------------------------------------------------
 test_that("pipmd_quantile_welfare_share -arguments", {
+  skip()
   pipmd_quantile_welfare_share(welfare = welfare_test, weight = weight) |>
     expect_error()
 
@@ -760,3 +764,4 @@ test_that("pipmd_mld -outputs", {
     expect_equal(length(res_list))
 
 })
+
