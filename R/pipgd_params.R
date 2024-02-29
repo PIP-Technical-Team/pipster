@@ -1,6 +1,6 @@
 #' Get Group Data Parameters
 #'
-#' Get Parameters and key values derived from the quadratic and Beta Lorenz
+#' Get parameters and key values derived from the quadratic and beta Lorenz
 #' parametrization. `welfare` and `population` must be vectors of a group data
 #' dataset
 #' @name pipgd_params
@@ -57,66 +57,61 @@ pipgd_params <- function(welfare,
                          mean = 1,
                          population = NULL) {
 
-  #   ____________________________________________________________________________
-  #   Defenses                                                                ####
+  # ____________________________________________________________________________
+  # Defences--------------------------------------------------------------------
   pl <- as.list(environment())
   check_pipgd_params(pl)
 
-  #   ____________________________________________________________________________
-  #   Computations                                                            ####
-
   # create results list
-  l_res <- vector(mode = "list", length = 2)
-  names(l_res) <- c("gd_params", "data")
+  l_res        <- vector(mode = "list",
+                         ength = 2)
+  names(l_res) <- c("gd_params",
+                    "data")
 
+  # ____________________________________________________________________________
+  # Apply Lorenz Quadratic Fit -------------------------------------------------
 
-  # Apply Lorenz quadratic fit ----------------------------------------------
-
-  ## STEP 1: Prep data to fit functional form-------------
+  ## STEP 1: Prep data to fit functional form
   functional_form_lq <-
     wbpip::create_functional_form_lq(welfare    = welfare,
                                      population = weight)
 
-  ## STEP 2: Estimate regression coefficients using LQ parametrization------
-  reg_results_lq <- wbpip::regres(functional_form_lq, is_lq = TRUE)
-  names(reg_results_lq$coef) <- c("A", "B", "C")
-
-  # add to results list
+  ## STEP 2: Estimate regression coefficients using LQ parametrization
+  reg_results_lq <- wbpip::regres(data  = functional_form_lq,
+                                  is_lq = TRUE)
+  names(reg_results_lq$coef)     <- c("A", "B", "C")
   l_res$gd_params$lq$reg_results <- reg_results_lq
-
 
   ## STEP 3: get key values
   # Compute key numbers from Lorenz quadratic form
   kv <- wbpip::gd_lq_key_values(reg_results_lq$coef[["A"]],
-                         reg_results_lq$coef[["B"]],
-                         reg_results_lq$coef[["C"]])
+                                reg_results_lq$coef[["B"]],
+                                reg_results_lq$coef[["C"]])
 
   l_res$gd_params$lq$key_values <- kv
 
+  # ____________________________________________________________________________
+  # Apply Lorenz Beta Fit-------------------------------------------------------
 
-  # Apply Lorenz beta fit ---------------------------------------------------
-
-  ## STEP 1: Prep data to fit functional form --------------
+  ## STEP 1: Prep data to fit functional form
   functional_form_lb <-
     wbpip::create_functional_form_lb(welfare    = welfare,
                                       population = weight)
 
   ## STEP 2: Estimate regression coefficients using LB parameterization
-  reg_results_lb <- wbpip::regres(functional_form_lb, is_lq = FALSE)
-  names(reg_results_lb$coef) <- c("A", "B", "C")
-
-  # add to results list
+  reg_results_lb <- wbpip::regres(data  = functional_form_lb,
+                                  is_lq = FALSE)
+  names(reg_results_lb$coef)     <- c("A", "B", "C")
   l_res$gd_params$lb$reg_results <- reg_results_lb
+  l_res$gd_params$lb$key_values  <- NA
 
-  l_res$gd_params$lb$key_values <- NA
-
-  #   ____________________________________________________________________________
-  #   Return                                                                  ####
+  # ____________________________________________________________________________
+  # Return----------------------------------------------------------------------
   l_res$data$welfare    <- welfare
   l_res$data$weight     <- weight
   l_res$data$mean       <- mean
   l_res$data$population <- population
-  class(l_res) <- "pipgd_params"
+  class(l_res)          <- "pipgd_params"
   l_res
 }
 
