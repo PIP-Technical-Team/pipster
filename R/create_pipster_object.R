@@ -102,6 +102,17 @@ create_pipster_object <-
   )
 
   #_____________________________________________________________________________
+  # Temp: Error when gd_* != gd_1-----------------------------------------------
+
+  if (tp %in% c("gd_2", "gd_3", "gd_5")) {
+    cli::cli_abort(c(
+      "Pipster only accepts grouped data of type gd_1 (cumulative welfare and weights) for now.",
+      "x" = "The data you provided are of type {tp}."
+    ))
+  }
+
+
+  #_____________________________________________________________________________
   # Params----------------------------------------------------------------------
   if (cl == "gd") {
     params <- pipgd_select_lorenz(welfare  = welfare,
