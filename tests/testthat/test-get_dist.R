@@ -14,6 +14,7 @@ gd_object <- create_pipster_object(welfare = pip_gd$L,
                                    weight  = pip_gd$P)
 md_object <- create_pipster_object(welfare = pip_md_s$welfare,
                                    weight  = pip_md_s$weight)
+invalid_object <- list(some_data = "not a pipster object")
 
 ## standard objects
 rmv_attr <-  \(x) {
@@ -40,7 +41,7 @@ weight_md  <- pip_md_s$weight |>
 # Tests
 #_______________________________________________________________________________
 
-# Quantiles
+# Quantiles --------------------------------------------------------------------
 test_that("get_quantile works", {
 
   # standard
@@ -96,8 +97,14 @@ test_that("get_quantile works", {
 
 })
 
+test_that("get_quantile no default means error", {
 
-# Welfare share at
+  expect_error(get_quantile(invalid_object))
+
+})
+
+
+# Welfare share at -------------------------------------------------------------
 test_that("get_welfare_share_at works", {
   # skip()
   # standard
@@ -153,8 +160,14 @@ test_that("get_welfare_share_at works", {
 
 })
 
+test_that("get_welfare_share_at no default means error", {
 
-# Quantile welfare share
+  expect_error(get_welfare_share_at(invalid_object))
+
+})
+
+
+# Quantile welfare share -------------------------------------------------------
 test_that("get_quantile_welfare_share works", {
   # skip()
   # standard
@@ -214,8 +227,14 @@ test_that("get_quantile_welfare_share works", {
 
 })
 
+test_that("get_quantile_welfare_share no default means error", {
 
-# Polarization
+  expect_error(get_quantile_welfare_share(invalid_object))
+
+})
+
+
+# Polarization -----------------------------------------------------------------
 test_that("get_polarization works", {
 
   # standard
@@ -236,18 +255,14 @@ test_that("get_polarization works", {
 
 test_that("get_polarization no default means error", {
 
-  # create non pipster object
-  dummy_object <- list(some_data = "incorrect class object")
-  class(dummy_object) <- "incorrect_class"
-
-  expect_error(get_polarization(dummy_object))
+  expect_error(get_polarization(invalid_object))
 
 })
 
 
 
 
-# MLD
+# MLD --------------------------------------------------------------------------
 test_that("get_mld works", {
 
   # standard
@@ -268,15 +283,11 @@ test_that("get_mld works", {
 
 test_that("get_mld no default means error", {
 
-  # create non pipster object
-  dummy_object <- list(some_data = "incorrect class object")
-  class(dummy_object) <- "incorrect_class"
-
-  expect_error(get_mld(dummy_object))
+  expect_error(get_mld(invalid_object))
 
 })
 
-# Gini
+# Gini -------------------------------------------------------------------------
 test_that("get_gini works", {
 
   # s3
@@ -300,11 +311,7 @@ test_that("get_gini works", {
 
 test_that("get_gini no default means error", {
 
-  # create non pipster object
-  dummy_object <- list(some_data = "incorrect class object")
-  class(dummy_object) <- "incorrect_class"
-
-  expect_error(get_gini(dummy_object))
+  expect_error(get_gini(invalid_object))
 
 })
 
