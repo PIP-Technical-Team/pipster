@@ -71,5 +71,41 @@ test_that("get_pov_headcount() works", {
 
 })
 
-#
+# Poverty Gap ------------------------------------------------------------------
+## Correct output type and no default
+test_that("Correct method for each pipster object classes - poverty gap", {
+  expect_type(get_pov_gap(gd_object, povline = 1), "list")
+  expect_type(get_pov_gap(md_object, povline = 1), "list")
+  expect_error(get_pov_gap(invalid_object, povline = 1),
+               "No default exist. Please check object class.")
+})
+
+## Same output as standard
+test_that("get_pov_gap() works", {
+
+
+  # s3 objects
+  s3_gd_obj <- get_pov_gap(gd_object,
+                                 povline = 1)
+  s3_md_obj <- get_pov_gap(md_object,
+                                 povline = 1)
+
+
+  # standard objects
+  st_gd_obj <- pipgd_pov_gap(welfare = welfare_gd,
+                                   weight = weight_gd,
+                                   povline = 1)
+  # This fails ATM
+  #st_md_obj <- pipgd_pov_gap(welfare = welfare_md,
+  #                           weight = weight_md,
+  #                           povline = 1)
+
+  # test
+  expect_equal(s3_gd_obj$headcount,
+               st_gd_obj$headcount)
+  #expect_equal(s3_md_obj$headcount,
+  #             st_md_obj$headcount)
+  #
+  #
+})
 
