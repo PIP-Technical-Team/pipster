@@ -29,7 +29,7 @@ weight_md  <- pip_md_s$weight |>
 # Tests
 #_______________________________________________________________________________
 
-
+# Quantiles
 test_that("get_quantile works", {
 
   # standard
@@ -86,7 +86,7 @@ test_that("get_quantile works", {
 })
 
 
-
+# Welfare share at
 test_that("get_welfare_share_at works", {
   # skip()
   # standard
@@ -143,7 +143,7 @@ test_that("get_welfare_share_at works", {
 })
 
 
-
+# Quantile welfare share
 test_that("get_quantile_welfare_share works", {
   # skip()
   # standard
@@ -204,27 +204,7 @@ test_that("get_quantile_welfare_share works", {
 })
 
 
-
-test_that("get_gini works", {
-
-  # standard
-  out1_gd <- get_gini(pipster_object = gd_object)
-  out1_md <- get_gini(pipster_object = md_object)
-  out2_gd <- pipgd_gini(welfare      = welfare_gd,
-                        weight       = weight_gd)
-  out2_md <- pipmd_gini(welfare      = welfare_md,
-                        weight       = weight_md,
-                        format       = "list")
-
-  expect_equal(out1_gd$gini ,
-               out2_gd$dist_stats$gini)
-  expect_equal(out1_md,
-               out2_md)
-
-
-})
-
-
+# Polarization
 test_that("get_polarization works", {
 
   # standard
@@ -243,10 +223,20 @@ test_that("get_polarization works", {
 
 })
 
+test_that("get_polarization no default means error", {
+
+  # create non pipster object
+  dummy_object <- list(some_data = "incorrect class object")
+  class(dummy_object) <- "incorrect_class"
+
+  expect_error(get_polarization(dummy_object))
+
+})
 
 
 
 
+# MLD
 test_that("get_mld works", {
 
   # standard
@@ -262,6 +252,39 @@ test_that("get_mld works", {
                out2_gd$dist_stats$mld)
   expect_equal(out1_md,
                out2_md)
+
+})
+
+test_that("get_mld no default means error", {
+
+  # create non pipster object
+  dummy_object <- list(some_data = "incorrect class object")
+  class(dummy_object) <- "incorrect_class"
+
+  expect_error(get_mld(dummy_object))
+
+})
+
+# Gini
+# !!! This is currently not working, so this test fails:
+test_that("get_gini works", {
+
+  # s3
+  out1_gd <- get_gini(pipster_object = gd_object)
+  out1_md <- get_gini(pipster_object = md_object)
+
+  # standard
+  out2_gd <- pipgd_gini(welfare      = welfare_gd,
+                        weight       = weight_gd)
+  out2_md <- pipmd_gini(welfare      = welfare_md,
+                        weight       = weight_md,
+                        format       = "list")
+
+  expect_equal(out1_gd$gini ,
+               out2_gd$dist_stats$gini)
+  expect_equal(out1_md,
+               out2_md)
+
 
 })
 
