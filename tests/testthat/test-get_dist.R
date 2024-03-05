@@ -1,4 +1,4 @@
-
+# Set-up -----------------------------------------------------------------------
 rmv_attr <-  \(x) {
   y <- attributes(x) |>
     names()
@@ -9,14 +9,25 @@ rmv_attr <-  \(x) {
   x
 }
 
+## s3 objects
 gd_object <- create_pipster_object(welfare = pip_gd$L,
                                    weight  = pip_gd$P)
 md_object <- create_pipster_object(welfare = pip_md_s$welfare,
                                    weight  = pip_md_s$weight)
 
+## standard objects
+rmv_attr <-  \(x) {
+  y <- attributes(x) |>
+    names()
+
+  for (i in seq_along(y)) {
+    attr(x, y[i]) <- NULL
+  }
+  x
+}
+
 welfare_gd <- pip_gd$L |>
   rmv_attr()
-
 weight_gd  <- pip_gd$P |>
   rmv_attr()
 welfare_md <- pip_md_s$welfare |>
