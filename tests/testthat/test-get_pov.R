@@ -101,10 +101,10 @@ test_that("get_pov_gap() works", {
   #                           povline = 1)
 
   # test
-  expect_equal(s3_gd_obj$headcount,
-               st_gd_obj$headcount)
-  #expect_equal(s3_md_obj$headcount,
-  #             st_md_obj$headcount)
+  expect_equal(s3_gd_obj$pov_gap,
+               st_gd_obj$pov_gap)
+  #expect_equal(s3_md_obj$pov_gap,
+  #             st_md_obj$pov_gap)
   #
   #
 })
@@ -139,13 +139,50 @@ test_that("get_pov_severity() works", {
   #                           povline = 1)
 
   # test
-  expect_equal(s3_gd_obj$headcount,
-               st_gd_obj$headcount)
-  #expect_equal(s3_md_obj$headcount,
-  #             st_md_obj$headcount)
+  expect_equal(s3_gd_obj$pov_severity,
+               st_gd_obj$pov_severity)
+  #expect_equal(s3_md_obj$pov_severity,
+  #             st_md_obj$pov_severity)
   #
   #
 })
 
+# Watts ------------------------------------------------------------------------
+
+test_that("Correct method for each pipster object classes - poverty severity", {
+  expect_type(get_watts(gd_object, povline = 1), "list")
+  expect_type(get_watts(md_object, povline = 1), "list")
+  expect_error(get_watts(invalid_object, povline = 1),
+               "No default exist. Please check object class.")
+})
+
+## Same output as standard
+test_that("get_pov_severity() works", {
+
+
+  # s3 objects
+  s3_gd_obj <- get_watts(gd_object,
+                         povline = 1)
+  s3_md_obj <- get_watts(md_object,
+                         povline = 1)
+
+
+  # standard objects
+  st_gd_obj <- pipgd_watts(welfare = welfare_gd,
+                           weight = weight_gd,
+                           povline = 1)
+  # This fails ATM
+  #st_md_obj <- pipgd_watts(welfare = welfare_md,
+  #                           weight = weight_md,
+  #                           povline = 1)
+
+  # test
+  expect_equal(s3_gd_obj$watts,
+               st_gd_obj$watts)
+  #expect_equal(s3_md_obj$watts,
+  #             st_md_obj$watts)
+  #
+  #
+})
 
 
