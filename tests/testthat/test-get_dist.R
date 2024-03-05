@@ -277,7 +277,6 @@ test_that("get_mld no default means error", {
 })
 
 # Gini
-# !!! This is currently not working, so this test fails:
 test_that("get_gini works", {
 
   # s3
@@ -296,6 +295,16 @@ test_that("get_gini works", {
   expect_equal(out1_md,
                out2_md)
 
+
+})
+
+test_that("get_gini no default means error", {
+
+  # create non pipster object
+  dummy_object <- list(some_data = "incorrect class object")
+  class(dummy_object) <- "incorrect_class"
+
+  expect_error(get_gini(dummy_object))
 
 })
 
