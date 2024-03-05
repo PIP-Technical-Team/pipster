@@ -59,20 +59,43 @@ create_pipster_object <-
       cl <- "md"
     },
     "gd_1" = {
-      if (flast(welfare) == 100) {
-        welfare <- welfare/100
-      }
+      # if (flast(welfare) == 100) {
+      #   welfare <- welfare/100
+      # }
+
+      dt <- wbpip::gd_clean_data(dt          = data.frame(welfare = welfare,
+                                                          weight  = weight),
+                                 welfare     = "welfare",
+                                 population  = "weight",
+                                 gd_type     = 1,
+                                 quiet       = TRUE)
+      welfare <- dt$welfare
+      weight  <- dt$weight
     },
     "gd_2" = {
-      welfare <- fcumsum(welfare)/fsum(welfare)
-      weight  <- fcumsum(weight)/fsum(weight)
+      dt <- wbpip::gd_clean_data(dt          = data.frame(welfare = welfare,
+                                                          weight  = weight),
+                                 welfare     = "welfare",
+                                 population  = "weight",
+                                 gd_type     = 2,
+                                 quiet       = TRUE)
+      welfare <- dt$welfare
+      weight  <- dt$weight
     },
     "gd_3" = {
-      welfare <- fcumsum(welfare)/fsum(welfare)
+      cli::cli_abort(
+        paste0("Group data of type `gd_3` not supported.")
+      )
     },
     "gd_5" = {
-      welfare <- fcumsum(welfare)/fsum(welfare)
-      weight  <- fcumsum(weight)/fsum(weight)
+      dt <- wbpip::gd_clean_data(dt          = data.frame(welfare = welfare,
+                                                          weight  = weight),
+                                 welfare     = "welfare",
+                                 population  = "weight",
+                                 gd_type     = 5,
+                                 quiet       = TRUE)
+      welfare <- dt$welfare
+      weight  <- dt$weight
     }
   )
 
