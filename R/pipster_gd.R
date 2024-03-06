@@ -1,13 +1,20 @@
 
-# constructor----
+# Constructor function ---------------------------------------------------------
+
 new_pipster_gd <- function(x = double(), ...) {
   new_vctr(x, class = "pipster_gd")
 }
 
 
+# User-facing functions --------------------------------------------------------
+
 #' `pipster_gd` vector
 #'
-#' This creates a double vector of group pipster data.
+#' This creates a double vector of pipster grouped data. It casts the input to
+#' double(numeric), before passing it to the constructor function `new_pipster_gd()`.
+#' `is_pipster_gd()` whether an object inherits from the `pipster_gd` class, and
+#' `as_pipster_gd()` casts and object to a `pipster_gd` object.
+#'
 #'
 #' @param x
 #'  * For `pipster_gd`: numeric vector
