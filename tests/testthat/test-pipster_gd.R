@@ -169,6 +169,7 @@ test_that("numeric operations with pipster_gd perform correctly", {
   expect_equal(vec_arith.numeric.pipster_gd("/", z, x), pipster_gd(c(1, 0.5))) # Reciprocal for reverse operation
 })
 
+# !!! This test fails, but I do not understand why?
 test_that("mathematical functions handle sum and mean calculations", {
   v <- pipster_gd(c(1, 2, 3, 4))
 
