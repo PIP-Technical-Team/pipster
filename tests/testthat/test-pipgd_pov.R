@@ -44,12 +44,12 @@ test_that("pipgd_pov_headcount_nv works", {
                            lorenz = "neither NULL, lb or lq")
   )
   expect_error(
-    pipgd_pov_headcount_nv(params  = NULL,
+    pipgd_pov_headcount_nv(pipster_object = gd1,
                            welfare = NULL,
                            weight  = weight)
   )
   expect_error(
-    pipgd_pov_headcount_nv(params  = NULL,
+    pipgd_pov_headcount_nv(pipster_object  = NULL,
                            welfare = welfare,
                            weight  = NULL)
   )
@@ -77,11 +77,11 @@ test_that("pipgd_pov_headcount_nv works", {
     pipgd_pov_headcount_nv(welfare = welfare,
                            weight  = weight,
                            lorenz  = "lq")$pov_stats$headcount,
-    params$gd_params$lq$validity$headcount)
+    gd1$params$gd_params$lq$validity$headcount)
 
   expect_equal(pipgd_pov_headcount_nv(pipster_object = gd1,
                                       lorenz = NULL)$pov_stats$headcount,
-               params$gd_params[[params$selected_lorenz$for_pov]]$validity$headcount)
+               gd1$params$gd_params[[gd1$params$selected_lorenz$for_pov]]$validity$headcount)
 
   #_____________________________________
   # Same args
@@ -592,7 +592,7 @@ test_that("pipgd_pov_severity_nv() -lorenz works", {
   pipgd_pov_severity_nv(welfare   = welfare,
                         weight    = weight,
                         lorenz    = NULL)$pov_stats$lorenz  |>
-    expect_equal(params$selected_lorenz$for_pov)
+    expect_equal(gd1$params$selected_lorenz$for_pov)
 
   expect_true(
     pipgd_pov_severity_nv(
