@@ -1,3 +1,4 @@
+
 #' Create Pipster Object
 #'
 #' The first step in using the `pipster` package is to create a pipster object.
@@ -20,8 +21,16 @@
 #' p
 create_pipster_object <-
   function(welfare,
-           weight        = rep(1, length(welfare)),
-           imputation_id = NULL) {
+           weight         = rep(1, length(welfare)),
+           mean           = 1,
+           times_mean     = 1,
+           popshare       = NULL,
+           povline        = ifelse(is.null(popshare),
+                                   mean*times_mean,
+                                   NA_real_),
+           lorenz         = NULL,
+           complete       = getOption("pipster.return_complete"),
+           imputation_id  = NULL) {
 
   #_____________________________________________________________________________
   # Arguments-------------------------------------------------------------------
@@ -42,6 +51,7 @@ create_pipster_object <-
                           weight        = weight,
                           imputation_id = imputation_id)
   cl <- substr(tp, start = 1, stop = 2)
+
   #_____________________________________________________________________________
   # Convert format--------------------------------------------------------------
   weight  <- weight[order(welfare)]
@@ -59,10 +69,6 @@ create_pipster_object <-
       cl <- "md"
     },
     "gd_1" = {
-      # if (flast(welfare) == 100) {
-      #   welfare <- welfare/100
-      # }
-
       dt <- wbpip::gd_clean_data(dt          = data.frame(welfare = welfare,
                                                           weight  = weight),
                                  welfare     = "welfare",
@@ -102,10 +108,23 @@ create_pipster_object <-
   #_____________________________________________________________________________
   # Params----------------------------------------------------------------------
   if (cl == "gd") {
-    params <- pipgd_select_lorenz(welfare  = welfare,
-                                  weight   = weight,
-                                  complete = TRUE)
+    params <- pipgd_select_lorenz(welfare    = welfare,
+                                  weight     = weight,
+                                  mean       = mean,
+                                  times_mean = times_mean,
+                                  popshare   = popshare,
+                                  povline    = povline,
+                                  complete   = TRUE)
   }
+
+  #_____________________________________________________________________________
+  # Store args------------------------------------------------------------------
+  args <- list(mean       = mean,
+               times_mean = times_mean,
+               popshare   = popshare,
+               povline    = povline,
+               lorenz     = lorenz,
+               complete   = complete)
 
   #_____________________________________________________________________________
   # Return----------------------------------------------------------------------
@@ -113,7 +132,8 @@ create_pipster_object <-
     parse(text = _)
   ret <- list(
     welfare = eval(class_func)(welfare),
-    weight  = eval(class_func)(weight)
+    weight  = eval(class_func)(weight),
+    args    = args
   )
   if (cl == "gd") {
     ret$params <- params
@@ -125,6 +145,7 @@ create_pipster_object <-
   ret
 
 }
+
 
 
 
