@@ -428,22 +428,6 @@ pipgd_lorenz_curve <- function(
 }
 
 
-# # Example 1:
-# # !!!! This example is not working
-# # Using Lorenz parameters from pipgd_validate_lorenz
-#
-#  res <-
-# pipgd_params(welfare = pip_gd$L,
-#              weight = pip_gd$P) |>
-#   pipgd_validate_lorenz() |>
-#   pipgd_select_lorenz()
-#
-# # Using welfare and population vectors
-# res2 <- pipgd_select_lorenz(welfare = pip_gd$L,
-#                             weight = pip_gd$P)
-# identical(res, res2)
-
-
 
 
 
