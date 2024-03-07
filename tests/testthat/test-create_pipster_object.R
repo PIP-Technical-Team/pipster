@@ -3,9 +3,54 @@ weight_gd  <- pip_gd$P
 welfare_md <- pip_md_s$welfare
 weight_md  <- pip_md_s$weight
 
+
+#
+# # welfare
+# pip_gd$L # is cum - gd_1
+# pip_gd$X # not cum or one - gd_5 and gd_3
+# pip_gd$R # sum to 1
+#
+# # weight
+# pip_gd$W # sum to 1
+# pip_gd$P # is cum
+
+
+
+
+
+
+
+
 #_______________________________________________________________________________
 # Tests
 #_______________________________________________________________________________
+
+test_that("Correct treatment of gd types", {
+
+
+  gd1 <- create_pipster_object(welfare = pip_gd$L, # is cumulative
+                               weight  = pip_gd$P) # is cumulative
+  gd2 <- create_pipster_object(welfare = pip_gd$L, # to one
+                               weight  = pip_gd$P) # to one
+  gd5 <- create_pipster_object(welfare = pip_gd$X, # neither
+                               weight  = pip_gd$W) # to one
+
+  # outputs are equal
+  expect_equal(gd1, gd2)
+  expect_equal(round(gd1$welfare, 4),
+               round(gd5$welfare, 4))
+  expect_equal(round(gd1$weight, 4),
+               round(gd5$weight, 4))
+  expect_equal(gd1$params$gd_params$lq$reg_results$coef,
+               gd1$params$gd_params$lq$reg_results$coef)
+
+  # error
+  expect_error(gd3 <- create_pipster_object(welfare = pip_gd$X, # neither
+                                            weight  = pip_gd$P),  # is cumulative
+               "Group data of type `gd_3` not supported.")
+
+})
+
 
 test_that("create_pipster_object - errors", {
 
@@ -28,6 +73,8 @@ test_that("create_pipster_object - errors", {
 
 
 })
+
+
 
 
 test_that("create_pipster_object - correct class identified", {
@@ -58,6 +105,9 @@ test_that("create_pipster_object - correct class identified", {
 
 
 })
+
+
+
 
 
 
