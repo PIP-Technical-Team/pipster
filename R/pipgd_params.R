@@ -54,7 +54,7 @@
 #'
 pipgd_params <- function(welfare,
                          weight,
-                         mean = 1,
+                         mean       = 1,
                          population = NULL) {
 
   # ____________________________________________________________________________
@@ -64,7 +64,7 @@ pipgd_params <- function(welfare,
 
   # create results list
   l_res        <- vector(mode = "list",
-                         ength = 2)
+                         length = 2)
   names(l_res) <- c("gd_params",
                     "data")
 
