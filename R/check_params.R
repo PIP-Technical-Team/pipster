@@ -12,31 +12,30 @@ check_pipgd_params <- function(lp) {
   nlp <- names(lp)
 
   ## params --------------------
-  if ("params" %in% nlp) {
-    if (!is.null(lp$params) && !inherits(lp$params, "pipgd_params")) {
-      cli::cli_abort(c("argument {.field params} must be of
-                       class {.code pipgd_params}.",
-                       "It should be created using {.fun pipgd_params}"))
+  if ("pipster_object" %in% nlp) {
+    if (!is.null(lp$pipster_object) && !inherits(lp$pipster_object, "pipster")) {
+      cli::cli_abort(c("argument {.field pipster_object} must be of
+                       class {.code pipster}.",
+                       "It should be created using {.fun create_pipster_object}"))
     }
   }
 
-  ## welfare -----------
+  if (!"pipster_object" %in% nlp) {
+    ## povline and povshare ----------
+    if ( all(c("povline", "povshare") %in% nlp)) {
+      if (!is.na(lp$povline) && !is.null(lp$povshare)) {
+        cli::cli_abort("You must specify either {.field povline} or
+                {.field povshare}")
+      }
+    }
+  }
 
   ## welfare and params -----------
-  if ( all(c("params", "welfare") %in% nlp)) {
-    if (!is.null(lp$params) &&
+  if ( all(c("pipster_object", "welfare") %in% nlp)) {
+    if (!is.null(lp$pipster_object) &&
         (!is.null(lp$welfare)  || !is.null(lp$weight))) {
-      cli::cli_abort("You must specify either {.field params} or
+      cli::cli_abort("You must specify either {.field pipster_object} or
                 {.field welfare} and {.field weight}")
-    }
-  }
-
-
-  ## povline and popshare ----------
-  if ( all(c("povline", "popshare") %in% nlp)) {
-    if (!is.na(lp$povline) && !is.null(lp$popshare)) {
-      cli::cli_abort("You must specify either {.field povline} or
-                {.field popshare}")
     }
   }
 
@@ -45,13 +44,22 @@ check_pipgd_params <- function(lp) {
       cli::cli_abort("All values in {.arg popshare} must be positve")
     }
   }
+  if ("povshare" %in% nlp) {
+    if (any(lp$povshare <= 0)) {
+      cli::cli_abort("All values in {.arg povshare} must be positve")
+    }
+  }
 
   if ("popshare" %in% nlp) {
     if (any(lp$popshare > 1)) {
       cli::cli_abort("No values in {.arg popshare} can be >1")
     }
   }
-
+  if ("povshare" %in% nlp) {
+    if (any(lp$povshare > 1)) {
+      cli::cli_abort("No values in {.arg povshare} can be >1")
+    }
+  }
 
   # "Either `params` or `welfare` and `population` should be spefied" =
   #   (is.null(params) && !is.null(welfare) && !is.null(population)) ||

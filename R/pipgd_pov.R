@@ -18,7 +18,7 @@ pipgd_pov_headcount_nv <-
            weight         = NULL,
            mean           = NULL,
            times_mean     = NULL,
-           popshare       = NULL,
+           povshare       = NULL,
            povline        = NULL,
            lorenz         = NULL,
            complete       = getOption("pipster.return_complete")) {
@@ -27,7 +27,7 @@ pipgd_pov_headcount_nv <-
   #_____________________________________________________________________________
   pl <- as.list(environment())
   check_pipgd_params(pl)
-  po <- is_valid_inputs(pl)
+  po <- is_valid_inputs_pov(pl)
 
   # __________________________________________________________________________
   # params--------------------------------------------------------------------
@@ -39,7 +39,7 @@ pipgd_pov_headcount_nv <-
                                       weight         = weight,
                                       mean           = mean,
                                       times_mean     = times_mean,
-                                      popshare       = popshare,
+                                      povshare       = povshare,
                                       lorenz         = lorenz,
                                       povline        = povline)
     params <- pipster_object$params
@@ -125,8 +125,8 @@ pipgd_pov_headcount <-
            weight         = NULL,
            mean           = 1,
            times_mean     = 1,
-           popshare       = NULL,
-           povline        = ifelse(is.null(popshare),
+           povshare       = NULL,
+           povline        = ifelse(is.null(povshare),
                                mean*times_mean,
                                NA_real_),
            format         = c("dt", "list", "atomic"),
@@ -146,7 +146,7 @@ pipgd_pov_headcount <-
                                 welfare        = welfare,
                                 weight         = weight,
                                 povline        = povline,
-                                popshare       = popshare,
+                                povshare       = povshare,
                                 complete       = complete,
                                 lorenz         = lorenz,
                                 mean           = mean,
@@ -175,8 +175,8 @@ pipgd_pov_gap_nv <- function(pipster_object = NULL,
                              weight         = NULL,
                              mean           = 1,
                              times_mean     = 1,
-                             popshare       = NULL,
-                             povline        = ifelse(is.null(popshare),
+                             povshare       = NULL,
+                             povline        = ifelse(is.null(povshare),
                                                  mean*times_mean,
                                                  NA_real_),
                              lorenz         = NULL,
@@ -187,7 +187,7 @@ pipgd_pov_gap_nv <- function(pipster_object = NULL,
   # Defenses--------------------------------------------------------------------
   #_____________________________________________________________________________
   pl <- as.list(environment())
-  po <- is_valid_inputs(pl)
+  po <- is_valid_inputs_pov(pl)
 
   # __________________________________________________________________________
   # Params--------------------------------------------------------------------
@@ -201,7 +201,7 @@ pipgd_pov_gap_nv <- function(pipster_object = NULL,
                                      weight         = weight,
                                      mean           = mean,
                                      times_mean     = times_mean,
-                                     popshare       = popshare,
+                                     povshare       = povshare,
                                      povline        = povline,
                                      lorenz         = lorenz,
                                      complete       = TRUE)
@@ -221,13 +221,13 @@ pipgd_pov_gap_nv <- function(pipster_object = NULL,
 
   # povline---------------------------------------------------------------------
   #_____________________________________________________________________________
-  if (!is.null(popshare) & (is.null(povline) || is.na(povline))) {
+  if (!is.null(povshare) & (is.null(povline) || is.na(povline))) {
     derive_ <-
       paste0("wbpip::derive_", lorenz) |>
       parse(text = _)
 
     povline <-
-      mean * eval(derive_)(popshare,
+      mean * eval(derive_)(povshare,
                            params$gd_params[[lorenz]]$reg_results$coef[["A"]],
                            params$gd_params[[lorenz]]$reg_results$coef[["B"]],
                            params$gd_params[[lorenz]]$reg_results$coef[["C"]])
@@ -316,8 +316,8 @@ pipgd_pov_gap <- function(pipster_object = NULL,
                           weight         = NULL,
                           mean           = 1,
                           times_mean     = 1,
-                          popshare       = NULL,
-                          povline        = ifelse(is.null(popshare),
+                          povshare       = NULL,
+                          povline        = ifelse(is.null(povshare),
                                               mean*times_mean,
                                               NA_real_),
                           format         = c("dt", "list", "atomic"),
@@ -335,7 +335,7 @@ pipgd_pov_gap <- function(pipster_object = NULL,
   ld <- pipgd_pov_gap_v(pipster_object = pipster_object,
                         welfare        = welfare,
                         weight         = weight,
-                        popshare       = popshare,
+                        povshare       = povshare,
                         povline        = povline,
                         complete       = complete,
                         lorenz         = lorenz,
@@ -373,8 +373,8 @@ pipgd_pov_severity_nv <- function(
     weight         = NULL,
     mean           = 1,
     times_mean     = 1,
-    popshare       = NULL,
-    povline        = ifelse(is.null(popshare),
+    povshare       = NULL,
+    povline        = ifelse(is.null(povshare),
                             mean*times_mean,
                             NA_real_),
     lorenz         = NULL,
@@ -384,7 +384,7 @@ pipgd_pov_severity_nv <- function(
   # Defenses--------------------------------------------------------------------
   #_____________________________________________________________________________
   pl <- as.list(environment())
-  po <- is_valid_inputs(pl)
+  po <- is_valid_inputs_pov(pl)
 
   # __________________________________________________________________________
   # Params--------------------------------------------------------------------
@@ -398,7 +398,7 @@ pipgd_pov_severity_nv <- function(
                                weight         = weight,
                                mean           = mean,
                                times_mean     = times_mean,
-                               popshare       = popshare,
+                               povshare       = povshare,
                                povline        = povline,
                                lorenz         = lorenz,
                                complete       = TRUE)
@@ -418,13 +418,13 @@ pipgd_pov_severity_nv <- function(
 
   # povline-------------------------------------------------------------------
   #___________________________________________________________________________
-  if (!is.null(popshare) & (is.null(povline) || is.na(povline))) {
+  if (!is.null(povshare) & (is.null(povline) || is.na(povline))) {
     derive_ <-
       paste0("wbpip::derive_", lorenz) |>
       parse(text = _)
 
     povline <-
-      mean * eval(derive_)(popshare,
+      mean * eval(derive_)(povshare,
                            params$gd_params[[lorenz]]$reg_results$coef[["A"]],
                            params$gd_params[[lorenz]]$reg_results$coef[["B"]],
                            params$gd_params[[lorenz]]$reg_results$coef[["C"]])
@@ -538,8 +538,8 @@ pipgd_pov_severity <- function(
     weight         = NULL,
     mean           = 1,
     times_mean     = 1,
-    popshare       = NULL,
-    povline        = ifelse(is.null(popshare),
+    povshare       = NULL,
+    povline        = ifelse(is.null(povshare),
                             mean*times_mean,
                             NA_real_),
     format         = c("dt", "list", "atomic"),
@@ -564,7 +564,7 @@ pipgd_pov_severity <- function(
     weight         = weight,
     mean           = mean,
     times_mean     = times_mean,
-    popshare       = popshare,
+    povshare       = povshare,
     povline        = povline,
     lorenz         = lorenz,
     complete       = complete
@@ -608,8 +608,8 @@ pipgd_watts_nv <- function(
     weight         = NULL,
     mean           = 1,
     times_mean     = 1,
-    popshare       = NULL,
-    povline        = ifelse(is.null(popshare),
+    povshare       = NULL,
+    povline        = ifelse(is.null(povshare),
                             mean*times_mean,
                             NA_real_),
     lorenz         = NULL,
@@ -618,7 +618,7 @@ pipgd_watts_nv <- function(
   # Defenses--------------------------------------------------------------------
   #_____________________________________________________________________________
   pl <- as.list(environment())
-  po <- is_valid_inputs(pl)
+  po <- is_valid_inputs_pov(pl)
 
   # __________________________________________________________________________
   # Params--------------------------------------------------------------------
@@ -632,7 +632,7 @@ pipgd_watts_nv <- function(
                                              weight         = weight,
                                              mean           = mean,
                                              times_mean     = times_mean,
-                                             popshare       = popshare,
+                                             povshare       = povshare,
                                              povline        = povline,
                                              lorenz         = lorenz,
                                              complete       = TRUE)
@@ -652,13 +652,13 @@ pipgd_watts_nv <- function(
 
   # povline---------------------------------------------------------------------
   #_____________________________________________________________________________
-  if (!is.null(popshare) & (is.null(povline) || is.na(povline))) {
+  if (!is.null(povshare) & (is.null(povline) || is.na(povline))) {
     derive_ <-
       paste0("wbpip::derive_", lorenz) |>
       parse(text = _)
 
     povline <-
-      mean * eval(derive_)(popshare,
+      mean * eval(derive_)(povshare,
                            params$gd_params[[lorenz]]$reg_results$coef[["A"]],
                            params$gd_params[[lorenz]]$reg_results$coef[["B"]],
                            params$gd_params[[lorenz]]$reg_results$coef[["C"]])
@@ -753,8 +753,8 @@ pipgd_watts <- function(
     weight         = NULL,
     mean           = 1,
     times_mean     = 1,
-    popshare       = NULL,
-    povline        = ifelse(is.null(popshare),
+    povshare       = NULL,
+    povline        = ifelse(is.null(povshare),
                             mean*times_mean,
                             NA_real_),
     format         = c("dt", "list", "atomic"),
@@ -779,7 +779,7 @@ pipgd_watts <- function(
     weight         = weight,
     mean           = mean,
     times_mean     = times_mean,
-    popshare       = popshare,
+    povshare       = povshare,
     povline        = povline,
     lorenz         = lorenz,
     complete       = complete
@@ -819,8 +819,8 @@ validate_params <- function(
     weight,
     mean       = 1,
     times_mean = 1,
-    popshare   = NULL,
-    povline    = ifelse(is.null(popshare),
+    povshare   = NULL,
+    povline    = ifelse(is.null(povshare),
                         mean * times_mean,
                         NA_real_),
     lorenz     = NULL
@@ -830,7 +830,7 @@ validate_params <- function(
   if (is.null(mean))       mean <- 1
   if (is.null(times_mean)) times_mean <- 1
   if (is.null(povline)) {
-    povline <- ifelse(is.null(popshare),
+    povline <- ifelse(is.null(povshare),
                       mean * times_mean,
                       NA_real_)
   }
@@ -846,7 +846,7 @@ validate_params <- function(
                                     weight     = weight,
                                     mean       = mean,
                                     times_mean = times_mean,
-                                    popshare   = popshare,
+                                    povshare   = povshare,
                                     povline    = povline,
                                     complete   = TRUE,
                                     lorenz     = lorenz)
@@ -854,7 +854,7 @@ validate_params <- function(
 }
 
 
-is_valid_inputs <- function(pl) {
+is_valid_inputs_pov <- function(pl) {
   # check that all of `pl`
   # are the same as the arguments in
   # pipster_object$args
@@ -864,7 +864,7 @@ is_valid_inputs <- function(pl) {
 
   if (is.null(c(pl$mean,
                 pl$times_mean,
-                pl$popshare,
+                pl$povshare,
                 pl$povline,
                 pl$lorenz))) {
     return(TRUE)
@@ -874,8 +874,8 @@ is_valid_inputs <- function(pl) {
                           pl$mean)
   c_tmean   <- identical(pl$pipster_object$args$times_mean,
                            pl$times_mean)
-  c_popsh   <- identical(pl$pipster_object$args$popshare,
-                           pl$popshare)
+  c_popsh   <- identical(pl$pipster_object$args$povshare,
+                           pl$povshare)
   c_povline <- identical(pl$pipster_object$args$povline,
                            pl$povline)
   c_lorenz  <- identical(pl$pipster_object$args$lorenz,

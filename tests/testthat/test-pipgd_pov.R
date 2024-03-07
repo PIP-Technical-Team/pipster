@@ -107,7 +107,7 @@ test_that("pipgd_pov_headcount_nv works", {
                                                               weight  = weight,
                                                               mean    = 2,
                                                               times_mean = 2,
-                                                              popshare = 0.3,
+                                                              povshare = 0.3,
                                                               #povline = 3,
                                                               lorenz = NULL,
                                                               complete = TRUE),
@@ -116,7 +116,7 @@ test_that("pipgd_pov_headcount_nv works", {
                                       weight     = weight,
                                       mean       = 2,
                                       times_mean = 2,
-                                      popshare   = 0.3,
+                                      povshare   = 0.3,
                                       #povline    = 3,
                                       lorenz     = NULL,
                                       complete   = TRUE))
@@ -277,19 +277,19 @@ test_that("pipgd_pov_gap_nv works as expected", {
   expect_no_error(
     pipgd_pov_gap_nv(welfare = welfare,
                      weight  = weight,
-                     popshare = 0.6))
+                     povshare = 0.6))
 
   expect_error(
     pipgd_pov_gap_nv(welfare = welfare,
                      weight  = weight,
-                     popshare = 0.6,
+                     povshare = 0.6,
                      povline = 0.8))
 
 
   # Computation of povline ---------------------------------------
   out_lq <- pipgd_pov_gap_nv(welfare = welfare,
                           weight = weight,
-                          popshare = 0.6,
+                          povshare = 0.6,
                           lorenz = "lq")
 
   pov_gap_lq_bm <- 0.18981108366762
@@ -301,7 +301,7 @@ test_that("pipgd_pov_gap_nv works as expected", {
 
   out_lb <- pipgd_pov_gap_nv(welfare = welfare,
                              weight = weight,
-                             popshare = 0.6,
+                             povshare = 0.6,
                              lorenz = "lb")
 
   round(out_lb$pov_stats$pov_gap, 6) |>
@@ -630,13 +630,13 @@ test_that("pipgd_pov_severity_nv() -complete & popsahre works", {
   res_not_complete <- pipgd_pov_severity_nv(welfare  = welfare,
                                             weight   = weight)
 
-  # Checking popshare and povline arguments
+  # Checking povshare and povline arguments
 
 
-    popshare = 0.4
+    povshare = 0.4
     pipgd_pov_severity_nv(welfare = welfare,
                           weight  = weight,
-                          popshare = popshare) |>
+                          povshare = povshare) |>
       expect_no_error()
 
 
@@ -802,10 +802,10 @@ test_that("pipgd_pov_severity inputs works as expected", {
                      mean      = NULL) |>
     expect_error()
 
-  # Test popshare argument works
+  # Test povshare argument works
   pipgd_pov_severity(welfare   = welfare,
                      weight    = weight,
-                     popshare = 0.4) |>
+                     povshare = 0.4) |>
     expect_no_error()
 
 
@@ -938,20 +938,20 @@ test_that("pipgd_watts_nv inputs work as expected", {
                  times_mean = "invalid times_mean") |>
     expect_error()
 
-  # Check popshare argument works as expected
+  # Check povshare argument works as expected
   pipgd_watts_nv(welfare    = welfare,
                  weight     = weight,
-                 popshare   = "invalid popshare") |>
+                 povshare   = "invalid povshare") |>
     expect_error()
   pipgd_watts_nv(welfare    = welfare,
                  weight     = weight,
-                 popshare   = 0.3) |>
+                 povshare   = 0.3) |>
     expect_no_error()
 
-  # Check either popshare or povline are provided
+  # Check either povshare or povline are provided
   pipgd_watts_nv(welfare    = welfare,
                  weight     = weight,
-                 popshare   = 0.4, povline = 0.5) |>
+                 povshare   = 0.4, povline = 0.5) |>
     expect_error()
 
   # Check that Lorenz argument works as expected
@@ -1148,10 +1148,10 @@ test_that("pipgd_watts inputs works as expected", {
               mean    = NULL) |>
     expect_error()
 
-  # Test popshare argument works as expected
+  # Test povshare argument works as expected
   pipgd_watts(welfare  = welfare,
               weight   = weight,
-              popshare = 0.5) |>
+              povshare = 0.5) |>
     expect_no_error()
 
 })

@@ -6,7 +6,7 @@
 #'   previously used `get_gd` functions. Default is `FALSE`
 #' @param mean numeric: welfare mean of distribution.
 #' @param povline numeric: value of poverty line. Default is the `mean` value
-#' @param popshare numeric: range (0,1). Share of population. Provide share of
+#' @param povshare numeric: range (0,1). Share of population. Provide share of
 #'   population instead of poverty line
 #' @param times_mean numeric factor that multiplies the mean to create a
 #'   relative poverty line. Default is 1
@@ -36,7 +36,7 @@
 #' # Example 4: Using a custom population share
 #' pipgd_validate_lorenz(welfare = pip_gd$L,
 #'                       weight = pip_gd$P,
-#'                       popshare = 0.5)
+#'                       povshare = 0.5)
 #'
 pipgd_validate_lorenz <-
   function(params     = NULL,
@@ -44,8 +44,8 @@ pipgd_validate_lorenz <-
            weight     = NULL,
            mean       = 1,
            times_mean = 1,
-           popshare   = NULL,
-           povline    = ifelse(is.null(popshare),
+           povshare   = NULL,
+           povline    = ifelse(is.null(povshare),
                                mean*times_mean,
                                NA_real_),
            complete   = getOption("pipster.return_complete")
@@ -70,15 +70,15 @@ pipgd_validate_lorenz <-
     )
   }
 
-  if (!is.null(popshare)) {
+  if (!is.null(povshare)) {
     povline_lq <-
-      mean * wbpip::derive_lq(popshare,
+      mean * wbpip::derive_lq(povshare,
                               params$gd_params$lq$reg_results$coef[["A"]],
                               params$gd_params$lq$reg_results$coef[["B"]],
                               params$gd_params$lq$reg_results$coef[["C"]])
 
     povline_lb <-
-      mean * wbpip::derive_lb(popshare,
+      mean * wbpip::derive_lb(povshare,
                               params$gd_params$lb$reg_results$coef[["A"]],
                               params$gd_params$lb$reg_results$coef[["B"]],
                               params$gd_params$lb$reg_results$coef[["C"]])
@@ -200,8 +200,8 @@ pipgd_select_lorenz <-
            weight     = NULL,
            mean       = 1,
            times_mean = 1,
-           popshare   = NULL,
-           povline    = ifelse(is.null(popshare),
+           povshare   = NULL,
+           povline    = ifelse(is.null(povshare),
                                mean*times_mean,
                                NA_real_),
            complete   = getOption("pipster.return_complete")) {
@@ -220,14 +220,14 @@ pipgd_select_lorenz <-
                                     mean       = mean,
                                     times_mean = times_mean,
                                     povline    = povline,
-                                    popshare   = popshare)
+                                    povshare   = povshare)
   } else {
     params <- pipgd_validate_lorenz(params     = params,
                                     complete   = TRUE,
                                     mean       = mean,
                                     times_mean = times_mean,
                                     povline    = povline,
-                                    popshare   = popshare)
+                                    povshare   = povshare)
   }
 
   ## Selected Lorenz for  Distribution-------
@@ -331,8 +331,8 @@ pipgd_lorenz_curve <- function(
     weight     = NULL,
     mean       = 1,
     times_mean = 1,
-    popshare   = NULL,
-    povline    = ifelse(is.null(popshare),
+    povshare   = NULL,
+    povline    = ifelse(is.null(povshare),
                         mean*times_mean,
                         NA_real_),
     complete   = getOption("pipster.return_complete"),

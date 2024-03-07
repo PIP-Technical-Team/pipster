@@ -24,8 +24,10 @@ create_pipster_object <-
            weight         = rep(1, length(welfare)),
            mean           = 1,
            times_mean     = 1,
-           popshare       = NULL,
-           povline        = ifelse(is.null(popshare),
+           n              = 10,
+           povshare       = NULL,
+           popshare       = seq(from = 1/n, to = 1, by = 1/n),
+           povline        = ifelse(is.null(povshare),
                                    mean*times_mean,
                                    NA_real_),
            lorenz         = NULL,
@@ -112,7 +114,7 @@ create_pipster_object <-
                                   weight     = weight,
                                   mean       = mean,
                                   times_mean = times_mean,
-                                  popshare   = popshare,
+                                  povshare   = povshare,
                                   povline    = povline,
                                   complete   = TRUE)
   }
@@ -121,6 +123,8 @@ create_pipster_object <-
   # Store args------------------------------------------------------------------
   args <- list(mean       = mean,
                times_mean = times_mean,
+               povshare   = povshare,
+               n          = n,
                popshare   = popshare,
                povline    = povline,
                lorenz     = lorenz,
