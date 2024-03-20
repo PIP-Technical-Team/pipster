@@ -61,6 +61,12 @@ check_pipgd_params <- function(lp) {
     }
   }
 
+  # if (all(c("n", "pipster_object", "popshare") %in% nlp)) {
+  #   if (is.null(c(lp$n, lp$pipster_object, lp$popshare))) {
+  #     cli::cli_abort("You must either in {.arg povshare} can be >1")
+  #   }
+  # }
+
   # "Either `params` or `welfare` and `population` should be spefied" =
   #   (is.null(params) && !is.null(welfare) && !is.null(population)) ||
   #   (!is.null(params) && is.null(welfare) && is.null(population))
