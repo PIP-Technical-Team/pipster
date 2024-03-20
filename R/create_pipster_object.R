@@ -31,7 +31,7 @@ create_pipster_object <-
                                    mean*times_mean,
                                    NA_real_),
            lorenz         = NULL,
-           complete       = getOption("pipster.return_complete"),
+           #complete       = getOption("pipster.return_complete"),
            imputation_id  = NULL) {
 
   #_____________________________________________________________________________
@@ -127,8 +127,8 @@ create_pipster_object <-
                n          = n,
                popshare   = popshare,
                povline    = povline,
-               lorenz     = lorenz,
-               complete   = complete)
+               lorenz     = lorenz)#,
+               #complete   = complete)
 
   #_____________________________________________________________________________
   # Return----------------------------------------------------------------------
