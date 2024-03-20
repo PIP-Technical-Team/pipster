@@ -78,18 +78,18 @@ pipgd_welfare_share_at <- function(
 
   # __________________________________________________________________________
   # params--------------------------------------------------------------------
-  if (po) {
-    params <- pipster_object$params
-  } else {
+  if (!po) {
     pipster_object <- validate_params(pipster_object = pipster_object,
                                       welfare        = welfare,
                                       weight         = weight,
                                       lorenz         = lorenz,
                                       n              = n,
                                       popshare       = popshare)
-    params <- pipster_object$params
+
   }
+  params   <- pipster_object$params
   popshare <- pipster_object$args$popshare
+  results  <- pipster_object$results
 
   # ____________________________________________________________________________
   # Lorenz ---------------------------------------------------------------------
@@ -115,7 +115,7 @@ pipgd_welfare_share_at <- function(
 
   # Return----------------------------------------------------------------------
   #_____________________________________________________________________________
-  results <- list()
+  if (isFALSE(complete)) results <- list()
   results$dist_stats$popshare          <- popshare
   results$dist_stats$welfare_share_at  <- value_at
   results$dist_stats$lorenz            <- lorenz
@@ -198,10 +198,8 @@ pipgd_quantile_welfare_share <-
 
     # __________________________________________________________________________
     # params--------------------------------------------------------------------
-    if (!po &
+    if (!po ||
         is.null(pipster_object$results$dist_stats$welfare_share_at)) {
-      #params <- pipster_object$params
-    #} else {
       pipster_object <- pipgd_welfare_share_at(pipster_object = pipster_object,
                                                welfare        = welfare,
                                                weight         = weight,
@@ -212,22 +210,12 @@ pipgd_quantile_welfare_share <-
 
     }
     results <- pipster_object$results
-    shr <- pipster_object$results$dist_stats$welfare_share_at
-    shr <- c(shr[1],
-             diff(shr))
-    # __________________________________________________________________________
-    # Calcs---------------------------------------------------------------------
-    # shr <- pipgd_welfare_share_at(pipster_object = pipster_object,
-    #                               complete       = FALSE,
-    #                               n              = n,
-    #                               popshare       = popshare,
-    #                               lorenz         = lorenz)
-    # shr <- c(shr$dist_stats$welfare_share_at[1],
-    #          diff(shr$dist_stats$welfare_share_at))
+    shr     <- results$dist_stats$welfare_share_at
+    shr     <- c(shr[1],
+                 diff(shr))
 
     # Return----------------------------------------------------------------------
     #_____________________________________________________________________________
-
     if (isFALSE(complete)) {
       results <- list()
       results$dist_stats$popshare      <- popshare
@@ -326,9 +314,7 @@ pipgd_quantile <-
 
     # __________________________________________________________________________
     # params--------------------------------------------------------------------
-    if (po) {
-      params <- pipster_object$params
-    } else {
+    if (!po) {
       pipster_object <- validate_params(pipster_object = pipster_object,
                                         welfare        = welfare,
                                         weight         = weight,
@@ -336,10 +322,11 @@ pipgd_quantile <-
                                         mean           = mean,
                                         n              = n,
                                         popshare       = popshare)
-      params <- pipster_object$params
+
     }
+    params  <- pipster_object$params
     results <- pipster_object$results
-    mean <- pipster_object$args$mean
+    mean    <- pipster_object$args$mean
 
     if (is.null(lorenz)) {
       lorenz <- params$selected_lorenz$for_dist
@@ -518,7 +505,6 @@ pipgd_gini <- function(
 #' pipgd_mld(welfare = pip_gd$L,
 #'           weight = pip_gd$P,
 #'           complete = TRUE)
-#'
 pipgd_mld <- function(
     pipster_object = NULL,
     welfare        = NULL,
@@ -536,18 +522,16 @@ pipgd_mld <- function(
 
   # __________________________________________________________________________
   # params--------------------------------------------------------------------
-  if (po) {
-    params <- pipster_object$params
-  } else {
+  if (!po) {
     pipster_object <- validate_params(pipster_object = pipster_object,
                                       welfare        = welfare,
                                       weight         = weight,
                                       lorenz         = lorenz,
                                       n              = n,
                                       popshare       = popshare)
-    params <- pipster_object$params
-  }
 
+  }
+  params <- pipster_object$params
   results <- pipster_object$results
   #   _________________________________________________________________
   #   Select Lorenz
@@ -641,7 +625,7 @@ pipgd_polarization <- function(
   #_____________________________________________________________________________
   pl <- as.list(environment())
   check_pipgd_params(pl)
-  po <- is_valid_inputs_dist(pl)
+  po <- is_valid_inputs_dist(pl, mean = TRUE, gini = TRUE)
 
   # __________________________________________________________________________
   # params--------------------------------------------------------------------
@@ -723,6 +707,26 @@ pipgd_polarization <- function(
 
 
 
+#' Check that inputs for gd dist functions are valid
+#'
+#' Inputs are considered "valid" if the arguments used to create
+#' the pipster object - and stored in `pipster_object$args` - is the
+#' same as the argument values being used in the function being called.
+#' However, if the function being called has all arguments
+#' (except `pipster_object`) being NULL, the `pipster_object$args` will
+#' automatically be used. If supplied arguments are non-NULL and different from
+#' the `pipster_object$args` then the pipster object is re-estimated internally
+#' using teh newly supplied arguments.
+#'
+#' @param pl
+#' @param mean logical: if TRUE then will also check the `mean` argument.
+#' Default is FALSE because not every dist function requires mean.
+#' @param gini logical: if TRUE then will also check the `gini` argument.
+#' Default is FALSE because not every dist function requires gini
+#'
+#' @return logical: TRUE if valid, FALSE if invalid. pipster_object must
+#' be re-estimated if FALSE
+#' @keywords internal
 is_valid_inputs_dist <- function(pl, mean = FALSE, gini = FALSE) {
   # check that all of `pl`
   # are the same as the arguments in
@@ -765,9 +769,4 @@ is_valid_inputs_dist <- function(pl, mean = FALSE, gini = FALSE) {
   }
 }
 
-# popshare
-# n
-# lorenz
-# gini -> polarization
-# mean -> polarization & quantile
 
