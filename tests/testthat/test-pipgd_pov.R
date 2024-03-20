@@ -5,9 +5,12 @@ welfare <- pip_gd$L |> as.numeric()
 weight  <- pip_gd$P |> as.numeric()
 gd1     <- create_pipster_object(welfare = welfare,
                                  weight  = weight)
-# params  <- pipgd_select_lorenz(welfare  = welfare,
-#                                weight   = weight,
-#                                complete = TRUE)
+# gd2 <- create_pipster_object(welfare = pip_gd$R, # to one
+#                              weight = pip_gd$W)  # to one
+gd5 <- create_pipster_object(welfare = pip_gd$X, # to one
+                             weight = pip_gd$W)  # to one
+# gd_5: welfare is mean of interval (pip_gd$X)
+#       sum to one weight  (pip_gd$W)
 
 
 #_______________________________________________________________________________
@@ -1221,5 +1224,25 @@ test_that("pipgd_watts -outputs",{
 })
 
 
+# Test validate_params
+test_that("validate_params is equiv for all input types", {
+
+  ob1 <- validate_params(pipster_object = gd1,
+                         welfare        = NULL,
+                         weight         = NULL)
+  ob2 <- validate_params(pipster_object = NULL,
+                         welfare        = welfare,
+                         weight         = weight)
+
+  ob3 <- validate_params(pipster_object = gd5,
+                         welfare        = NULL,
+                         weight         = NULL)
+
+  expect_equal(ob1, ob2)
+  #expect_equal(ob1, ob3)
+  expect_equal(round(ob1$params$gd_params$lq$reg_results$coef, 3),
+               round(ob3$params$gd_params$lq$reg_results$coef, 3))
+
+})
 
 
