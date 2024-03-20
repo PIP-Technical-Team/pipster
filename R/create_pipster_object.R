@@ -56,12 +56,11 @@ create_pipster_object <-
 
   #_____________________________________________________________________________
   # Convert format--------------------------------------------------------------
-  weight  <- weight[order(welfare)]
-  welfare <- welfare[order(welfare)]
-  if (tp %in% c("gd_2", "gd_3", "gd_5")) {
-    welfare_original <- welfare
-    weight_original  <- weight
+  if (is.unsorted(welfare)) {
+    weight  <- weight[order(welfare)]
+    welfare <- welfare[order(welfare)]
   }
+
   switch(
     tp,
     "md"   = {
@@ -81,6 +80,7 @@ create_pipster_object <-
       weight  <- dt$weight
     },
     "gd_2" = {
+      cli::cli_abort("Type `gd_2` is not currently implemented")
       dt <- wbpip::gd_clean_data(dt          = data.frame(welfare = welfare,
                                                           weight  = weight),
                                  welfare     = "welfare",
@@ -127,8 +127,7 @@ create_pipster_object <-
                n          = n,
                popshare   = popshare,
                povline    = povline,
-               lorenz     = lorenz)#,
-               #complete   = complete)
+               lorenz     = lorenz)
 
   #_____________________________________________________________________________
   # Return----------------------------------------------------------------------
