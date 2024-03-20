@@ -802,7 +802,10 @@ pipgd_watts <- function(
 #' Validate group data parameters
 #'
 #' Always used for poverty measures. For dist. only used only when
-#' `pipster_object` is null.
+#' `pipster_object` is null. These are NULL because not every function
+#' takes them as arguments, in which case they should maintain the same
+#' functionality as when they are NULL and the [create_pipster_object]
+#' default should be given to them.
 #'
 #' @inheritParams pipgd_welfare_share_at
 #'
@@ -835,8 +838,8 @@ validate_params <- function(
   }
 
   if (!is.null(pipster_object)) {
-    welfare <- pipster_object$welfare |> unclass()
-    weight  <- pipster_object$weight |> unclass()
+    welfare <- pipster_object$params$data$welfare
+    weight  <- pipster_object$params$data$weight
   } else if (is.null(weight)) {
     weight  <- rep(1, length(welfare))
   }
@@ -850,7 +853,6 @@ validate_params <- function(
                                     povshare   = povshare,
                                     popshare   = popshare,
                                     povline    = povline,
-                                    #complete   = TRUE,
                                     lorenz     = lorenz)
   p_object
 }
