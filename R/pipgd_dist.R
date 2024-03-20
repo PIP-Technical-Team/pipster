@@ -6,7 +6,7 @@
 #'
 #' `pipgd_welfare_share_at` returns the share of welfare held by the specified
 #' share of the population in the parameter `popshare`. Alternatively, you can
-#' select the number of quantiles (10 be default), to estimate the corresponding
+#' select the number of quantiles (10 as default), to estimate the corresponding
 #' share of welfare in each.
 #'
 #' @inheritParams pipgd_select_lorenz
@@ -14,7 +14,7 @@
 #' @param lorenz character or NULL. Lorenz curve selected. It could be "lq" for
 #'   Lorenz Quadratic or "lb" for Lorenz Beta
 #' @param popshare numeric: vector of share of population. Default is `seq(from
-#'   = 1/n, to = 1, by = 1/n)`
+#'   = 1/n, to = 1, by = 1/n)`, which is determined by argument n
 #' @param n numeric scalar for the number of quantiles to be used in `popshare`
 #' @param ... additional arguments for [pipgd_select_lorenz]
 #'
@@ -65,28 +65,34 @@ pipgd_welfare_share_at <- function(
     weight         = NULL,
     complete       = getOption("pipster.return_complete"),
     lorenz         = NULL,
-    n              = 10,
-    popshare       = seq(from = 1/n, to = 1, by = 1/n),
+    n              = NULL,
+    popshare       = NULL,
     ...
 ) {
 
-  # ____________________________________________________________________________
-  # Arguments ------------------------------------------------------------------
+  # Defenses--------------------------------------------------------------------
+  #_____________________________________________________________________________
   pl <- as.list(environment())
   check_pipgd_params(pl)
+  po <- is_valid_inputs_dist(pl)
 
-  # ____________________________________________________________________________
-  # params----------------------------------------------------------------------
-  if (!is.null(pipster_object)) {
-    params <- pipster_object
+  # __________________________________________________________________________
+  # params--------------------------------------------------------------------
+  if (po) {
+    params <- pipster_object$params
   } else {
-    params <- validate_params(pipster_object = pipster_object,
-                              welfare        = welfare,
-                              weight         = weight)
+    pipster_object <- validate_params(pipster_object = pipster_object,
+                                      welfare        = welfare,
+                                      weight         = weight,
+                                      lorenz         = lorenz,
+                                      n              = n,
+                                      popshare       = popshare)
+    params <- pipster_object$params
   }
+  popshare <- pipster_object$args$popshare
 
   # ____________________________________________________________________________
-  # Lorenz ------------------------------------------------------------------
+  # Lorenz ---------------------------------------------------------------------
   if (is.null(lorenz)) {
     lorenz <- params$selected_lorenz$for_dist
   } else {
@@ -94,7 +100,7 @@ pipgd_welfare_share_at <- function(
   }
 
   # ____________________________________________________________________________
-  # wbpip ------------------------------------------------------------------
+  # wbpip ----------------------------------------------------------------------
   qfun <- paste0("wbpip::value_at_", lorenz) |>
     parse(text = _)
 
@@ -107,16 +113,19 @@ pipgd_welfare_share_at <- function(
                           params$gd_params[[lorenz]]$reg_results$coef[["B"]],
                           params$gd_params[[lorenz]]$reg_results$coef[["C"]])
 
-  # ____________________________________________________________________________
   # Return----------------------------------------------------------------------
+  #_____________________________________________________________________________
+  results <- list()
+  results$dist_stats$popshare          <- popshare
+  results$dist_stats$welfare_share_at  <- value_at
+  results$dist_stats$lorenz            <- lorenz
+
   if (isFALSE(complete)) {
-    params <- vector("list")
+    return(results)
   }
+  pipster_object$results <- results
 
-  params$dist_stats$popshare         <- popshare
-  params$dist_stats$welfare_share_at <- value_at
-
-  params
+  pipster_object
 
 }
 
@@ -173,7 +182,6 @@ pipgd_welfare_share_at <- function(
 #'
 pipgd_quantile_welfare_share <-
   function(pipster_object = NULL,
-           params         = NULL,
            welfare        = NULL,
            weight         = NULL,
            complete       = getOption("pipster.return_complete"),
@@ -181,40 +189,66 @@ pipgd_quantile_welfare_share <-
            n              = 10,
            popshare       = seq(from = 1/n, to = 1, by = 1/n),
            ...) {
-    # __________________________________________________________________________
-    # Arguments-----------------------------------------------------------------
+
+    # Defenses--------------------------------------------------------------------
+    #_____________________________________________________________________________
     pl <- as.list(environment())
     check_pipgd_params(pl)
-    if (is.null(n)) {
+    po <- is_valid_inputs_dist(pl)
+
+    # __________________________________________________________________________
+    # params--------------------------------------------------------------------
+    if (!po &
+        is.null(pipster_object$results$dist_stats$welfare_share_at)) {
+      #params <- pipster_object$params
+    #} else {
+      pipster_object <- pipgd_welfare_share_at(pipster_object = pipster_object,
+                                               welfare        = welfare,
+                                               weight         = weight,
+                                               lorenz         = lorenz,
+                                               n              = n,
+                                               popshare       = popshare,
+                                               complete       = TRUE)
 
     }
+    results <- pipster_object$results
+    shr <- pipster_object$results$dist_stats$welfare_share_at
+    shr <- c(shr[1],
+             diff(shr))
     # __________________________________________________________________________
     # Calcs---------------------------------------------------------------------
-    shr <- pipgd_welfare_share_at(pipster_object = params,
-                                  complete       = FALSE,
-                                  n              = n,
-                                  popshare       = popshare,
-                                  lorenz         = lorenz)
-    shr <- c(shr$dist_stats$welfare_share_at[1],
-             diff(shr$dist_stats$welfare_share_at))
+    # shr <- pipgd_welfare_share_at(pipster_object = pipster_object,
+    #                               complete       = FALSE,
+    #                               n              = n,
+    #                               popshare       = popshare,
+    #                               lorenz         = lorenz)
+    # shr <- c(shr$dist_stats$welfare_share_at[1],
+    #          diff(shr$dist_stats$welfare_share_at))
 
-    # __________________________________________________________________________
-    # Return--------------------------------------------------------------------
+    # Return----------------------------------------------------------------------
+    #_____________________________________________________________________________
+
     if (isFALSE(complete)) {
-      params <- vector("list")
+      results <- list()
+      results$dist_stats$popshare      <- popshare
+      results$dist_stats$welfare_share <- shr
+      results$dist_stats$lorenz        <- lorenz
+      return(results)
     }
 
-    params$dist_stats$popshare               <- popshare
-    params$dist_stats$quantile_welfare_share <- shr
+    results$dist_stats$popshare      <- popshare
+    results$dist_stats$welfare_share <- shr
+    results$dist_stats$lorenz        <- lorenz
+    pipster_object$results           <- results
 
-    params
+    pipster_object
 
 }
 
 
 #' Get quantile at specified shared of population - grouped data
 #'
-#' `pipgd_quantile` returns the quantile (i.e., monetary value) that corresponds
+#' `pipgd_quantile` returns the quantile (i.e. welfare value) that corresponds
 #' to the share of the population that lives below that threshold.
 #'
 #' This is basically the inverse of estimating the poverty rate (headcount or
@@ -275,28 +309,37 @@ pipgd_quantile_welfare_share <-
 #'                complete = TRUE)
 pipgd_quantile <-
   function(pipster_object = NULL,
-           params     = NULL,
-           welfare    = NULL,
-           weight     = NULL,
-           n          = 10,
-           popshare   = seq(from = 1/n, to = 1, by = 1/n),
-           complete   = getOption("pipster.return_complete"),
-           lorenz     = NULL,
+           welfare        = NULL,
+           weight         = NULL,
+           n              = 10,
+           popshare       = seq(from = 1/n, to = 1, by = 1/n),
+           mean           = 1,
+           complete       = getOption("pipster.return_complete"),
+           lorenz         = NULL,
            ...) {
 
-    #   _________________________________________________________________
-    #   Defenses                                                ####
+    # Defenses--------------------------------------------------------------------
+    #_____________________________________________________________________________
     pl <- as.list(environment())
     check_pipgd_params(pl)
+    po <- is_valid_inputs_dist(pl, mean = TRUE)
 
-    #   ____________________________________________________
-    #   Computations                              ####
-    params <- validate_params(pipster_object = pipster_object,
-                              welfare        = welfare,
-                              weight         = weight,
-                              params         = params,
-                              ...)
-    mean <- params$data$mean
+    # __________________________________________________________________________
+    # params--------------------------------------------------------------------
+    if (po) {
+      params <- pipster_object$params
+    } else {
+      pipster_object <- validate_params(pipster_object = pipster_object,
+                                        welfare        = welfare,
+                                        weight         = weight,
+                                        lorenz         = lorenz,
+                                        mean           = mean,
+                                        n              = n,
+                                        popshare       = popshare)
+      params <- pipster_object$params
+    }
+    results <- pipster_object$results
+    mean <- pipster_object$args$mean
 
     if (is.null(lorenz)) {
       lorenz <- params$selected_lorenz$for_dist
@@ -312,16 +355,24 @@ pipgd_quantile <-
                       params$gd_params[[lorenz]]$reg_results$coef[["B"]],
                       params$gd_params[[lorenz]]$reg_results$coef[["C"]])
     qt <- qt*mean
-    #   ____________________________________________________________
-    #   Return                                                ####
-    if (isFALSE(complete))
-      params <- vector("list")
 
-    params$dist_stats$popshare <- popshare
-    params$dist_stats$quantile <- qt
-    return(params)
+    # Return----------------------------------------------------------------------
+    #_____________________________________________________________________________
+    if (isFALSE(complete)) {
+      results <- list()
+      results$dist_stats$popshare <- popshare
+      results$dist_stats$quantile <- qt
+      results$dist_stats$lorenz   <- lorenz
+      return(results)
+    }
+
+    results$dist_stats$popshare <- popshare
+    results$dist_stats$quantile <- qt
+    results$dist_stats$lorenz   <- lorenz
+    pipster_object$results      <- results
+
+    pipster_object
 }
-
 
 #' Compute Gini coefficient
 #'
@@ -355,7 +406,6 @@ pipgd_quantile <-
 #'            complete = TRUE)
 pipgd_gini <- function(
   pipster_object = NULL,
-  params     = NULL,
   welfare    = NULL,
   weight     = NULL,
   complete   = getOption("pipster.return_complete"),
@@ -363,21 +413,27 @@ pipgd_gini <- function(
   ...
 ){
 
-  #   _________________________________________________________________
-  #   Defenses
-  #   _________________________________________________________________
+  # Defenses--------------------------------------------------------------------
+  #_____________________________________________________________________________
   pl <- as.list(environment())
   check_pipgd_params(pl)
+  po <- is_valid_inputs_dist(pl)
 
-  #   _________________________________________________________________
-  #   Params
-  #   _________________________________________________________________
-  params <- validate_params(pipster_object = pipster_object,
-                            welfare        = welfare,
-                            weight         = weight,
-                            params         = params,
-                            ...)
+  # __________________________________________________________________________
+  # params--------------------------------------------------------------------
+  if (po) {
+    params <- pipster_object$params
+  } else {
+    pipster_object <- validate_params(pipster_object = pipster_object,
+                                      welfare        = welfare,
+                                      weight         = weight,
+                                      lorenz         = lorenz,
+                                      n              = n,
+                                      popshare       = popshare)
+    params <- pipster_object$params
+  }
 
+  results <- pipster_object$results
   #   _________________________________________________________________
   #   Select Lorenz
   #   _________________________________________________________________
@@ -414,17 +470,22 @@ pipgd_gini <- function(
 
   attributes(gini) <- NULL
 
-  #   ____________________________________________________
-  #   Return                                           ####
+  # Return----------------------------------------------------------------------
+  #_____________________________________________________________________________
   if (isFALSE(complete)) {
-    params <- vector("list")
+    results <- list()
+    results$dist_stats$gini   <- gini
+    results$dist_stats$lorenz <- lorenz
+    return(results)
   }
+  results$dist_stats$gini   <- gini
+  results$dist_stats$lorenz <- lorenz
+  pipster_object$results    <- results
 
-  params$dist_stats$gini  <- gini
-  params$dist_stats$lorenz <- lorenz
-
-  params
+  pipster_object
 }
+
+
 
 
 #' Compute MLD
@@ -460,7 +521,6 @@ pipgd_gini <- function(
 #'
 pipgd_mld <- function(
     pipster_object = NULL,
-    params         = NULL,
     welfare        = NULL,
     weight         = NULL,
     complete       = getOption("pipster.return_complete"),
@@ -468,21 +528,27 @@ pipgd_mld <- function(
     ...
 ){
 
-  #   _________________________________________________________________
-  #   Defenses
-  #   _________________________________________________________________
+  # Defenses--------------------------------------------------------------------
+  #_____________________________________________________________________________
   pl <- as.list(environment())
   check_pipgd_params(pl)
+  po <- is_valid_inputs_dist(pl)
 
-  #   _________________________________________________________________
-  #   Params
-  #   _________________________________________________________________
-  params <- validate_params(pipster_object = pipster_object,
-                            welfare        = welfare,
-                            weight         = weight,
-                            params         = params,
-                            ...)
+  # __________________________________________________________________________
+  # params--------------------------------------------------------------------
+  if (po) {
+    params <- pipster_object$params
+  } else {
+    pipster_object <- validate_params(pipster_object = pipster_object,
+                                      welfare        = welfare,
+                                      weight         = weight,
+                                      lorenz         = lorenz,
+                                      n              = n,
+                                      popshare       = popshare)
+    params <- pipster_object$params
+  }
 
+  results <- pipster_object$results
   #   _________________________________________________________________
   #   Select Lorenz
   #   _________________________________________________________________
@@ -504,19 +570,24 @@ pipgd_mld <- function(
 
   attributes(mld) <- NULL
 
-  #   ____________________________________________________
-  #   Return                                           ####
+  # Return----------------------------------------------------------------------
+  #_____________________________________________________________________________
   if (isFALSE(complete)) {
-    params <- vector("list")
+    results <- list()
+    results$dist_stats$mld    <- mld
+    results$dist_stats$lorenz <- lorenz
+    return(results)
   }
 
-  params$dist_stats$mld    <- mld
-  params$dist_stats$lorenz <- lorenz
+  results$dist_stats$mld    <- mld
+  results$dist_stats$lorenz <- lorenz
+  pipster_object$results    <- results
 
-  params
-
+  pipster_object
 
 }
+
+
 
 
 #' Compute polarization index
@@ -560,74 +631,58 @@ pipgd_mld <- function(
 #'
 pipgd_polarization <- function(
     pipster_object = NULL,
-    params         = NULL,
     welfare        = NULL,
     weight         = NULL,
-    mean           = 1,
-    gini           = NULL,
+    mean           = NULL,
     complete       = getOption("pipster.return_complete"),
     lorenz         = NULL
 ){
-
-  #   _________________________________________________________________
-  #   Defenses
-  #   _________________________________________________________________
+  # Defenses--------------------------------------------------------------------
+  #_____________________________________________________________________________
   pl <- as.list(environment())
   check_pipgd_params(pl)
+  po <- is_valid_inputs_dist(pl)
 
-  #   _________________________________________________________________
-  #   Params
-  #   _________________________________________________________________
-
-  if (is.null(gini)) {
-    if (!is.null(pipster_object)) {
-      params <- pipgd_gini(pipster_object = pipster_object,
-                           complete       = TRUE,
-                           lorenz         = lorenz,
-                           mean           = mean)
-    } else if (!is.null(welfare)) {
-      params <- pipgd_gini(welfare    = welfare,
-                           weight     = weight,
-                           complete   = TRUE,
-                           lorenz     = lorenz,
-                           mean       = mean)
-    } else {
-      params <- pipgd_gini(welfare    = params$data$welfare,
-                           weight     = params$data$weight,
-                           complete   = TRUE,
-                           lorenz     = lorenz,
-                           mean       = mean)
-    }
-    gini <- params$dist_stats$gini
+  # __________________________________________________________________________
+  # params--------------------------------------------------------------------
+  if (po) {
+    params <- pipster_object$params
+  } else {
+    pipster_object <- validate_params(pipster_object = pipster_object,
+                                      welfare        = welfare,
+                                      weight         = weight,
+                                      lorenz         = lorenz,
+                                      mean           = mean,
+                                      n              = n,
+                                      popshare       = popshare)
+    pipster_object <- pipgd_gini(pipster_object = pipster_object,
+                                 welfare        = welfare,
+                                 weight         = weight,
+                                 lorenz         = lorenz,
+                                 n              = n,
+                                 popshare       = popshare,
+                                 complete       = TRUE)
+    params <- pipster_object$params
   }
 
+  results <- pipster_object$results
+  # ____________________________________________________________________________
+  # Arguments-------------------------------------------------------------------
+  gini <- results$dist_stats$gini
+  p0   <- 0.5 # constant
+  mean <- pipster_object$args$mean
+  dcm  <- (1 - gini)*mean
 
-  # # If the user supplies welfare and weight vectors
-  # if (!is.null(welfare)) {
-  #   params <- pipgd_gini(
-  #     welfare  = welfare,
-  #     weight   = weight,
-  #     complete = TRUE,
-  #     lorenz   = lorenz
-  #   )
-  # }
-
-  #   _________________________________________________________________
-  #   Select Lorenz
-  #   _________________________________________________________________
+  # ____________________________________________________________________________
+  # Lorenz----------------------------------------------------------------------
   if (is.null(lorenz)) {
     lorenz <- params$selected_lorenz$for_dist
   } else {
     match.arg(lorenz, c("lq", "lb"))
   }
 
-
-  # Set arguments
-  p0   <- 0.5 # constant
-  mean <- params$data$mean
-  dcm  <- (1 - gini)*mean
-
-  # Compute polarization index
+  # ____________________________________________________________________________
+  # Polarization----------------------------------------------------------------
   polarization_ <- paste0("wbpip:::gd_compute_polarization_",
                           lorenz) |>
     parse(text = _)
@@ -643,21 +698,76 @@ pipgd_polarization <- function(
 
   attributes(polarization) <- NULL
 
-  #   ____________________________________________________
-  #   Return                                           ####
-
-
+  # ____________________________________________________________________________
+  # Return----------------------------------------------------------------------
   if (isFALSE(complete)) {
-    params <- vector("list")
+    results <- list()
+    results$dist_stats$gini          <- gini
+    results$dist_stats$polarization  <- polarization
+    results$dist_stats$lorenz        <- lorenz
+    return(results)
   }
+  results$dist_stats$gini          <- gini
+  results$dist_stats$polarization  <- polarization
+  results$dist_stats$lorenz        <- lorenz
+  pipster_object$results           <- results
 
-  params$dist_stats$gini          <- gini
-  params$dist_stats$polarization  <- polarization
-  params$dist_stats$lorenz        <- lorenz
-
-  params
+  pipster_object
 
 }
 
 
+
+
+
+
+
+
+is_valid_inputs_dist <- function(pl, mean = FALSE, gini = FALSE) {
+  # check that all of `pl`
+  # are the same as the arguments in
+  # pipster_object$args
+  if (is.null(pl$pipster_object)) {
+    return(FALSE)
+  }
+
+  if (is.null(c(pl$mean,
+                pl$n,
+                pl$gini,
+                pl$popshare,
+                pl$lorenz))) {
+    return(TRUE)
+  }
+  # checks
+  c_n       <- identical(pl$pipster_object$args$n,
+                         pl$n)
+  c_popsh   <- identical(pl$pipster_object$args$popshare,
+                         pl$popshare)
+  c_lorenz  <- identical(pl$pipster_object$args$lorenz,
+                         pl$lorenz)
+  c_prod    <- c_n*c_popsh*c_lorenz
+  # gini
+  if (isTRUE(gini)) {
+    c_gini <- !is.null(pl$pipster_object$results$dist_stats$gini)
+    c_prod <- c_prod*c_gini
+  }
+  # mean
+  if (isTRUE(mean)) {
+    c_mean <- identical(pl$pipster_object$args$mean,
+                        pl$mean)
+    c_prod <- c_prod*c_mean
+  }
+
+  if (c_prod == 1) {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
+
+# popshare
+# n
+# lorenz
+# gini -> polarization
+# mean -> polarization & quantile
 
