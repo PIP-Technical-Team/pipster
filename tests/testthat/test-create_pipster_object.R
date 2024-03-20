@@ -14,6 +14,12 @@ weight_md  <- pip_md_s$weight
 # pip_gd$W # sum to 1
 # pip_gd$P # is cum
 
+# gd_1: cumulative welfare (pip_gd$L)
+#       cumulative weight  (pip_gd$P)
+# gd_2: sum to 1 welfare   (pip_gd$R)
+#       sum to one weight  (pip_gd$W)
+# gd_5: welfare is mean of interval (pip_gd$X)
+#       sum to one weight  (pip_gd$W)
 
 
 
@@ -30,8 +36,8 @@ test_that("Correct treatment of gd types", {
 
   gd1 <- create_pipster_object(welfare = pip_gd$L, # is cumulative
                                weight  = pip_gd$P) # is cumulative
-  gd2 <- create_pipster_object(welfare = pip_gd$L, # to one
-                               weight  = pip_gd$P) # to one
+  gd2 <- create_pipster_object(welfare = pip_gd$R, # to one
+                               weight  = pip_gd$W) # to one
   gd5 <- create_pipster_object(welfare = pip_gd$X, # neither
                                weight  = pip_gd$W) # to one
 
