@@ -1073,10 +1073,8 @@ test_that("pipgd_watts_nv outputs work as expected", {
 
 # Test pipgd_watts_nv() function (non vectorized) -CALCULATION OF WATTS
 test_that("pipgd_watts_nv watts output is as expected", {
-  skip(message = "check the lq benchmark")
-  params           <- pipgd_pov_gap_nv(welfare  = welfare,
-                                       weight   = weight,
-                                       complete = TRUE)
+
+  # pipster calculation
   res_with_lb      <- pipgd_watts_nv(welfare    = welfare,
                                      weight     = weight,
                                      lorenz     = "lb",
@@ -1086,13 +1084,69 @@ test_that("pipgd_watts_nv watts output is as expected", {
                                      lorenz     = "lq",
                                      complete   = F)
 
-  res_lb_benchmark <- list(pov_stats = list(watts = 0.277580116426276,
+
+  # Watts lb - create wbpip based benchmark
+  lorenz_lb <- 'lb'
+  mean           = 1
+  times_mean     = 1
+  povshare       = NULL
+  povline        = ifelse(is.null(povshare),
+                          mean*times_mean,
+                          NA_real_)
+
+  pipster_object_lb <- pipgd_pov_headcount_nv(welfare        = welfare,
+                                              weight         = weight,
+                                              mean           = mean,
+                                              times_mean     = times_mean,
+                                              lorenz         = lorenz_lb,
+                                              complete = TRUE)
+  params_lb  <- pipster_object_lb$params
+  results_lb <- pipster_object_lb$results
+
+
+
+  wbpip_watts_lb <-wbpip::gd_compute_watts_lb(mean = mean,
+                                              povline   = povline,
+                                              headcount = results_lb$pov_stats$headcount,
+                                              A         = params_lb$gd_params[[lorenz_lb]]$reg_results$coef[["A"]],
+                                              B         = params_lb$gd_params[[lorenz_lb]]$reg_results$coef[["B"]],
+                                              C         = params_lb$gd_params[[lorenz_lb]]$reg_results$coef[["C"]])
+
+  # Watts lq - create wbpip based benchmark
+  lorenz_lq <- 'lq'
+  mean           = 1
+  times_mean     = 1
+  povshare       = NULL
+  povline        = ifelse(is.null(povshare),
+                          mean*times_mean,
+                          NA_real_)
+
+  pipster_object_lq <- pipgd_pov_headcount_nv(welfare        = welfare,
+                                              weight         = weight,
+                                              mean           = mean,
+                                              times_mean     = times_mean,
+                                              lorenz         = lorenz_lq,
+                                              complete = TRUE)
+  params_lq  <- pipster_object_lq$params
+  results_lq <- pipster_object_lq$results
+
+
+
+  wbpip_watts_lq <-wbpip::gd_compute_watts_lq(mean = mean,
+                                              povline   = povline,
+                                              headcount = pipster_object_lq$results$pov_stats$headcount,
+                                              A         = params_lq$gd_params[[lorenz_lq]]$reg_results$coef[["A"]],
+                                              B         = params_lq$gd_params[[lorenz_lq]]$reg_results$coef[["B"]],
+                                              C         = params_lq$gd_params[[lorenz_lq]]$reg_results$coef[["C"]])
+
+  # Run actual test
+  res_lb_benchmark <- list(pov_stats = list(watts = wbpip_watts_lb,
                                             lorenz = "lb"))
-  res_lq_benchmark <- list(pov_stats = list(watts = 0.28045418,
+  res_lq_benchmark <- list(pov_stats = list(watts = wbpip_watts_lq,
                                             lorenz = "lq"))
 
-  round(res_with_lb$pov_stats$watts, 5) |>
-    expect_equal(round(res_lb_benchmark$pov_stats$watts, 5))
+  round(res_with_lb$pov_stats$watts, 6) |>
+    expect_equal(round(res_lb_benchmark$pov_stats$watts, 6))
 
   round(res_with_lq$pov_stats$watts, 6) |>
     expect_equal(round(res_lq_benchmark$pov_stats$watts, 6))
