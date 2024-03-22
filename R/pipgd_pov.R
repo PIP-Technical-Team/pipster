@@ -28,6 +28,16 @@ pipgd_pov_headcount_nv <-
   pl <- as.list(environment())
   check_pipgd_params(pl)
   po <- is_valid_inputs_pov(pl)
+  print(po)
+
+  # Preserve the original lorenz if pipster_object exists and lorenz is not provided
+  original_lorenz <- if (is.null(lorenz) && !is.null(pipster_object) && !is.null(pipster_object$args$lorenz)) {
+    pipster_object$args$lorenz
+  } else {
+    lorenz
+  }
+
+  print(original_lorenz)
 
   # __________________________________________________________________________
   # params--------------------------------------------------------------------
@@ -40,18 +50,29 @@ pipgd_pov_headcount_nv <-
                                       mean           = mean,
                                       times_mean     = times_mean,
                                       povshare       = povshare,
-                                      lorenz         = lorenz,
+                                      lorenz         = original_lorenz,
                                       povline        = povline)
     params <- pipster_object$params
   }
 
   # Lorenz----------------------------------------------------------------------
   #_____________________________________________________________________________
-  if (is.null(lorenz)) {
-    lorenz <- params$selected_lorenz$for_pov
+
+  # If lorenz is explicitly specified in the function call, use it
+  if (!is.null(lorenz)) {
+    lorenz <- match.arg(lorenz, c("lq", "lb"))
   } else {
-    match.arg(lorenz, c("lq", "lb"))
+    # If lorenz is specified in pipster_object and not overridden by the function call, use it
+    if (!is.null(pipster_object$args$lorenz)) {
+      lorenz <- pipster_object$args$lorenz
+    } else {
+      # Use the selected lorenz if not specified in the function call or pipster_object
+      lorenz <- params$selected_lorenz$for_pov
+    }
   }
+
+  # Headcount ------------------------------------------------------------------
+  # ____________________________________________________________________________
 
   headcount <- params$gd_params[[lorenz]]$validity$headcount
 
