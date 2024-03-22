@@ -22,7 +22,7 @@
 create_pipster_object <-
   function(welfare,
            weight         = rep(1, length(welfare)),
-           mean           = 1,
+           mean           = NULL,
            times_mean     = 1,
            n              = 10,
            povshare       = NULL,
@@ -31,7 +31,6 @@ create_pipster_object <-
                                    mean*times_mean,
                                    NA_real_),
            lorenz         = NULL,
-           #complete       = getOption("pipster.return_complete"),
            imputation_id  = NULL) {
 
   #_____________________________________________________________________________
@@ -46,6 +45,10 @@ create_pipster_object <-
     cli::cli_abort("No elements in weight vector can be NA -
                    leave argument empty to give equal weighting")
   }
+  if (is.null(weight)) {
+    cli::cli_warn("weight vector is NULL, therefore each observation
+                  is given equal weight by default.")
+  }
 
   #_____________________________________________________________________________
   # Class-----------------------------------------------------------------------
@@ -56,6 +59,7 @@ create_pipster_object <-
 
   #_____________________________________________________________________________
   # Convert format--------------------------------------------------------------
+
   if (is.unsorted(welfare)) {
     weight  <- weight[order(welfare)]
     welfare <- welfare[order(welfare)]
@@ -65,6 +69,10 @@ create_pipster_object <-
     tp,
     "md"   = {
       imputation_id <- rep(1, length(welfare))
+      if (is.null(mean)) {
+        mean <- collapse::fmean(x = welfare,
+                                w = weight)
+      }
     },
     "id"   = {
       cl <- "md"
@@ -110,6 +118,9 @@ create_pipster_object <-
   #_____________________________________________________________________________
   # Params----------------------------------------------------------------------
   if (cl == "gd") {
+    if (is.null(mean)) {
+      mean <- 1
+    }
     params <- pipgd_select_lorenz(welfare    = welfare,
                                   weight     = weight,
                                   mean       = mean,
