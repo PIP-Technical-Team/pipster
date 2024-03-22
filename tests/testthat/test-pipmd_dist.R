@@ -24,7 +24,7 @@ attributes(weight)  <- NULL
 # Testing quantile at specified shared of population function ####
 # Arguments ---------------------------------------------------------------
 test_that("pipmd_quantile -arguments", {
-  skip()
+  #skip()
   pipmd_quantile(welfare = welfare_test, weight = weight) |>
     expect_error()
 
@@ -34,8 +34,8 @@ test_that("pipmd_quantile -arguments", {
   pipmd_quantile(welfare = welfare, weight = weight_test) |>
     expect_error()
 
-  # pipmd_quantile(welfare = welfare) |>
-  #   expect_message()
+  pipmd_quantile(welfare = welfare) |>
+    expect_no_error()
 
   pipmd_quantile(
     welfare = welfare,
@@ -48,32 +48,25 @@ test_that("pipmd_quantile -arguments", {
   pipmd_quantile(
     welfare = welfare,
     weight = weight,
-    n = NULL,
-    popshare = c(0.3, 0.5)
+    n = NULL
   ) |>
-    expect_no_error()
-
-  pipmd_quantile(
-    welfare = welfare,
-    weight = weight,
-    n = NULL,
-    popshare = 0.6
-  ) |>
-    expect_no_error()
+    expect_error()
 
 })
 
 # Outputs ---------------------------------------------------------------
 test_that("pipmd_quantile -outputs", {
-  skip()
-  n = 6
+  #skip()
+  n = 5
+
+  results <- c(1.246769, 1.934927, 2.979334, 4.737228, 18.019517)
 
   res_list <-
     pipmd_quantile(
       welfare = welfare,
-      weight = weight,
-      n = n,
-      format = "list"
+      weight  = weight,
+      n       = n,
+      format  = "list"
     )
   res_atomic <-
     pipmd_quantile(
@@ -93,84 +86,74 @@ test_that("pipmd_quantile -outputs", {
   # Benchmarks
   res_bm_list <-
     list(
-      "16.6%" = 1.15720864490713,
-      "33.3%" = 1.71560515751511,
-      "50%" = 2.35138374470022,
-      "66.6%" = 3.48346293082367,
-      "83.3%" = 5.27090655645221,
-      "99.9%" = 18.019516550669
+      "20%" = results[1],
+      "40%" = results[2],
+      "60%" = results[3],
+      "80%" = results[4],
+      "100%" = results[5]
     )
   res_bm_atomic <-
     c(
-      "16.6%" = 1.15720864490713,
-      "33.3%" = 1.71560515751511,
-      "50%" = 2.35138374470022,
-      "66.6%" = 3.48346293082367,
-      "83.3%" = 5.27090655645221,
-      "99.9%" = 18.019516550669
+      "20%"  = results[1],
+      "40%"  = results[2],
+      "60%"  = results[3],
+      "80%"  = results[4],
+      "100%" = results[5]
     )
   res_bm_dt <-
     structure(
       list(
-        quantile = c(
-          "q_16.6%",
-          "q_33.3%",
-          "q_50%",
-          "q_66.6%",
-          "q_83.3%",
-          "q_99.9%"
+        quantiles = c(
+          "q_20%",
+          "q_40%",
+          "q_60%",
+          "q_80%",
+          "q_100%"
         ),
-        values = c(
-          1.15720864490713,
-          1.71560515751511,
-          2.35138374470022,
-          3.48346293082367,
-          5.27090655645221,
-          18.019516550669
-        )
+        values = results
       ),
-      row.names = c(NA, -6L),
+      row.names = c(NA, -5L),
       class = c("data.table", "data.frame")
     )
 
   # Check computations
-  res_list |>
-    expect_equal(res_bm_list)
+  res_list$dist_stats$quantiles |>
+    expect_equal(res_bm_list, tolerance = 0.000001)
 
-  res_atomic |>
-    expect_equal(res_bm_atomic)
+  res_atomic$dist_stats$quantiles |>
+    expect_equal(res_bm_atomic, tolerance = 0.000001)
 
-  res_dt |>
-    expect_equal(res_bm_dt)
+  res_dt$dist_stats$quantiles |>
+    expect_equal(res_bm_dt, tolerance = 0.000001)
 
   # Check output class
-  class(res_list) |>
+  class(res_list$dist_stats$quantiles) |>
     expect_equal("list")
 
-  class(res_atomic) |>
+  class(res_atomic$dist_stats$quantiles) |>
     expect_equal("numeric")
 
-  #class(res_dt) |>
-  #  expect_equal("data.frame")
+  class(res_dt$dist_stats$quantiles) |>
+   expect_equal(c("data.table", "data.frame"))
 
   # Check names in output
-  names(res_list) |>
-    expect_equal(c("16.6%", "33.3%", "50%", "66.6%", "83.3%", "99.9%"))
+  names(res_list$dist_stats$quantiles) |>
+    expect_equal(c("20%", "40%", "60%", "80%", "100%"))
 
-  length(res_list) |>
+  length(res_list$dist_stats$quantiles) |>
     expect_equal(n)
 
-  names(res_dt) |>
-    expect_equal(c("quantile", "values"))
+  names(res_dt$dist_stats$quantiles) |>
+    expect_equal(c("quantiles", "values"))
 
-  nrow(res_dt) |>
-    expect_equal(length(res_list))
+  nrow(res_dt$dist_stats$quantiles) |>
+    expect_equal(length(res_list$dist_stats$quantiles))
 
-  names(res_atomic) |>
-    expect_equal(names(res_list))
+  names(res_atomic$dist_stats$quantiles) |>
+    expect_equal(names(res_list$dist_stats$quantiles))
 
-  length(res_atomic) |>
-    expect_equal(length(res_list))
+  length(res_atomic$dist_stats$quantiles) |>
+    expect_equal(length(res_list$dist_stats$quantiles))
 
 })
 

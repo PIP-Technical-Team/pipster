@@ -56,37 +56,48 @@ pipmd_quantile <- function(
   welfare        = NULL,
   weight         = rep(1, length = length(welfare)),
   n              = 10,
-  popshare       = seq(from = 1/n, to = 1, by = 1/n),
-  format         = c("dt", "list", "atomic")
+  format         = c("atomic", "dt", "list"),
+  complete       = getOption("pipster.return_complete")
 ){
 
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
-
-  # Use pipster_object
-  if (!is.null(pipster_object)) {
-    welfare <- pipster_object$welfare |> unclass()
-    weight  <- pipster_object$weight |> unclass()
+  pl     <- as.list(environment())
+  po     <- is_valid_inputs_md(pl)
+  if (!po) {
+    pipster_object <- create_pipster_object(welfare  = welfare,
+                                            weight   = weight,
+                                            n        = n)
   }
-
-  # defenses ---------
   check_pipmd_dist()
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
-  output <- wbpip::md_quantile_values(
-    welfare    = welfare,
-    weight     = weight,
-    n          = n,
-    popshare   = popshare,
+  qt <- wbpip::md_quantile_values(
+    welfare    = pipster_object$welfare |> unclass(),
+    weight     = pipster_object$weight |> unclass(),
+    n          = pipster_object$args$n,
     format     = format
   )
 
   # ____________________________________________________________________________
   # Format and Return ----------------------------------------------------------
-  return(output)
+  if (isFALSE(complete)) {
+    results <- list()
+  } else {
+    results <- pipster_object$results
+  }
+  results$dist_stats$popshare  <- pipster_object$args$popshare
+  results$dist_stats$quantiles <- qt
 
+  if (isFALSE(complete)) {
+    return(results)
+  }
+
+  pipster_object$results <- results
+
+  pipster_object
 
 }
 
@@ -512,6 +523,85 @@ pipmd_mld <- function(
 
 
 
+#' Check that inputs for md functions are valid
+#'
+#' Inputs are considered "valid" if the arguments used to create
+#' the pipster object - and stored in `pipster_object$args` - is the
+#' same as the argument values being used in the function being called.
+#' However, if the function being called has all arguments
+#' (except `pipster_object`) being NULL, the `pipster_object$args` will
+#' automatically be used. If supplied arguments are non-NULL and different from
+#' the `pipster_object$args` then the pipster object is re-estimated internally
+#' using teh newly supplied arguments.
+#'
+#' @param pl
+#' @param pov logical: if TRUE, then is a poverty measure requiring povline
+#' @param mean logical: if TRUE then will also check the `mean` argument.
+#' Default is FALSE because not every dist function requires mean.
+#' @param gini logical: if TRUE then will also check the `gini` argument.
+#' Default is FALSE because not every dist function requires gini
+#'
+#' @return logical: TRUE if valid, FALSE if invalid. pipster_object must
+#' be re-estimated if FALSE
+#' @keywords internal
+is_valid_inputs_md <- function(pl, pov = TRUE, mean = FALSE, gini = FALSE) {
+  # check that all of `pl`
+  # are the same as the arguments in
+  # pipster_object$args
+  if (is.null(pl$pipster_object)) {
+    return(FALSE)
+  }
+
+  # DIST
+  if (!pov) {
+    if (is.null(c(pl$n,
+                  pl$popshare,
+                  pl$gini,
+                  #pl$median,
+                  pl$mean))) {
+      return(TRUE)
+    }
+
+    # checks
+    c_n       <- identical(pl$pipster_object$args$n,
+                           pl$n)
+    c_popsh   <- identical(pl$pipster_object$args$popshare,
+                           pl$popshare)
+    c_prod    <- c_n*c_popsh
+
+
+  } else {
+    # POV
+    if (is.null(c(pl$povline,
+                  pl$times_mean))) {
+      return(TRUE)
+    }
+    # checks
+    c_pl       <- identical(pl$pipster_object$args$povline,
+                           pl$povline)
+    c_tmean    <- identical(pl$pipster_object$args$times_mean,
+                           pl$times_mean)
+    c_prod     <- c_pl*c_tmean
+  }
+
+  # gini
+  if (isTRUE(gini)) {
+    c_gini <- !is.null(pl$pipster_object$results$dist_stats$gini)
+    c_prod <- c_prod*c_gini
+  }
+  # mean
+  if (isTRUE(mean)) {
+    c_mean <- identical(pl$pipster_object$args$mean,
+                        pl$mean)
+    c_prod <- c_prod*c_mean
+  }
+
+  if (c_prod == 1) {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
 
 
 
