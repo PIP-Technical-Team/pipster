@@ -9,8 +9,6 @@ weight  = pip_md$weight
 welfare = pip_md_s$welfare
 weight  = pip_md_s$weight
 
-
-
 welfare_test <- welfare
 welfare_test[1] = NA
 
@@ -82,6 +80,31 @@ test_that("pipmd_quantile -outputs", {
       n = n,
       format = "dt"
     )
+
+
+  # Complete objects
+  res_list_com <- pipmd_quantile(
+    welfare  = welfare,
+    weight   = weight,
+    n        = n,
+    format   = "list",
+    complete = TRUE
+  )
+  res_dt_com <- pipmd_quantile(
+    welfare  = welfare,
+    weight   = weight,
+    n        = n,
+    format   = "dt",
+    complete = TRUE
+  )
+  res_atomic_com <- pipmd_quantile(
+    welfare  = welfare,
+    weight   = weight,
+    n        = n,
+    format   = "atomic",
+    complete = TRUE
+  )
+
 
   # Benchmarks
   res_bm_list <-
@@ -155,12 +178,20 @@ test_that("pipmd_quantile -outputs", {
   length(res_atomic$dist_stats$quantiles) |>
     expect_equal(length(res_list$dist_stats$quantiles))
 
+  # check "complete" arg
+  res_list |>
+    expect_equal(res_list_com$results)
+  res_dt |>
+    expect_equal(res_dt_com$results)
+  res_atomic |>
+    expect_equal(res_atomic_com$results)
+
 })
 
 # Testing Welfare share by quantile function ####
 # Arguments ---------------------------------------------------------------
 test_that("pipmd_welfare_share_at -arguments", {
-  skip()
+  #skip()
   pipmd_welfare_share_at(welfare = welfare_test, weight = weight) |>
     expect_error()
 
@@ -170,40 +201,29 @@ test_that("pipmd_welfare_share_at -arguments", {
   pipmd_welfare_share_at(welfare = welfare, weight = weight_test) |>
     expect_error()
 
-  # pipmd_welfare_share_at(welfare = welfare) |>
-  #   expect_message()
+  pipmd_welfare_share_at(welfare = welfare) |>
+    expect_no_error()
 
   pipmd_welfare_share_at(
     welfare = welfare,
     weight = weight,
-    n = NULL,
-    popshare = NULL
+    n = NULL
   ) |>
     expect_error()
-
-  pipmd_welfare_share_at(
-    welfare = welfare,
-    weight = weight,
-    n = NULL,
-    popshare = c(0.3, 0.5)
-  ) |>
-    expect_no_error()
-
-  pipmd_welfare_share_at(
-    welfare = welfare,
-    weight = weight,
-    n = NULL,
-    popshare = 0.6
-  ) |>
-    expect_no_error()
 
 })
 
 # Outputs ---------------------------------------------------------------
 test_that("pipmd_welfare_share_at -outputs", {
-  skip()
-  n = 6
+  #skip()
+  n = 5
 
+  results <- wbpip::md_welfare_share_at(welfare = welfare,
+                                        weight  = weight,
+                                        n       = n,
+                                        format  = "atomic")
+  results <- as.numeric(results)
+  # Not complete objects
   res_list <-
     pipmd_welfare_share_at(
       welfare = welfare,
@@ -211,6 +231,7 @@ test_that("pipmd_welfare_share_at -outputs", {
       n = n,
       format = "list"
     )
+
   res_atomic <-
     pipmd_welfare_share_at(
       welfare = welfare,
@@ -226,94 +247,115 @@ test_that("pipmd_welfare_share_at -outputs", {
       format = "dt"
     )
 
+  # Complete objects
+  res_list_com <- pipmd_welfare_share_at(
+    welfare  = welfare,
+    weight   = weight,
+    n        = n,
+    format   = "list",
+    complete = TRUE
+  )
+  res_dt_com <- pipmd_welfare_share_at(
+    welfare  = welfare,
+    weight   = weight,
+    n        = n,
+    format   = "dt",
+    complete = TRUE
+  )
+  res_atomic_com <- pipmd_welfare_share_at(
+    welfare  = welfare,
+    weight   = weight,
+    n        = n,
+    format   = "atomic",
+    complete = TRUE
+  )
+
 
   res_bm_list <-
     list(
-      "16.6%" = 0.179898119766951,
-      "33.3%" = 0.334554080564441,
-      "50%" = 0.498891556443476,
-      "66.6%" = 0.671063477546949,
-      "83.3%" = 0.833064761190862,
-      "99.9%" = 1
+      "20%"  = results[1],
+      "40%"  = results[2],
+      "60%"  = results[3],
+      "80%"  = results[4],
+      "100%" = results[5]
     )
   res_bm_atomic <-
     c(
-      "16.6%" = 0.179898119766951,
-      "33.3%" = 0.334554080564441,
-      "50%" = 0.498891556443476,
-      "66.6%" = 0.671063477546949,
-      "83.3%" = 0.833064761190862,
-      "99.9%" = 1
+      "20%"  = results[1],
+      "40%"  = results[2],
+      "60%"  = results[3],
+      "80%"  = results[4],
+      "100%" = results[5]
     )
   res_bm_dt <-
     structure(
       list(
-        quantile = c(
-          "q_16.6%",
-          "q_33.3%",
-          "q_50%",
-          "q_66.6%",
-          "q_83.3%",
-          "q_99.9%"
+        quantiles = c(
+          "q_20%",
+          "q_40%",
+          "q_60%",
+          "q_80%",
+          "q_100%"
         ),
-        share_at = c(
-          0.179898119766951,
-          0.334554080564441,
-          0.498891556443476,
-          0.671063477546949,
-          0.833064761190862,
-          1
-        )
+        share_at = results
       ),
-      row.names = c(NA, -6L),
+      row.names = c(NA, -5L),
       class = c("data.table", "data.frame")
     )
 
   # Check computations
-  res_list |>
+  res_list$dist_stats$welfare_share_at |>
     expect_equal(res_bm_list)
 
-  res_atomic |>
+  res_atomic$dist_stats$welfare_share_at |>
     expect_equal(res_bm_atomic)
 
-  res_dt |>
+  res_dt$dist_stats$welfare_share_at |>
     expect_equal(res_bm_dt)
 
   # Check output class
-  class(res_list) |>
+  class(res_list$dist_stats$welfare_share_at) |>
     expect_equal("list")
 
-  class(res_atomic) |>
+  class(res_atomic$dist_stats$welfare_share_at) |>
     expect_equal("numeric")
 
   #class(res_dt) |>
   #  expect_equal("data.frame")
 
   # Check names in output
-  names(res_list) |>
-    expect_equal(c("16.6%", "33.3%", "50%", "66.6%", "83.3%", "99.9%"))
+  names(res_list$dist_stats$welfare_share_at) |>
+    expect_equal(c("20%", "40%", "60%", "80%", "100%"))
 
-  length(res_list) |>
+  length(res_list$dist_stats$welfare_share_at) |>
     expect_equal(n)
 
-  names(res_dt) |>
-    expect_equal(c("quantile", "share_at"))
+  names(res_dt$dist_stats$welfare_share_at) |>
+    expect_equal(c("quantiles", "share_at"))
 
-  nrow(res_dt) |>
-    expect_equal(length(res_list))
+  nrow(res_dt$dist_stats$welfare_share_at) |>
+    expect_equal(length(res_list$dist_stats$welfare_share_at))
 
-  names(res_atomic) |>
-    expect_equal(names(res_list))
+  names(res_atomic$dist_stats$welfare_share_at) |>
+    expect_equal(names(res_list$dist_stats$welfare_share_at))
 
-  length(res_atomic) |>
-    expect_equal(length(res_list))
+  length(res_atomic$dist_stats$welfare_share_at) |>
+    expect_equal(length(res_list$dist_stats$welfare_share_at))
+
+  # check "complete" arg
+  res_list |>
+    expect_equal(res_list_com$results)
+  res_dt |>
+    expect_equal(res_dt_com$results)
+  res_atomic |>
+    expect_equal(res_atomic_com$results)
 
 })
 
 # Testing the function computing the share of welfare held by a particular quantile ####
 # Arguments ------------------------------------------------------------------------------
 test_that("pipmd_quantile_welfare_share -arguments", {
-  skip()
+
   pipmd_quantile_welfare_share(welfare = welfare_test, weight = weight) |>
     expect_error()
 
@@ -323,153 +365,174 @@ test_that("pipmd_quantile_welfare_share -arguments", {
   pipmd_quantile_welfare_share(welfare = welfare, weight = weight_test) |>
     expect_error()
 
-  # pipmd_quantile_welfare_share(welfare = welfare) |>
-  #   expect_message()
+   pipmd_quantile_welfare_share(welfare = welfare) |>
+     expect_no_error()
 
   pipmd_quantile_welfare_share(
-    welfare = welfare,
-    weight = weight,
-    n = NULL,
-    popshare = NULL
+    welfare  = welfare,
+    weight   = weight,
+    n        = NULL
   ) |>
     expect_error()
-
-  pipmd_quantile_welfare_share(
-    welfare = welfare,
-    weight = weight,
-    n = NULL,
-    popshare = c(0.3, 0.5)
-  ) |>
-    expect_no_error()
-
-  pipmd_quantile_welfare_share(
-    welfare = welfare,
-    weight = weight,
-    n = NULL,
-    popshare = 0.6
-  ) |>
-    expect_no_error()
 
 })
 
 # Outputs ---------------------------------------------------------------
 test_that("pipmd_quantile_welfare_share -outputs", {
-  skip()
-  n = 6
+
+  n = 5
+  results <- wbpip::md_quantile_welfare_share(
+    welfare    = welfare,
+    weight     = weight,
+    n          = n,
+    format     = "atomic"
+  )
+  results <- as.numeric(results)
 
 
   res_list <-
     pipmd_quantile_welfare_share(
       welfare = welfare,
-      weight = weight,
-      n = n,
-      format = "list"
+      weight  = weight,
+      n       = n,
+      format  = "list"
     )
   res_atomic <-
     pipmd_quantile_welfare_share(
       welfare = welfare,
-      weight = weight,
-      n = n,
-      format = "atomic"
+      weight  = weight,
+      n       = n,
+      format  = "atomic"
     )
   res_dt <-
     pipmd_quantile_welfare_share(
       welfare = welfare,
-      weight = weight,
-      n = n,
-      format = "dt"
+      weight  = weight,
+      n       = n,
+      format  = "dt"
     )
+
+  # Complete objects
+  res_list_com <- pipmd_quantile_welfare_share(
+    welfare  = welfare,
+    weight   = weight,
+    n        = n,
+    format   = "list",
+    complete = TRUE
+  )
+  res_dt_com <- pipmd_quantile_welfare_share(
+    welfare  = welfare,
+    weight   = weight,
+    n        = n,
+    format   = "dt",
+    complete = TRUE
+  )
+  res_atomic_com <- pipmd_quantile_welfare_share(
+    welfare  = welfare,
+    weight   = weight,
+    n        = n,
+    format   = "atomic",
+    complete = TRUE
+  )
+
 
   res_bm_list <-
     list(
-      "16.6666666666667%" = 0.041993366907175,
-      "33.3333333333333%" = 0.0724995422851018,
-      "50%" = 0.11959445511606,
-      "66.6666666666667%" = 0.169235324964795,
-      "83.3333333333333%" = 0.217187544524222,
-      "100%" = 0.379489766202646
+      "20%"  = results[1],
+      "40%"  = results[2],
+      "60%"  = results[3],
+      "80%"  = results[4],
+      "100%" = results[5]
     )
   res_bm_atomic <-
-    structure(
-      c(
-        "16.6666666666667%" = 0.041993366907175,
-        "33.3333333333333%" = 0.0724995422851018,
-        "50%" = 0.11959445511606,
-        "66.6666666666667%" = 0.169235324964795,
-        "83.3333333333333%" = 0.217187544524222,
-        "100%" = 0.379489766202646
-      ),
-      dim = 6L,
-      dimnames = list(
-        c(
-          "16.6666666666667%",
-          "33.3333333333333%",
-          "50%",
-          "66.6666666666667%",
-          "83.3333333333333%",
-          "100%"
-        )
-      )
+    c(
+      "20%"  = results[1],
+      "40%"  = results[2],
+      "60%"  = results[3],
+      "80%"  = results[4],
+      "100%" = results[5]
     )
   res_bm_dt <-
     structure(
       list(
-        quantile = c(
-          "q_16.6666666666667%",
-          "q_33.3333333333333%",
-          "q_50%",
-          "q_66.6666666666667%",
-          "q_83.3333333333333%",
+        quantiles = c(
+          "q_20%",
+          "q_40%",
+          "q_60%",
+          "q_80%",
+          "q_100%"
+        ),
+        share_at = results
+      ),
+      row.names = c(NA, -5L),
+      class = c("data.table", "data.frame")
+    )
+  res_bm_dt <-
+    structure(
+      list(
+        quantiles = c(
+          "q_20%",
+          "q_40%",
+          "q_60%",
+          "q_80%",
           "q_100%"
         ),
         share_at = c(
-          0.041993366907175,
-          0.0724995422851018,
-          0.11959445511606,
-          0.169235324964795,
-          0.217187544524222,
-          0.379489766202646
+          results[1],
+          results[2],
+          results[3],
+          results[4],
+          results[5]
         )
       ),
-      row.names = c(NA, -6L),
+      row.names = c(NA, -5L),
       class = c("data.table", "data.frame")
     )
 
   # Check computations
-  res_list |>
+  res_list$dist_stats$quantile_welfare_share |>
     expect_equal(res_bm_list)
 
-  res_atomic |>
+  res_atomic$dist_stats$quantile_welfare_share |>
     expect_equal(res_bm_atomic)
 
-  res_dt |>
+  res_dt$dist_stats$quantile_welfare_share |>
     expect_equal(res_bm_dt)
 
   # Check output class
-  class(res_list) |>
+  class(res_list$dist_stats$quantile_welfare_share) |>
     expect_equal("list")
 
-  class(res_atomic) |>
-    expect_equal("array")
+  class(res_atomic$dist_stats$quantile_welfare_share) |>
+    expect_equal("numeric")
 
-  #class(res_dt) |>
-  #  expect_equal("data.frame")
+  class(res_dt$dist_stats$quantile_welfare_share) |>
+    expect_equal(c("data.table", "data.frame"))
 
   # Check names in output
-  length(res_list) |>
+  length(res_list$dist_stats$quantile_welfare_share) |>
     expect_equal(n)
 
-  names(res_dt) |>
-    expect_equal(c("quantile", "share_at"))
+  names(res_dt$dist_stats$quantile_welfare_share) |>
+    expect_equal(c("quantiles", "share_at"))
 
-  nrow(res_dt) |>
-    expect_equal(length(res_list))
+  nrow(res_dt$dist_stats$quantile_welfare_share) |>
+    expect_equal(length(res_list$dist_stats$quantile_welfare_share))
 
-  names(res_atomic) |>
-    expect_equal(names(res_list))
+  names(res_atomic$dist_stats$quantile_welfare_share) |>
+    expect_equal(names(res_list$dist_stats$quantile_welfare_share))
 
   length(res_atomic) |>
     expect_equal(length(res_list))
+
+  # check "complete" arg
+  res_list |>
+    expect_equal(res_list_com$results)
+  res_dt |>
+    expect_equal(res_dt_com$results)
+  res_atomic |>
+    expect_equal(res_atomic_com$results)
+
 
 })
 
@@ -493,67 +556,33 @@ test_that("pipmd_gini -arguments", {
 
 # Outputs ---------------------------------------------------------------
 test_that("pipmd_gini -outputs", {
-  res_list <-
-    pipmd_gini(welfare = welfare,
-               weight = weight,
-               format = "list")
+
   res_atomic <-
     pipmd_gini(welfare = welfare,
-               weight = weight,
-               format = "atomic")
-  res_dt <-
+               weight = weight)
+  res_atomic_com <-
     pipmd_gini(welfare = welfare,
                weight = weight,
-               format = "dt")
+               complete = TRUE)
 
-  res_bm_list <- list(gini = 0.41905333648877)
-  res_bm_atomic <- c(gini = 0.41905333648877)
-  res_bm_dt <-
-    structure(
-      list(indicator = "gini", value = 0.41905333648877),
-      row.names = c(NA, -1L),
-      class = c("data.table", "data.frame")
-    )
+  res_bm_atomic <- c(0.41905333648877)
 
-  # Check computations
-  res_list |>
-    expect_equal(res_bm_list)
-
-  res_atomic |>
+  res_atomic$dist_stats$gini |>
     expect_equal(res_bm_atomic)
 
-  res_dt |>
-    expect_equal(res_bm_dt)
 
   # Check output class
-  class(res_list) |>
-    expect_equal("list")
-
   class(res_atomic) |>
+    expect_equal("list")
+  class(res_atomic$dist_stats$gini) |>
     expect_equal("numeric")
 
-  #class(res_dt) |>
-  #  expect_equal("data.frame")
+  # check "complete" arg
+  expect_false(identical(res_atomic_com,
+                         res_bm_atomic))
 
-  # Check names in output
-  length(res_list) |>
-    expect_equal(1)
-
-  names(res_list) |>
-    expect_equal("gini")
-
-  names(res_dt) |>
-    expect_equal(c("indicator", "value"))
-
-  nrow(res_dt) |>
-    expect_equal(length(res_list))
-
-  names(res_atomic) |>
-    expect_equal(names(res_list))
-
-  length(res_atomic) |>
-    expect_equal(length(res_list))
-
+  expect_equal(res_atomic_com$results,
+               res_atomic)
 })
 
 # Testing Wolfson polarization index function ####
@@ -595,66 +624,27 @@ test_that("pipmd_polarization -outputs", {
                 w = weight)
 
   gini <- pipmd_gini(welfare = welfare,
-                     weight  = weight,
-                     format  = "atomic")
+                     weight  = weight)
 
-  res_list <-
-    pipmd_polarization(welfare = welfare,
-                       weight = weight,
-                       format = "list")
   res_atomic <-
     pipmd_polarization(welfare = welfare,
-                       weight = weight,
-                       format = "atomic")
-  res_dt <-
+                       weight = weight)
+  res_atomic_com <-
     pipmd_polarization(welfare = welfare,
                        weight = weight,
-                       format = "dt")
+                       complete = TRUE)
 
-  res_bm_list <- list(polarization = 0.430115535839879)
-  res_bm_atomic <- c(polarization = 0.430115535839879)
-  res_bm_dt <-
-    structure(
-      list(indicator = "polarization", value = 0.430115535839879),
-      row.names = c(NA, -1L),
-      class = c("data.table", "data.frame")
-    )
+  res_bm_atomic <- c(0.430115535839879)
 
   # Check computations
-  res_list |>
-    expect_equal(res_bm_list)
-
-  res_atomic |>
+  res_atomic$dist_stats$polarization |>
     expect_equal(res_bm_atomic)
-
-  res_dt |>
-    expect_equal(res_bm_dt)
-
+  res_atomic_com$results$dist_stats$polarization |>
+    expect_equal(res_bm_atomic)
   # Check output class
-  class(res_list) |>
-    expect_equal("list")
-
-  class(res_atomic) |>
+  class(res_atomic$dist_stats$polarization) |>
     expect_equal("numeric")
 
-  #class(res_dt) |>
-  #  expect_equal("data.frame")
-
-  # Check names in output
-  length(res_list) |>
-    expect_equal(1)
-
-  names(res_list) |>
-    expect_equal("polarization")
-
-  names(res_dt) |>
-    expect_equal(c("indicator", "value"))
-
-  nrow(res_dt) |>
-    expect_equal(length(res_list))
-
-  names(res_atomic) |>
-    expect_equal(names(res_list))
 
 })
 
@@ -670,12 +660,12 @@ test_that("pipmd_mld -arguments", {
   pipmd_mld(welfare = welfare, weight = weight_test) |>
     expect_error()
 
-  # pipmd_mld(welfare = welfare) |>
-  #   expect_message()
+   pipmd_mld(welfare = welfare) |>
+     expect_no_error()
 
   pipmd_mld(welfare = welfare,
-            weight = weight,
-            mean = NULL) |>
+            weight  = weight,
+            mean    = NULL) |>
     expect_no_error()
 
 })
@@ -685,66 +675,32 @@ test_that("pipmd_mld -outputs", {
   mean <- collapse::fmean(x = welfare,
                           w = weight)
 
-  res_list <-
-    pipmd_mld(welfare = welfare,
-              weight = weight,
-              format = "list")
   res_atomic <-
     pipmd_mld(welfare = welfare,
-              weight = weight,
-              format = "atomic")
-  res_dt <-
+              weight = weight)
+  res_atomic_com <-
     pipmd_mld(welfare = welfare,
               weight = weight,
-              format = "dt")
+              complete = TRUE)
 
-  res_bm_list <- list(mld = 0.301620140444736)
-  res_bm_atomic <- c(mld = 0.301620140444736)
-  res_bm_dt <-  structure(
-    list(indicator = "mld",
-         value = 0.301620140444736),
-    row.names = c(NA, -1L),
-    class = c("data.table", "data.frame")
-  )
+  res_bm_atomic <- c(0.301620140444736)
 
   # Check computations
-  res_list |>
-    expect_equal(res_bm_list)
-
-  res_atomic[[1]] |>
-    expect_equal(res_bm_atomic[[1]])
-
-  res_dt |>
-    expect_equal(res_bm_dt)
-
-  # Check output class
-  class(res_list) |>
-    expect_equal("list")
+  res_atomic$dist_stats$mld |>
+    expect_equal(res_bm_atomic)
 
   class(res_atomic) |>
-    expect_equal("numeric")
-
-  #class(res_dt) |>
-  #  expect_equal("data.frame")
+    expect_equal("list")
 
   # Check names in output
-  length(res_list) |>
-    expect_equal(1)
+  names(res_atomic$dist_stats) |>
+    expect_equal(c("mld"))
 
-  names(res_list) |>
-    expect_equal("mld")
+  expect_false(identical(res_atomic,
+                         res_atomic_com))
+  expect_true(identical(res_atomic_com$results$dist_stats$mld,
+                        res_atomic$dist_stats$mld))
 
-  names(res_dt) |>
-    expect_equal(c("indicator", "value"))
-
-  nrow(res_dt) |>
-    expect_equal(length(res_list))
-
-  names(res_atomic) |>
-    expect_equal(names(res_list))
-
-  length(res_atomic) |>
-    expect_equal(length(res_list))
 
 })
 

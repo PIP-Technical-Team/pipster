@@ -148,35 +148,48 @@ pipmd_welfare_share_at <- function(
     welfare        = NULL,
     weight         = rep(1, length = length(welfare)),
     n              = 10,
-    popshare       = seq(from = 1/n, to = 1, by = 1/n),
-    format         = c("dt", "list", "atomic")
+    format         = c("dt", "list", "atomic"),
+    complete       = getOption("pipster.return_complete")
 ){
+
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
-
-  # Use pipster_object
-  if (!is.null(pipster_object)) {
-    welfare <- pipster_object$welfare |> unclass()
-    weight  <- pipster_object$weight |> unclass()
+  pl     <- as.list(environment())
+  po     <- is_valid_inputs_md(pl)
+  if (!po) {
+    pipster_object <- create_pipster_object(welfare  = welfare,
+                                            weight   = weight,
+                                            n        = n)
   }
-
-  # defenses ---------
   check_pipmd_dist()
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   output <- wbpip::md_welfare_share_at(
-    welfare    = welfare,
-    weight     = weight,
-    n          = n,
-    popshare   = popshare,
+    welfare    = pipster_object$welfare |> unclass(),
+    weight     = pipster_object$weight |> unclass(),
+    n          = pipster_object$args$n,
     format     = format
   )
 
   # ____________________________________________________________________________
   # Format & Return -------------------------------------------------------------
-  return(output)
+  if (isFALSE(complete)) {
+    results <- list()
+  } else {
+    results <- pipster_object$results
+  }
+  results$dist_stats$popshare         <- pipster_object$args$popshare
+  results$dist_stats$welfare_share_at <- output
+
+  if (isFALSE(complete)) {
+    return(results)
+  }
+
+  pipster_object$results <- results
+
+  pipster_object
 
 }
 
@@ -227,23 +240,23 @@ pipmd_welfare_share_at <- function(
 #'
 pipmd_quantile_welfare_share <- function(
     pipster_object = NULL,
-    welfare    ,
+    welfare        = NULL,
     weight         = rep(1, length = length(welfare)),
     n              = 10,
-    popshare       = seq(from = 1/n, to = 1, by = 1/n),
-    format         = c("dt", "list", "atomic"))
+    format         = c("dt", "list", "atomic"),
+    complete       = getOption("pipster.return_complete"))
   {
+
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
-
-  # Use pipster_object
-  if (!is.null(pipster_object)) {
-    welfare <- pipster_object$welfare |> unclass()
-    weight  <- pipster_object$weight |> unclass()
+  pl     <- as.list(environment())
+  po     <- is_valid_inputs_md(pl)
+  if (!po) {
+    pipster_object <- create_pipster_object(welfare  = welfare,
+                                            weight   = weight,
+                                            n        = n)
   }
-
-  # defenses ---------
   check_pipmd_dist()
 
   # ____________________________________________________________________________
@@ -252,7 +265,6 @@ pipmd_quantile_welfare_share <- function(
     welfare    = welfare,
     weight     = weight,
     n          = n,
-    popshare   = popshare,
     format     = format
   )
   if (is.null(n)) {
@@ -260,8 +272,22 @@ pipmd_quantile_welfare_share <- function(
   }
 
   # ____________________________________________________________________________
-  # Return ---------------------------------------------------------------------
-  return(output)
+  # Format & Return -------------------------------------------------------------
+  if (isFALSE(complete)) {
+    results <- list()
+  } else {
+    results <- pipster_object$results
+  }
+  results$dist_stats$popshare               <- pipster_object$args$popshare
+  results$dist_stats$quantile_welfare_share <- output
+
+  if (isFALSE(complete)) {
+    return(results)
+  }
+
+  pipster_object$results <- results
+
+  pipster_object
 
 }
 
@@ -305,21 +331,25 @@ pipmd_gini <- function(
     pipster_object = NULL,
     welfare,
     weight         = rep(1, length = length(welfare)),
-    format         = c("dt", "list", "atomic"))
+    complete       = getOption("pipster.return_complete"))
   {
-  # _____________________________________
-  # Arguments ---------------------------
-  format <- match.arg(format)
 
-  # Use pipster_object
-  if (!is.null(pipster_object)) {
-    welfare <- pipster_object$welfare |> unclass()
-    weight  <- pipster_object$weight |> unclass()
+  # ____________________________________________________________________________
+  # Arguments ------------------------------------------------------------------
+  #format <- match.arg(format)
+  pl     <- as.list(environment())
+  po     <- is_valid_inputs_md(pl)
+  if (!po) {
+    pipster_object <- create_pipster_object(welfare  = welfare,
+                                            weight   = weight)
   }
+  check_pipmd_dist()
 
-  if (is.unsorted(welfare)) {
-    weight  <- weight[order(welfare)]
-    welfare <- welfare[order(welfare)]
+  if (is.unsorted(pipster_object$welfare)) {
+    pipster_object$weight  <-
+      pipster_object$weight[order(pipster_object$welfare)]
+    pipster_object$welfare <-
+      pipster_object$welfare[order(pipster_object$welfare)]
   }
 
   # defenses ---------
@@ -328,14 +358,27 @@ pipmd_gini <- function(
   # ______________________________________
   # Calculations -------------------------
   gn <- wbpip::md_compute_gini(
-    welfare = welfare,
-    weight  = weight
+    welfare = pipster_object$welfare |> unclass(),
+    weight  = pipster_object$weight |> unclass()
   )
-  names(gn) <- "gini"
 
-  # ________________________________________
-  # Format & Return ------------------------
-  return_format_md_dist(gn, name = "gini", format)
+  # ____________________________________________________________________________
+  # Format & Return -------------------------------------------------------------
+  if (isFALSE(complete)) {
+    results <- list()
+  } else {
+    results <- pipster_object$results
+  }
+  results$dist_stats$gini <- gn
+
+  if (isFALSE(complete)) {
+    return(results)
+  }
+
+  pipster_object$results <- results
+
+  pipster_object
+
 
 }
 
@@ -390,56 +433,59 @@ pipmd_gini <- function(
 #'
 pipmd_polarization <- function(
     pipster_object = NULL,
-    welfare,
+    welfare        = NULL,
     weight         = rep(1, length = length(welfare)),
     gini           = NULL,
     mean           = NULL,
     median         = NULL,
-    format         = c("dt", "list", "atomic")
+    #format         = c("dt", "list", "atomic"),
+    complete       = getOption("pipster.return_complete")
 ){
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
-  format <- match.arg(format)
-
-  # Use pipster_object
-  if (!is.null(pipster_object)) {
-    welfare <- pipster_object$welfare |> unclass()
-    weight  <- pipster_object$weight |> unclass()
+  pl     <- as.list(environment())
+  po     <- is_valid_inputs_md(pl, mean = TRUE, gini = TRUE)
+  if (!po &
+      is.null(pipster_object$results$dist_stats$gini)) {
+    pipster_object <- pipmd_gini(welfare  = welfare,
+                                 weight   = weight,
+                                 #n        = n,
+                                 #format   = "atomic",
+                                 complete = TRUE)
   }
-
-  # defenses ---------
   check_pipmd_dist()
 
-  if (is.null(gini)) {
-    gini <- pipmd_gini(
-      welfare = welfare,
-      weight  = weight,
-      format  = "atomic"
-    )
-  }
-  if (is.null(mean)) {
-    mean <- fmean(x = welfare, w = weight)
-  }
   if (is.null(median)) {
-    median <- fmedian(
-      x     = welfare,
-      w     = weight)
+    median <- wbpip::md_compute_median(welfare = welfare,
+                                       weight  = weight)
   }
 
   # ____________________________________________________________________________
   # Calculations ---------------------------------------------------------------
   p <- wbpip::md_compute_polarization(
-    welfare = welfare,
-    weight  = weight,
-    gini    = gini,
-    mean    = mean,
+    welfare = pipster_object$welfare,
+    weight  = pipster_object$weight,
+    gini    = pipster_object$results$dist_stats$gini,
+    mean    = pipster_object$args$mean,
     median  = median
   )
-  names(p) <- "polarization"
 
   # ____________________________________________________________________________
-  # Format & Return ------------------------------------------------------------
-  return_format_md_dist(p, name = "polarization", format)
+  # Format & Return -------------------------------------------------------------
+  if (isFALSE(complete)) {
+    results <- list()
+  } else {
+    results <- pipster_object$results
+  }
+  results$dist_stats$polarization <- p
+
+  if (isFALSE(complete)) {
+    return(results)
+  }
+
+  pipster_object$results <- results
+
+  pipster_object
 
 }
 
@@ -483,37 +529,43 @@ pipmd_mld <- function(
     welfare    ,
     weight         = rep(1, length = length(welfare)),
     mean           = NULL,
-    format         = c("dt", "list", "atomic")
+    complete       = getOption("pipster.return_complete")
 ){
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
-  format <- match.arg(format)
-
-  # Use pipster_object
-  if (!is.null(pipster_object)) {
-    welfare <- pipster_object$welfare |> unclass()
-    weight  <- pipster_object$weight |> unclass()
+  pl     <- as.list(environment())
+  po     <- is_valid_inputs_md(pl, mean = TRUE)
+  if (!po) {
+    pipster_object <- create_pipster_object(welfare  = welfare,
+                                            weight   = weight,
+                                            mean     = mean)
   }
-
-  if (is.null(mean)) {
-    mean <- fmean(x = welfare,w = weight)
-  }
-
-  # defenses ---------
   check_pipmd_dist()
 
   # ____________________________________________________________________________
   # Calculations ---------------------------------------------------------------
-  p <- wbpip::md_compute_mld(
-    welfare = welfare,
-    weight  = weight,
-    mean    = mean
+  mld <- wbpip::md_compute_mld(
+    welfare = pipster_object$welfare |> unclass(),
+    weight  = pipster_object$weight |> unclass(),
+    mean    = pipster_object$args$mean
   )
-  names(p) <- "mld"
 
   # ____________________________________________________________________________
-  # Format & Return ------------------------------------------------------------
-  return_format_md_dist(p, name = "mld", format)
+  # Format & Return -------------------------------------------------------------
+  if (isFALSE(complete)) {
+    results <- list()
+  } else {
+    results <- pipster_object$results
+  }
+  results$dist_stats$mld <- mld
+
+  if (isFALSE(complete)) {
+    return(results)
+  }
+
+  pipster_object$results <- results
+
+  pipster_object
 
 }
 
@@ -557,7 +609,6 @@ is_valid_inputs_md <- function(pl, pov = TRUE, mean = FALSE, gini = FALSE) {
     if (is.null(c(pl$n,
                   pl$popshare,
                   pl$gini,
-                  #pl$median,
                   pl$mean))) {
       return(TRUE)
     }
