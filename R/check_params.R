@@ -97,37 +97,61 @@ check_pipgd_params <- function(lp) {
 
 #' Check parameters of pipmd functions
 #'
+#' @param lp list of parameters
 #'
 #' @return invisible TRUE
 #' @keywords internal
-check_pipmd_pov <- function() {
-  lp <- parent.frame()  |>
-    as.list()
+check_pipmd_pov <- function(lp) {
 
-  with(lp, {
-    if (is.na(welfare) |> any()) {
+  #   ____________________________________________________________________________
+  #   Computations                                                            ####
+
+  nlp <- names(lp)
+
+  ## params -------------
+  ### Check if parameters contain pipster_object
+  if ("pipster_object" %in% nlp) {
+    #### if so, check if it was created correctly
+    if (!is.null(lp$pipster_object) && !inherits(lp$pipster_object, "pipster")) {
+      cli::cli_abort(c("argument {.field pipster_object} must be of
+                       class {.code pipster}.",
+                       "It should be created using {.fun create_pipster_object}"))
+    }
+  }
+
+  ### If there is no pipster_object, check that the needed parameters are specified.
+  if (!"pipster_object" %in% nlp) {
+    #### 1. No NAs in welfare
+    if (is.na(lp$welfare) |> any()) {
       cli::cli_abort("No elements in welfare vector can be NA")
     }
-    if (!is.numeric(welfare)) {
+
+    #### 2. Welfare must be numeric
+    if (!is.numeric(lp$welfare)) {
       cli::cli_abort("welfare must be numeric")
     }
 
-    if (length(weight) > 1 & any(is.na(weight))) {
+    #### 3. No NAs in weight
+    if (length(lp$weight) > 1 & any(is.na(lp$weight))) {
       cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
     }
 
-    if (is.null(povline) || !is.numeric(povline)) {
+    #### 4. povline is specified
+    if (is.null(lp$povline) || !is.numeric(lp$povline)) {
       cli::cli_abort(
         text = "A numeric poverty line must be specified"
       )
     }
 
-    if (povline < min(welfare) || povline > max(welfare)) {
+    #### 5. Povline within range
+    if (lp$povline < min(lp$welfare) || lp$povline > max(lp$welfare)) {
       cli::cli_alert_info(
         text = "Note: specified poverty line is not within the welfare range"
       )
     }
-  })
+
+  }
+
 
   #   ____________________________________________________________________________
   #   Return                                                                  ####
