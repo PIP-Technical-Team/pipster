@@ -24,6 +24,7 @@
 create_pipster_object <-
   function(welfare,
            weight         = rep(1, length(welfare)),
+           mean           = NULL,
            times_mean     = 1,
            n              = 10,
            povshare       = NULL,
