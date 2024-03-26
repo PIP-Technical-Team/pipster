@@ -72,6 +72,9 @@ create_pipster_object <-
       if (is.null(mean)) {
         mean <- collapse::fmean(x = welfare,
                                 w = weight)
+        if (is.null(povline)) {
+          povline <- mean*times_mean
+        }
       }
     },
     "id"   = {
