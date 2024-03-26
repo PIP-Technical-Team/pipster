@@ -139,12 +139,46 @@ return_format_md <- function(
 }
 
 
+#' Return data according to format - microdata - pov
+#'
+#' @inheritParams return_format
+#'
+#' @return determined by `format`
+return_format_md_pov <- function(ld,
+                                 var,
+                                 povline,
+                                 complete = FALSE,
+                                 format = c("dt", "list", "atomic")) {
+  format <- match.arg(format)
 
+  if (complete == TRUE && format != "list") {
+    cli::cli_abort("{.field complete} is only available with {.field format} = 'list'")
+  }
 
-return_format_md_dist <- \(){
+  # Handle 'atomic' format
+  if (format == "atomic") {
+    atomic_vector <- unlist(lapply(ld, function(item) item$pov_stats[[var]]))
+    return(atomic_vector)
+  }
 
+  # Handle 'dt' and 'list' formats
+  dt_list <- lapply(ld, function(item) {
+    povline_value <- item$pov_stats$povline
+    stat_value <- item$pov_stats[[var]]
+    dt <- data.table(povline = povline_value, stat_value = stat_value)
+    setnames(dt, "stat_value", var) # Rename the column after creation
+    return(dt)
+  })
+
+  if (format == "dt") {
+    combined_dt <- rbindlist(dt_list)
+    return(combined_dt)
+  } else if (format == "list") {
+
+    names(ld) <- paste0('pl', povline)
+    return(ld)
+  }
 }
-
 
 
 
