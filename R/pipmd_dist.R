@@ -65,11 +65,13 @@ pipmd_quantile <- function(
   format <- match.arg(format)
   pl     <- as.list(environment())
   po     <- is_valid_inputs_md(pl)
+
   if (!po) {
     pipster_object <- create_pipster_object(welfare  = welfare,
                                             weight   = weight,
                                             n        = n)
   }
+
   check_pipmd_dist()
 
   # ____________________________________________________________________________
@@ -157,6 +159,7 @@ pipmd_welfare_share_at <- function(
   format <- match.arg(format)
   pl     <- as.list(environment())
   po     <- is_valid_inputs_md(pl)
+
   if (!po) {
     pipster_object <- create_pipster_object(welfare  = welfare,
                                             weight   = weight,
@@ -581,10 +584,10 @@ pipmd_mld <- function(
 #' the pipster object - and stored in `pipster_object$args` - is the
 #' same as the argument values being used in the function being called.
 #' However, if the function being called has all arguments
-#' (except `pipster_object`) being NULL, the `pipster_object$args` will
+#' (except `pipster_object`) being NULL, then `pipster_object$args` will
 #' automatically be used. If supplied arguments are non-NULL and different from
 #' the `pipster_object$args` then the pipster object is re-estimated internally
-#' using teh newly supplied arguments.
+#' using the newly supplied arguments.
 #'
 #' @param pl
 #' @param pov logical: if TRUE, then is a poverty measure requiring povline
@@ -596,10 +599,14 @@ pipmd_mld <- function(
 #' @return logical: TRUE if valid, FALSE if invalid. pipster_object must
 #' be re-estimated if FALSE
 #' @keywords internal
-is_valid_inputs_md <- function(pl, pov = TRUE, mean = FALSE, gini = FALSE) {
+is_valid_inputs_md <- function(pl,
+                               pov = TRUE,
+                               mean = FALSE,
+                               gini = FALSE) {
   # check that all of `pl`
   # are the same as the arguments in
   # pipster_object$args
+
   if (is.null(pl$pipster_object)) {
     return(FALSE)
   }
@@ -622,17 +629,23 @@ is_valid_inputs_md <- function(pl, pov = TRUE, mean = FALSE, gini = FALSE) {
 
 
   } else {
+
     # POV
-    if (is.null(c(pl$povline,
-                  pl$times_mean))) {
+    if (is.null(pl$times_mean) && any(is.na(pl$povline))) {
       return(TRUE)
     }
+
     # checks
+
     c_pl       <- identical(pl$pipster_object$args$povline,
                            pl$povline)
+
+
     c_tmean    <- identical(pl$pipster_object$args$times_mean,
                            pl$times_mean)
+
     c_prod     <- c_pl*c_tmean
+
   }
 
   # gini
