@@ -9,7 +9,6 @@
 #' @param welfare numeric: welfare vector
 #' @param weight numeric: weight vector
 #' @param povline numeric: user-defined poverty line, default is mean*times_mean.
-#' @param mean numeric: user-defined mean, default is NULL.
 #' @param times_mean numeric: user-defined mean factor, default is 1.
 #' @param imputation_id numeric: vector of ids for multiply imputed data.
 #' Default is NULL
@@ -25,7 +24,6 @@
 create_pipster_object <-
   function(welfare,
            weight         = rep(1, length(welfare)),
-           mean           = NULL,
            times_mean     = 1,
            n              = 10,
            povshare       = NULL,
