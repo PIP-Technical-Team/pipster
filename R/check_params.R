@@ -142,29 +142,34 @@ check_pipmd_dist <- function() {
     as.list()
 
   with(lp, {
+    if (!is.null(pipster_object)) {
+      return(invisible(TRUE))
+    } else {
 
-    if (is.na(welfare) |> any()) {
-      cli::cli_abort("No elements in welfare vector can be NA")
-    }
-    if (!is.numeric(welfare)) {
-      cli::cli_abort("welfare must be numeric")
-    }
-    if (length(weight) > 1 & any(is.na(weight))) {
-      cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
-    }
-    if (is.null(weight)) {
-      weight <- rep(1, length = length(welfare))
-      cli::cli_alert_warning(
-        text = "No weight vector specified, each observation assigned equal weight"
-      )
-    }
+      if (is.na(welfare) |> any()) {
+        cli::cli_abort("No elements in welfare vector can be NA")
+      }
+      if (!is.numeric(welfare)) {
+        cli::cli_abort("welfare must be numeric")
+      }
+      if (length(weight) > 1 & any(is.na(weight))) {
+        cli::cli_abort("No elements in weight vector can be NA - make NULL to use equal weighting")
+      }
+      if (is.null(weight)) {
+        weight <- rep(1, length = length(welfare))
+        cli::cli_alert_warning(
+          text = "No weight vector specified, each observation assigned equal weight"
+        )
+      }
 
-    if (exists("n", inherits = FALSE) &
-        exists("popshare", inherits = FALSE)) {
-      if (is.null(n) & is.null(popshare)) {
-        cli::cli_abort("Either {.arg n} or {.arg popshare} must be defined")
+      if (exists("n", inherits = FALSE) &
+          exists("popshare", inherits = FALSE)) {
+        if (is.null(n) & is.null(popshare)) {
+          cli::cli_abort("Either {.arg n} or {.arg popshare} must be defined")
+        }
       }
     }
+
   })
   #   ____________________________________________________________________________
   #   Return                                                                  ####
