@@ -145,39 +145,63 @@ return_format_md <- function(
 #'
 #' @return determined by `format`
 return_format_md_pov <- function(ld,
-                                 var,
-                                 povline,
-                                 complete = FALSE,
-                                 format = c("dt", "list", "atomic")) {
+                                  var,
+                                  povline,
+                                  complete = FALSE,
+                                  format = c("dt", "list", "atomic")) {
   format <- match.arg(format)
 
+  # complete non-lists = error
   if (complete == TRUE && format != "list") {
     cli::cli_abort("{.field complete} is only available with {.field format} = 'list'")
   }
 
-  # Handle 'atomic' format
+  # atomic format
   if (format == "atomic") {
-    atomic_vector <- unlist(lapply(ld, function(item) item$pov_stats[[var]]))
+
+    atomic_vector <- sapply(ld, function(item) item$pov_stats[[var]], simplify = "vector", USE.NAMES = TRUE)
+
+    names(atomic_vector) <- sapply(ld, function(item) paste0("pl", round(item$pov_stats$povline)))
     return(atomic_vector)
   }
 
-  # Handle 'dt' and 'list' formats
-  dt_list <- lapply(ld, function(item) {
-    povline_value <- item$pov_stats$povline
-    stat_value <- item$pov_stats[[var]]
-    dt <- data.table(povline = povline_value, stat_value = stat_value)
-    setnames(dt, "stat_value", var) # Rename the column after creation
-    return(dt)
-  })
 
-  if (format == "dt") {
+  # dt format
+  if (format == 'dt') {
+
+    dt_list <- lapply(ld, function(item) {
+      povline_value <- item$pov_stats$povline
+      stat_value <- item$pov_stats[[var]]
+      dt <- data.table(povline = povline_value, stat_value = stat_value)
+      setnames(dt, "stat_value", var)
+      return(dt)
+    })
+
     combined_dt <- rbindlist(dt_list)
     return(combined_dt)
-  } else if (format == "list") {
+  }
 
-    names(ld) <- paste0('pl', povline)
+  # list format
+  if (format == 'list' && complete == FALSE ) {
+
+    # remove ld$pov_stats$fgt_data but keep rest of ld$pov_stats
+    modified_ld <- lapply(ld, function(item) {
+      pov_stats <- item$pov_stats
+      pov_stats$fgt_data <- NULL
+      return(pov_stats)
+    })
+
+    names(modified_ld) <- paste0("pl", sapply(modified_ld, function(item) round(item$povline)))
+
+    return(modified_ld)
+
+  } else {
+
+    names(ld) <- paste0("pl", sapply(ld, function(item) round(item$pov_stats$povline)))
+
     return(ld)
   }
+
 }
 
 
