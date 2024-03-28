@@ -339,30 +339,52 @@ pipmd_pov_severity_nv <- function(
     welfare    = NULL,
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
-    times_mean = 1)
+    times_mean = NULL)
   {
-  #   Defenses -------------
-  if (!is.null(pipster_object)) {
-    welfare <- pipster_object$welfare |> unclass()
-    weight <- pipster_object$weight |> unclass()
-  }
-  check_pipmd_pov()
 
-  # ____________________________________________________________________________
+  # ----------------------------------------------------------------------------
+  # Arguments ------------------------------------------------------------------
+
+  pl <- as.list(environment())
+  po <- is_valid_inputs_md(pl)
+
+  # Adjust povline and times_mean giving pipster_object precedent
+  if (!po & is.null(welfare)) {
+    pipster_object <- create_pipster_object(welfare = pipster_object$welfare |> unclass(),
+                                            weight  = pipster_object$weight |> unclass(),
+                                            povline = povline)
+  }
+
+  if (!po & !is.null(welfare)) {
+    pipster_object <- create_pipster_object(welfare = welfare,
+                                            weight  = weight,
+                                            povline = povline)
+  }
+
+  check_pipmd_pov(pl)
+
+  # ----------------------------------------------------------------------------
   # Computations ---------------------------------------------------------------
-  output <- list()
-  ps <- wbpip::md_compute_fgt(
-    welfare      = welfare,
-    weight       = weight,
-    povline      = povline,
-    alpha        = 2
+
+  fgt_data <- wbpip::md_compute_fgt(
+    welfare      = pipster_object$welfare |> unclass(),
+    weight       = pipster_object$weight |> unclass(),
+    povline      = pipster_object$args$povline,
+    alpha        = 2,
+    return_data  = TRUE # this is to carry results to use in next calculations
   )
-  attributes(ps) <- NULL
-  output$pov_severity <- ps
+
 
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------
-  output
+
+  results <- pipster_object$results
+  results$pov_stats$fgt_data <- fgt_data
+  results$pov_stats$pov_severity <- fgt_data$FGT2
+  results$pov_stats$povline <- fgt_data$povline
+
+
+  pipster_object$results <- results
 
 }
 
@@ -404,12 +426,18 @@ pipmd_pov_severity <- function(
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1,
-    format     = c("dt", "list", "atomic")
+    format     = c("dt", "list", "atomic"),
+    complete = getOption('pipster.return_complete')
 ){
 
   # ____________________________________________________________________________
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
+
+  ## povline check: user-defined povline has priority
+  if (is.null(povline) && !is.null(pipster_object$args$povline)) {
+    povline <- pipster_object$args$povline
+  }
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
@@ -418,6 +446,7 @@ pipmd_pov_severity <- function(
     vectorize.args = "povline",
     SIMPLIFY       = FALSE
   )
+
   list_pov_severity <- pipmd_pov_severity_v(
     pipster_object = pipster_object,
     welfare    = welfare,
@@ -425,13 +454,15 @@ pipmd_pov_severity <- function(
     povline    = povline
   )
 
+
   # ____________________________________________________________________________
   # Format ---------------------------------------------------------------------
-  out <- return_format_md(
+  out <- return_format_md_pov(
     ld      = list_pov_severity,
     var     = "pov_severity",
     format  = format,
-    povline = povline
+    povline = povline,
+    complete = complete
   )
 
   # ____________________________________________________________________________
