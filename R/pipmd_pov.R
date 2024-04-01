@@ -22,7 +22,8 @@ pipmd_pov_headcount_nv <- function(
   welfare        = NULL,
   weight         = rep(1, length = length(welfare)),
   povline        = fmean(welfare, w = weight)*times_mean,
-  times_mean     = NULL #1
+  times_mean     = NULL,
+  complete       = NULL
 ){
 
   # ----------------------------------------------------------------------------
@@ -61,15 +62,19 @@ pipmd_pov_headcount_nv <- function(
 
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------
-
   results <- pipster_object$results
   results$pov_stats$fgt_data <- fgt_data
   results$pov_stats$pov_headcount <- fgt_data$FGT0
   results$pov_stats$povline <- fgt_data$povline
 
 
+  if (isFALSE(complete)) {
+    return(results)
+  }
+
   pipster_object$results <- results
 
+  pipster_object
 }
 
 
@@ -115,15 +120,9 @@ pipmd_pov_headcount <- function(
 ){
 
 
-
   # ______________________________________________________________
   # Arguments ----------------------------------------------------
   format <- match.arg(format)
-
-  ## povline check: user-defined povline has priority
-  if (is.null(povline) && !is.null(pipster_object$args$povline)) {
-    povline <- pipster_object$args$povline
-  }
 
   # ______________________________________________________________
   # Computations -------------------------------------------------
@@ -133,12 +132,12 @@ pipmd_pov_headcount <- function(
     SIMPLIFY       = FALSE
   )
 
-
   list_headcount <- pipmd_pov_headcount_v(
     pipster_object = pipster_object,
     welfare    = welfare,
     weight     = weight,
-    povline    = povline
+    povline    = povline,
+    complete = complete
   )
 
   # ____________________________________________________________________________
