@@ -101,7 +101,8 @@ check_pipgd_params <- function(lp) {
 #'
 #' @return invisible TRUE
 #' @keywords internal
-check_pipmd_pov <- function(lp) {
+check_pipmd_pov <- function(lp,
+                            pipster_object) {
 
   #   ____________________________________________________________________________
   #   Computations                                                            ####
@@ -144,12 +145,11 @@ check_pipmd_pov <- function(lp) {
   #  }
 
   ### Specified povline is within range (of the pipster_object$welfare))
-  if (!is.null(lp$povline) & (lp$povline < min(lp$pipster_object$welfare) ||
-      lp$pipster_object$args$povline > max(lp$pipster_object$welfare))) {
-      cli::cli_alert_info(
-        text = "Note: specified poverty line is not within the welfare range"
-      )
-    }
+  if (!is.null(lp$povline) & ((lp$povline < min(pipster_object$welfare)) || (lp$povline > max(pipster_object$welfare)))) {
+    cli::cli_alert_info(
+      text = "Note: specified poverty line is not within the welfare range"
+    )
+  }
 
   #   ____________________________________________________________________________
   #   Return                                                                  ####

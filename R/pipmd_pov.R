@@ -47,7 +47,7 @@ pipmd_pov_headcount_nv <- function(
                                             povline = povline)
   }
 
-  check_pipmd_pov(pl)
+  check_pipmd_pov(pl, pipster_object)
 
   # ----------------------------------------------------------------------------
   # Computations ---------------------------------------------------------------
