@@ -73,7 +73,7 @@ test_that("pipmd_pov_headcount_nv outputs work as expected", {
 
 # When format is "list" --------------------------------------------------------------------------------
 
-test_that("pipmd_pov_headcount work as expected -when format is list", {
+test_that("pipmd_pov_headcount work as expected - when format is list", {
 
   welfare_test <- welfare_s
   welfare_test[1] = NA
