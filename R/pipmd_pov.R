@@ -2,7 +2,8 @@
 # on microdata (md).
 
 
-
+# POV HEADCOUNT ----------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #' Calculate poverty headcount using microdata
 #'
 #' Non-vectorized poverty headcount microdata function. Use the vectorized
@@ -166,7 +167,6 @@ pipmd_pov_headcount <- function(
 # POV GAP-----------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 
-
 #' Calculate poverty gap using microdata
 #'
 #' Non-vectorized poverty gap microdata function. Use the vectorized
@@ -181,7 +181,8 @@ pipmd_pov_gap_nv <- function(
     welfare        = NULL,
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
-    times_mean = NULL)
+    times_mean = NULL,
+    complete = NULL)
   {
 
   # ----------------------------------------------------------------------------
@@ -227,7 +228,13 @@ pipmd_pov_gap_nv <- function(
   results$pov_stats$povline <- fgt_data$povline
 
 
+  if (isFALSE(complete)) {
+    return(results)
+  }
+
   pipster_object$results <- results
+
+  pipster_object
 
 }
 
@@ -295,7 +302,8 @@ pipmd_pov_gap <- function(
     pipster_object = pipster_object,
     welfare    = welfare,
     weight     = weight,
-    povline    = povline
+    povline    = povline,
+    complete   = complete
   )
 
   # ____________________________________________________________________________
