@@ -137,16 +137,15 @@ check_pipmd_pov <- function(lp) {
     }
   }
 
-  ### povline is specified
-  #### 1. povline is specified
-  if (is.null(lp$povline) || !is.numeric(lp$povline)) {
-      cli::cli_abort(
-        text = "A numeric poverty line must be specified"
-      )
-    }
+  # povline will never be null so this is removed
+  #### Specified povline is specified
+  #if (is.null(lp$pipster_object$args$povline) || !is.numeric(lp$pipster_object$args$povline)) {
+  #    cli::cli_abort( "A numeric poverty line must be specified")
+  #  }
 
-    #### 2. Povline within range
-  if (lp$povline < min(lp$welfare) || lp$povline > max(lp$welfare)) {
+  ### Specified povline is within range (of the pipster_object$welfare))
+  if (!is.null(lp$povline) & (lp$povline < min(lp$pipster_object$welfare) ||
+      lp$pipster_object$args$povline > max(lp$pipster_object$welfare))) {
       cli::cli_alert_info(
         text = "Note: specified poverty line is not within the welfare range"
       )
