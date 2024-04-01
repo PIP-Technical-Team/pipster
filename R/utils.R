@@ -145,10 +145,10 @@ return_format_md <- function(
 #'
 #' @return determined by `format`
 return_format_md_pov <- function(ld,
-                                  var,
-                                  povline,
-                                  complete = FALSE,
-                                  format = c("dt", "list", "atomic")) {
+                                 var,
+                                 povline,
+                                 complete = FALSE,
+                                 format = c("dt", "list", "atomic")) {
   format <- match.arg(format)
 
   # complete non-lists = error
@@ -156,11 +156,11 @@ return_format_md_pov <- function(ld,
     cli::cli_abort("{.field complete} is only available with {.field format} = 'list'")
   }
 
-  # atomic format
+  # atomic format with names
   if (format == "atomic") {
-
+    # Use sapply to retain names
     atomic_vector <- sapply(ld, function(item) item$pov_stats[[var]], simplify = "vector", USE.NAMES = TRUE)
-
+    # Generate names based on povline
     names(atomic_vector) <- sapply(ld, function(item) paste0("pl", round(item$pov_stats$povline)))
     return(atomic_vector)
   }
@@ -181,7 +181,6 @@ return_format_md_pov <- function(ld,
     return(combined_dt)
   }
 
-  # list format
   if (format == 'list' && complete == FALSE ) {
 
     # remove ld$pov_stats$fgt_data but keep rest of ld$pov_stats
@@ -197,7 +196,7 @@ return_format_md_pov <- function(ld,
 
   } else {
 
-    names(ld) <- paste0("pl", sapply(ld, function(item) round(item$pov_stats$povline)))
+    names(ld) <- paste0("pl", sapply(ld, function(item) round(item$results$pov_stats$povline)))
 
     return(ld)
   }
