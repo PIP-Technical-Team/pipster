@@ -5,7 +5,7 @@ weight_s  = pip_md_s$weight
 
 
 # Testing poverty headcount function (non vectorized) ####
-# Arguments ---------------------------------------------------------------
+## Arguments ---------------------------------------------------------------
 test_that("pipmd_pov_headcount_nv arguments work as expected", {
   welfare_test <- welfare_s
   welfare_test[1] = NA
@@ -30,10 +30,11 @@ test_that("pipmd_pov_headcount_nv arguments work as expected", {
                          povline = "non numeric povline") |>
     expect_error()
 
-  pipmd_pov_headcount_nv(welfare = welfare_s,
-                         weight  = weight_s,
-                         povline = NULL) |>
-    expect_error()
+  #pipmd_pov_headcount_nv(welfare = welfare_s,
+  #                       weight  = weight_s,
+  #                       povline = NULL) |>
+  #  expect_error()
+  # Note: removed because povline is not going to be = NULL.
 
   pipmd_pov_headcount_nv(welfare = welfare_s,
                          weight  = weight_s,
@@ -47,31 +48,29 @@ test_that("pipmd_pov_headcount_nv arguments work as expected", {
 
 })
 
-# Computations ---------------------------------------------------------------
+## Computations ---------------------------------------------------------------
 test_that("pipmd_pov_headcount_nv outputs work as expected", {
 
   res <- pipmd_pov_headcount_nv(welfare = welfare_s,
                                 weight  = weight_s,
                                 povline = 1)
-  res_benchmark <- list(pov_headcount   = 0.126034968864758)
+
+  res_benchmark <- 0.126034968864758
 
   class(res) |>
-    expect_equal("list")
+    expect_equal("pipster")
 
   length(res) |>
-    expect_equal(1)
+    expect_equal(5)
 
-  names(res) |>
-    expect_equal("pov_headcount")
-
-  res |>
+  res$results$pov_stats$pov_headcount |>
     expect_equal(res_benchmark)
 
 })
 
 # Testing poverty headcount function (vectorized) ####
 
-# When format is "list" --------------------------------------------------------------------------------
+## When format is "list" --------------------------------------------------------------------------------
 
 test_that("pipmd_pov_headcount work as expected - when format is list", {
 
@@ -149,6 +148,7 @@ test_that("pipmd_pov_headcount work as expected - when format is list", {
                              weight  = weight_s,
                              povline = povline,
                              format  = format)
+
   res_benchmark <- list(pl0.5 = list(pov_headcount = 0.0192906691433047),
                         pl1 = list(pov_headcount = 0.126034968864758),
                         pl2 = list(pov_headcount = 0.423769472762453))
@@ -167,8 +167,8 @@ test_that("pipmd_pov_headcount work as expected - when format is list", {
 
 })
 
-# When format is "dt" -------------------------------------------------
-test_that("pipmd_pov_headcount work as expected -when format is dt", {
+## When format is "dt" -------------------------------------------------
+test_that("pipmd_pov_headcount work as expected - when format is dt", {
   welfare_test <- welfare_s
   welfare_test[1] = NA
 
@@ -269,8 +269,8 @@ test_that("pipmd_pov_headcount work as expected -when format is dt", {
 
 })
 
-# When format is "atomic" -------------------------------------------------
-test_that("pipmd_pov_headcount work as expected -when format is atomic", {
+## When format is "atomic" -------------------------------------------------
+test_that("pipmd_pov_headcount work as expected - when format is atomic", {
   welfare_test <- welfare_s
   welfare_test[1] = NA
 
@@ -364,6 +364,8 @@ test_that("pipmd_pov_headcount work as expected -when format is atomic", {
     expect_equal(res_benchmark)
 
 })
+
+
 
 # Testing poverty gap function (non vectorized) ####
 # Arguments --------------------------------------------------------
@@ -850,8 +852,6 @@ test_that("pipmd_watts_nv outputs work as expected", {
     expect_equal(res_benchmark)
 
 })
-
-
 
 
 # Testing watts index function (vectorized) ####
