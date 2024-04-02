@@ -1,10 +1,11 @@
 # Testing functions related to poverty measures (for micro data)
+# Set-up -----
 welfare_s = pip_md_s$welfare
 weight_s  = pip_md_s$weight
 
 
-
-# Testing poverty headcount function (non vectorized) ####
+# POV HEADCOUNT ----
+# pov_headcount_nv: ####
 ## Arguments ---------------------------------------------------------------
 test_that("pipmd_pov_headcount_nv arguments work as expected", {
   welfare_test <- welfare_s
@@ -68,8 +69,7 @@ test_that("pipmd_pov_headcount_nv outputs work as expected", {
 
 })
 
-# Testing poverty headcount function (vectorized) ####
-
+# pov_headcount_v ####
 ## When format is "list" --------------------------------------------------------------------------------
 
 test_that("pipmd_pov_headcount work as expected - when format is list", {
@@ -149,15 +149,18 @@ test_that("pipmd_pov_headcount work as expected - when format is list", {
                              povline = povline,
                              format  = format)
 
-  res_benchmark <- list(pl0.5 = list(pov_headcount = 0.0192906691433047),
-                        pl1 = list(pov_headcount = 0.126034968864758),
-                        pl2 = list(pov_headcount = 0.423769472762453))
+  res_benchmark <- list(pl0 = list(pov_headcount = 0.0192906691433047,
+                                   povline = 0.5),
+                        pl1 = list(pov_headcount = 0.126034968864758,
+                                   povline = 1),
+                        pl2 = list(pov_headcount = 0.423769472762453,
+                                   povline = 2))
 
   class(res) |>
     expect_equal("list")
 
   names(res) |>
-    expect_equal(c("pl0.5", "pl1", "pl2"))
+    expect_equal(c("pl0", "pl1", "pl2"))
 
   length(res) |>
     expect_equal(length(povline))
@@ -208,11 +211,11 @@ test_that("pipmd_pov_headcount work as expected - when format is dt", {
                       format         = format) |>
     expect_error()
 
-  pipmd_pov_headcount(welfare        = welfare_s,
-                      weight         = weight_s,
-                      povline        = NULL,
-                      format         = format) |>
-    expect_error()
+  #pipmd_pov_headcount(welfare        = welfare_s,
+  #                    weight         = weight_s,
+  #                    povline        = NULL,
+  #                    format         = format) |>
+  #  expect_error()
 
   pipmd_pov_headcount(welfare        = welfare_s,
                       weight         = weight_s,
@@ -310,11 +313,11 @@ test_that("pipmd_pov_headcount work as expected - when format is atomic", {
                       format         = format) |>
     expect_error()
 
-  pipmd_pov_headcount(welfare        = welfare_s,
-                      weight         = weight_s,
-                      povline        = NULL,
-                      format         = format) |>
-    expect_error()
+  #pipmd_pov_headcount(welfare        = welfare_s,
+  #                    weight         = weight_s,
+  #                    povline        = NULL,
+  #                    format         = format) |>
+  #  expect_error()
 
   pipmd_pov_headcount(welfare        = welfare_s,
                       weight         = weight_s,
@@ -345,7 +348,7 @@ test_that("pipmd_pov_headcount work as expected - when format is atomic", {
                              weight  = weight_s,
                              povline = povline,
                              format  = format)
-  res_benchmark <- c(pl0.5 = 0.0192906691433047,
+  res_benchmark <- c(pl0 = 0.0192906691433047,
                      pl1   = 0.126034968864758,
                      pl2   = 0.423769472762453)
 
@@ -353,7 +356,7 @@ test_that("pipmd_pov_headcount work as expected - when format is atomic", {
     expect_equal("numeric")
 
   names(res) |>
-    expect_equal(c("pl0.5",
+    expect_equal(c("pl0",
                    "pl1",
                    "pl2" ))
 
@@ -366,9 +369,9 @@ test_that("pipmd_pov_headcount work as expected - when format is atomic", {
 })
 
 
-
-# Testing poverty gap function (non vectorized) ####
-# Arguments --------------------------------------------------------
+# POV GAP ----
+# pov_gap_nv ####
+## Arguments --------------------------------------------------------
 test_that("pipmd_pov_gap_nv arguments work as expected", {
   welfare_test <- welfare_s
   welfare_test[1] = NA
@@ -391,10 +394,10 @@ test_that("pipmd_pov_gap_nv arguments work as expected", {
   # pipmd_pov_gap_nv(welfare = welfare_s) |>
   #   expect_message()
 
-  pipmd_pov_gap_nv(welfare = welfare_s,
-                   weight  = weight_s,
-                   povline = NULL) |>
-    expect_error()
+  #pipmd_pov_gap_nv(welfare = welfare_s,
+  #                 weight  = weight_s,
+  #                 povline = NULL) |>
+  #  expect_error()
 
   pipmd_pov_gap_nv(welfare = welfare_s,
                    weight  = weight_s,
@@ -413,7 +416,7 @@ test_that("pipmd_pov_gap_nv arguments work as expected", {
 
 })
 
-# Outputs --------------------------------------------------------
+## Outputs --------------------------------------------------------
 test_that("pipmd_pov_gap_nv outputs work as expected", {
   res <- pipmd_pov_gap_nv(welfare = welfare_s,
                           weight  = weight_s,

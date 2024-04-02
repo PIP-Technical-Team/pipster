@@ -145,7 +145,8 @@ check_pipmd_pov <- function(lp,
   #  }
 
   ### Specified povline is within range (of the pipster_object$welfare))
-  if (!is.null(lp$povline) & ((lp$povline < min(pipster_object$welfare)) || (lp$povline > max(pipster_object$welfare)))) {
+  if ((!is.null(lp$povline) & !is.na(lp$povline)) &
+      ((lp$povline < min(pipster_object$welfare)) || (lp$povline > max(pipster_object$welfare)))) {
     cli::cli_alert_info(
       text = "Note: specified poverty line is not within the welfare range"
     )
