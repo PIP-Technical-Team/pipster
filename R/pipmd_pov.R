@@ -205,7 +205,7 @@ pipmd_pov_gap_nv <- function(
                                             povline = povline)
   }
 
-  check_pipmd_pov(pl)
+  check_pipmd_pov(pl, pipster_object)
 
   # ----------------------------------------------------------------------------
   # Computations ---------------------------------------------------------------
@@ -285,10 +285,6 @@ pipmd_pov_gap <- function(
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
 
-  ## povline check: user-defined povline has priority
-  if (is.null(povline) && !is.null(pipster_object$args$povline)) {
-    povline <- pipster_object$args$povline
-  }
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
@@ -346,7 +342,8 @@ pipmd_pov_severity_nv <- function(
     welfare    = NULL,
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
-    times_mean = NULL)
+    times_mean = NULL,
+    complete = NULL)
   {
 
   # ----------------------------------------------------------------------------
@@ -368,7 +365,7 @@ pipmd_pov_severity_nv <- function(
                                             povline = povline)
   }
 
-  check_pipmd_pov(pl)
+  check_pipmd_pov(pl, pipster_object)
 
   # ----------------------------------------------------------------------------
   # Computations ---------------------------------------------------------------
@@ -391,7 +388,13 @@ pipmd_pov_severity_nv <- function(
   results$pov_stats$povline <- fgt_data$povline
 
 
+  if (isFALSE(complete)) {
+    return(results)
+  }
+
   pipster_object$results <- results
+
+  pipster_object
 
 }
 
@@ -441,11 +444,6 @@ pipmd_pov_severity <- function(
   # Arguments ------------------------------------------------------------------
   format <- match.arg(format)
 
-  ## povline check: user-defined povline has priority
-  if (is.null(povline) && !is.null(pipster_object$args$povline)) {
-    povline <- pipster_object$args$povline
-  }
-
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
   pipmd_pov_severity_v <- Vectorize(
@@ -458,9 +456,9 @@ pipmd_pov_severity <- function(
     pipster_object = pipster_object,
     welfare    = welfare,
     weight     = weight,
-    povline    = povline
+    povline    = povline,
+    complete   = complete
   )
-
 
   # ____________________________________________________________________________
   # Format ---------------------------------------------------------------------
@@ -499,29 +497,54 @@ pipmd_watts_nv <- function(
     welfare    = NULL,
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
-    times_mean = 1
+    times_mean = NULL,
+    complete = NULL
 ){
-  #   Defenses -------------
-  if (!is.null(pipster_object)) {
-    welfare <- pipster_object$welfare |> unclass()
-    weight  <- pipster_object$weight |> unclass()
+  # ----------------------------------------------------------------------------
+  # Arguments ------------------------------------------------------------------
+
+  pl <- as.list(environment())
+  po <- is_valid_inputs_md(pl)
+
+
+  # Adjust povline and times_mean giving pipster_object precedent
+  if (!po & is.null(welfare)) {
+    pipster_object <- create_pipster_object(welfare = pipster_object$welfare |> unclass(),
+                                            weight  = pipster_object$weight |> unclass(),
+                                            povline = povline)
   }
-  check_pipmd_pov()
+
+  if (!po & !is.null(welfare)) {
+    pipster_object <- create_pipster_object(welfare = welfare,
+                                            weight  = weight,
+                                            povline = povline)
+  }
+
+  check_pipmd_pov(pl, pipster_object)
 
   # ____________________________________________________________________________
   # Computations ---------------------------------------------------------------
-  output <- list()
+
   wi <- wbpip::md_compute_watts(
-    welfare      = welfare,
-    weight       = weight,
-    povline      = povline
+    welfare      = pipster_object$welfare |> unclass(),
+    weight       = pipster_object$weight |> unclass(),
+    povline      = pipster_object$args$povline
   )
-  attributes(wi) <- NULL
-  output$watts <- wi
 
   # ____________________________________________________________________________
   # Return ---------------------------------------------------------------------
-  output
+  results <- pipster_object$results
+  results$pov_stats$watts <- wi
+  results$pov_stats$povline <- pipster_object$args$povline
+
+
+  if (isFALSE(complete)) {
+    return(results)
+  }
+
+  pipster_object$results <- results
+
+  pipster_object
 
 }
 
@@ -563,7 +586,8 @@ pipmd_watts <- function(
     weight     = rep(1, length = length(welfare)),
     povline    = fmean(welfare, w = weight)*times_mean,
     times_mean = 1,
-    format     = c("dt", "list", "atomic")
+    format     = c("dt", "list", "atomic"),
+    complete = getOption('pipster.return_complete')
 ){
 
   # ____________________________________________________________________________
@@ -577,20 +601,23 @@ pipmd_watts <- function(
     vectorize.args = "povline",
     SIMPLIFY       = FALSE
   )
+
   list_watts <- pipmd_watts_v(
     pipster_object = pipster_object,
     welfare    = welfare,
     weight     = weight,
-    povline    = povline
+    povline    = povline,
+    complete = complete
   )
 
   # ____________________________________________________________________________
   # Format ---------------------------------------------------------------------
-  out <- return_format_md(
+  out <- return_format_md_pov(
     ld      = list_watts,
     var     = "watts",
     format  = format,
-    povline = povline
+    povline = povline,
+    complete = complete
   )
 
   # ____________________________________________________________________________
