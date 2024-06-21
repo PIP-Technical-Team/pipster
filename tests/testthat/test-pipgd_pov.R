@@ -237,8 +237,6 @@ test_that("pipgd_pov_headcount works as expected", {
                           lorenz  = "lq")$headcount))
 })
 
-# Test poverty gap functions ####
-# Test pipgd_pov_gap_nv (non vectorized function)
 
 #_______________________________________________________________________________
 # POV GAP ----------------------------------------------------------------------
@@ -1245,4 +1243,169 @@ test_that("validate_params is equiv for all input types", {
 
 })
 
+
+#_______________________________________________________________________________
+# LORENZ CHECKS -----------------------------------------------------------------
+#_______________________________________________________________________________
+# Set-up
+
+pipster_object_with_lq <- create_pipster_object(welfare = pip_gd$L,
+                                                weight  = pip_gd$P,
+                                                lorenz = 'lq')
+
+pipster_object_with_lb <- create_pipster_object(welfare = pip_gd$L,
+                                                weight  = pip_gd$P,
+                                                lorenz = 'lb')
+
+pipster_object_without <- create_pipster_object(welfare = pip_gd$L,
+                                                weight  = pip_gd$P)
+
+# Tests
+## pipgd_headcount
+test_that("pipgd_headcount uses right lorenz", {
+
+  # unspecified
+  without <- pipgd_pov_headcount(pipster_object_without)
+  expect_equal(without$lorenz,
+               pipster_object_without$params$selected_lorenz$for_pov)
+
+  with_lb <- pipgd_pov_headcount(pipster_object_with_lb)
+  expect_equal(with_lb$lorenz,
+               pipster_object_with_lb$args$lorenz)
+
+  with_lq <- pipgd_pov_headcount(pipster_object_with_lq)
+  expect_equal(with_lq$lorenz,
+               pipster_object_with_lq$args$lorenz)
+
+  # specified lb
+  without <- pipgd_pov_headcount(pipster_object_without, lorenz = 'lb')
+  expect_equal(without$lorenz, "lb")
+
+  with_lb <- pipgd_pov_headcount(pipster_object_with_lb, lorenz = 'lb')
+  expect_equal(with_lb$lorenz, "lb")
+
+  with_lq <- pipgd_pov_headcount(pipster_object_with_lq, lorenz = 'lb')
+  expect_equal(with_lq$lorenz, 'lb')
+
+  # specified lq
+  without <- pipgd_pov_headcount(pipster_object_without, lorenz = 'lq')
+  expect_equal(without$lorenz, "lq")
+
+  with_lb <- pipgd_pov_headcount(pipster_object_with_lb, lorenz = 'lq')
+  expect_equal(with_lb$lorenz, "lq")
+
+  with_lq <- pipgd_pov_headcount(pipster_object_with_lq, lorenz = 'lq')
+  expect_equal(with_lq$lorenz, 'lq')
+
+})
+
+## pipgd_pov_gap
+
+test_that("pipgd_pov_gap uses right lorenz", {
+
+  # unspecified
+  without <- pipgd_pov_gap(pipster_object_without)
+  expect_equal(without$lorenz,
+               pipster_object_without$params$selected_lorenz$for_pov)
+
+  with_lb <- pipgd_pov_gap(pipster_object_with_lb)
+  expect_equal(with_lb$lorenz,
+               pipster_object_with_lb$args$lorenz)
+
+  with_lq <- pipgd_pov_gap(pipster_object_with_lq)
+  expect_equal(with_lq$lorenz,
+               pipster_object_with_lq$args$lorenz)
+
+  # specified lb
+  without <- pipgd_pov_gap(pipster_object_without, lorenz = 'lb')
+  expect_equal(without$lorenz, "lb")
+
+  with_lb <- pipgd_pov_gap(pipster_object_with_lb, lorenz = 'lb')
+  expect_equal(with_lb$lorenz, "lb")
+
+  with_lq <- pipgd_pov_gap(pipster_object_with_lq, lorenz = 'lb')
+  expect_equal(with_lq$lorenz, 'lb')
+
+  # specified lq
+  without <- pipgd_pov_gap(pipster_object_without, lorenz = 'lq')
+  expect_equal(without$lorenz, "lq")
+
+  with_lb <- pipgd_pov_gap(pipster_object_with_lb, lorenz = 'lq')
+  expect_equal(with_lb$lorenz, "lq")
+
+  with_lq <- pipgd_pov_gap(pipster_object_with_lq, lorenz = 'lq')
+  expect_equal(with_lq$lorenz, 'lq')
+
+})
+
+## pipgd_pov_severity
+test_that("pipgd_severity uses right lorenz", {
+
+  # unspecified lorenz
+  without <- pipgd_pov_severity(pipster_object_without)
+  expect_equal(without$lorenz, pipster_object_without$params$selected_lorenz$for_pov)
+
+  with_lb <- pipgd_pov_severity(pipster_object_with_lb)
+  expect_equal(with_lb$lorenz, pipster_object_with_lb$args$lorenz)
+
+  with_lq <- pipgd_pov_severity(pipster_object_with_lq)
+  expect_equal(with_lq$lorenz, pipster_object_with_lq$args$lorenz)
+
+  # specified lorenz as 'lb'
+  without <- pipgd_pov_severity(pipster_object_without, lorenz = 'lb')
+  expect_equal(without$lorenz, "lb")
+
+  with_lb <- pipgd_pov_severity(pipster_object_with_lb, lorenz = 'lb')
+  expect_equal(with_lb$lorenz, "lb")
+
+  with_lq <- pipgd_pov_severity(pipster_object_with_lq, lorenz = 'lb')
+  expect_equal(with_lq$lorenz, 'lb')
+
+  # specified lorenz as 'lq'
+  without <- pipgd_pov_severity(pipster_object_without, lorenz = 'lq')
+  expect_equal(without$lorenz, "lq")
+
+  with_lb <- pipgd_pov_severity(pipster_object_with_lb, lorenz = 'lq')
+  expect_equal(with_lb$lorenz, "lq")
+
+  with_lq <- pipgd_pov_severity(pipster_object_with_lq, lorenz = 'lq')
+  expect_equal(with_lq$lorenz, 'lq')
+
+})
+
+
+## pipgd_watts
+test_that("pipgd_watts uses right lorenz", {
+
+  # unspecified lorenz
+  without <- pipgd_watts(pipster_object_without)
+  expect_equal(without$lorenz, pipster_object_without$params$selected_lorenz$for_pov)
+
+  with_lb <- pipgd_watts(pipster_object_with_lb)
+  expect_equal(with_lb$lorenz, pipster_object_with_lb$args$lorenz)
+
+  with_lq <- pipgd_watts(pipster_object_with_lq)
+  expect_equal(with_lq$lorenz, pipster_object_with_lq$args$lorenz)
+
+  # specified lorenz as 'lb'
+  without <- pipgd_watts(pipster_object_without, lorenz = 'lb')
+  expect_equal(without$lorenz, "lb")
+
+  with_lb <- pipgd_watts(pipster_object_with_lb, lorenz = 'lb')
+  expect_equal(with_lb$lorenz, "lb")
+
+  with_lq <- pipgd_watts(pipster_object_with_lq, lorenz = 'lb')
+  expect_equal(with_lq$lorenz, 'lb')
+
+  # specified lorenz as 'lq'
+  without <- pipgd_watts(pipster_object_without, lorenz = 'lq')
+  expect_equal(without$lorenz, "lq")
+
+  with_lb <- pipgd_watts(pipster_object_with_lb, lorenz = 'lq')
+  expect_equal(with_lb$lorenz, "lq")
+
+  with_lq <- pipgd_watts(pipster_object_with_lq, lorenz = 'lq')
+  expect_equal(with_lq$lorenz, 'lq')
+
+})
 

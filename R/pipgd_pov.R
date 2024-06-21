@@ -29,6 +29,13 @@ pipgd_pov_headcount_nv <-
   check_pipgd_params(pl)
   po <- is_valid_inputs_pov(pl)
 
+  # Preserve the original lorenz if pipster_object exists and lorenz is not provided
+  original_lorenz <- if (is.null(lorenz) && !is.null(pipster_object) && !is.null(pipster_object$args$lorenz)) {
+    pipster_object$args$lorenz
+  } else {
+    lorenz
+  }
+
   # __________________________________________________________________________
   # params--------------------------------------------------------------------
   if (po) {
@@ -40,18 +47,20 @@ pipgd_pov_headcount_nv <-
                                       mean           = mean,
                                       times_mean     = times_mean,
                                       povshare       = povshare,
-                                      lorenz         = lorenz,
+                                      lorenz         = original_lorenz,
                                       povline        = povline)
     params <- pipster_object$params
   }
 
   # Lorenz----------------------------------------------------------------------
   #_____________________________________________________________________________
-  if (is.null(lorenz)) {
-    lorenz <- params$selected_lorenz$for_pov
-  } else {
-    match.arg(lorenz, c("lq", "lb"))
-  }
+
+  lorenz <- choose_lorenz_for_pov(pipster_object,
+                                  params,
+                                  lorenz)
+
+  # Headcount ------------------------------------------------------------------
+  # ____________________________________________________________________________
 
   headcount <- params$gd_params[[lorenz]]$validity$headcount
 
@@ -210,11 +219,10 @@ pipgd_pov_gap_nv <- function(pipster_object = NULL,
 
   # Lorenz----------------------------------------------------------------------
   #_____________________________________________________________________________
-  if (is.null(lorenz)) {
-    lorenz <- params$selected_lorenz$for_pov
-  } else {
-    match.arg(lorenz, c("lq", "lb"))
-  }
+
+  lorenz <- choose_lorenz_for_pov(pipster_object,
+                                  params,
+                                  lorenz)
 
   # povline---------------------------------------------------------------------
   #_____________________________________________________________________________
@@ -405,13 +413,12 @@ pipgd_pov_severity_nv <- function(
 
   check_pipgd_params(pl)
 
-  # __________________________________________________________________________
-  # Lorenz -------------------------------------------------------------------
-  if (is.null(lorenz)) {
-    lorenz <- params$selected_lorenz$for_pov
-  } else {
-    match.arg(lorenz, c("lq", "lb"))
-  }
+  # Lorenz----------------------------------------------------------------------
+  #_____________________________________________________________________________
+
+  lorenz <- choose_lorenz_for_pov(pipster_object,
+                                  params,
+                                  lorenz)
 
   # povline-------------------------------------------------------------------
   #___________________________________________________________________________
@@ -640,11 +647,10 @@ pipgd_watts_nv <- function(
 
   # Lorenz----------------------------------------------------------------------
   #_____________________________________________________________________________
-  if (is.null(lorenz)) {
-    lorenz <- params$selected_lorenz$for_pov
-  } else {
-    match.arg(lorenz, c("lq", "lb"))
-  }
+
+  lorenz <- choose_lorenz_for_pov(pipster_object,
+                                  params,
+                                  lorenz)
 
   # povline---------------------------------------------------------------------
   #_____________________________________________________________________________
@@ -797,7 +803,7 @@ pipgd_watts <- function(
 }
 
 
-
+# WRAPPERS -------
 
 #' Validate group data parameters
 #'
@@ -891,6 +897,23 @@ is_valid_inputs_pov <- function(pl) {
   }
 }
 
+choose_lorenz_for_pov <- function(pipster_object = NULL,
+                                  params = NULL,
+                                  lorenz = NULL) {
+  if (!is.null(lorenz)) {
+    chosen_lorenz <- match.arg(lorenz, c("lq", "lb"))
+  } else {
+    # If lorenz is specified in pipster_object and not overridden by the function call, use it
+    if (!is.null(pipster_object$args$lorenz)) {
+      chosen_lorenz <- pipster_object$args$lorenz
+    } else {
+      # Use the selected lorenz if not specified in the function call or pipster_object
+      chosen_lorenz <- params$selected_lorenz$for_pov
+    }
+  }
+
+  return(chosen_lorenz)
+}
 
 
 
